@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     }
 
     // Fetch order details from Cashfree
-    const response = await cashfree.PGGetOrder(orderId);
+    const response = await cashfree.PGFetchOrder(orderId);
     
     return NextResponse.json(response.data);
   } catch (error: unknown) {
