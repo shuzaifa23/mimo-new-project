@@ -25,7 +25,7 @@ function PaymentContent() {
   const [loading, setLoading] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState<"Pending" | "Paid" | "Completed">("Pending");
 
-  const orderId = searchParams.get("orderId");
+  const orderId = searchParams.get("orderId") || searchParams.get("order_id");
   const amount = searchParams.get("amount");
   const phone = searchParams.get("phone") || "98765 43210";
   const name = searchParams.get("name") || "User";
@@ -33,7 +33,7 @@ function PaymentContent() {
   useEffect(() => {
     if (!orderId || orderId.startsWith('demo_')) return;
 
-    // Real-time listener for payment status updates from the shop owner
+    // Real-time listener for payment status updates
     const orderRef = doc(db, "orders", orderId);
     const unsubscribe = onSnapshot(orderRef, (docSnap) => {
       if (docSnap.exists()) {
@@ -42,17 +42,37 @@ function PaymentContent() {
       }
     });
 
-    // Fallback SIMULATION for demo: Automatically 'detect' payment after 15 seconds if not paid
-    const autoDetectTimer = setTimeout(async () => {
-      if (paymentStatus === "Pending" && orderId && !orderId.startsWith('demo_')) {
-        const orderRef = doc(db, "orders", orderId);
-        await updateDoc(orderRef, { paymentStatus: "Paid" });
+    // Verification Logic: Check Cashfree API directly for 'PAID' status
+    const verifyPayment = async () => {
+      try {
+        const res = await fetch("/api/payment/verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId }),
+        });
+        const data = await res.json();
+
+        if (data.order_status === "PAID" && paymentStatus !== "Paid") {
+          await updateDoc(orderRef, { paymentStatus: "Paid" });
+        }
+      } catch (err) {
+        console.error("Verification failed:", err);
       }
-    }, 15000);
+    };
+
+    // Initial check
+    verifyPayment();
+
+    // Polling every 5 seconds while on this page and status is Pending
+    const interval = setInterval(() => {
+      if (paymentStatus === "Pending") {
+        verifyPayment();
+      }
+    }, 5000);
 
     return () => {
       unsubscribe();
-      clearTimeout(autoDetectTimer);
+      clearInterval(interval);
     };
   }, [orderId]);
 
@@ -106,11 +126,8 @@ function PaymentContent() {
       } else if (result.redirect) {
         console.log("Redirecting to Cashfree...");
       } else {
-        // Overlay checkout completed
-        if (orderId && !orderId.startsWith('demo_')) {
-           const orderRef = doc(db, "orders", orderId);
-           await updateDoc(orderRef, { paymentStatus: "Paid" });
-        }
+        // Overlay checkout completed - we'll let the polling/listener handle the update
+        console.log("Checkout overlay closed");
       }
     } catch (err) {
       const error = err as Error;
