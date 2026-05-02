@@ -8,12 +8,10 @@ import {
   Loader2,
   Smartphone,
   ShieldCheck,
-  CreditCard,
   QrCode,
-  ArrowLeft,
-  Info,
   ChevronRight,
-  Clock
+  Clock,
+  Printer
 } from "lucide-react";
 import Image from "next/image";
 import { load } from "@cashfreepayments/cashfree-js";
@@ -39,7 +37,7 @@ function PaymentContent() {
     const orderRef = doc(db, "orders", orderId);
     const unsubscribe = onSnapshot(orderRef, (docSnap) => {
       if (docSnap.exists()) {
-        const status = docSnap.data().paymentStatus as any;
+        const status = docSnap.data().paymentStatus as "Pending" | "Paid" | "Completed";
         setPaymentStatus(status || "Pending");
       }
     });
@@ -58,7 +56,7 @@ function PaymentContent() {
   const handleCashfree = async () => {
     setLoading(true);
 
-    if (!process.env.NEXT_PUBLIC_CASHFREE_MODE || process.env.CASHFREE_APP_ID === "TESTXXXXXXXX") {
+    if (!process.env.NEXT_PUBLIC_CASHFREE_MODE) {
       // Simulation for demo if keys are placeholders
       setTimeout(() => {
         setLoading(false);
@@ -90,7 +88,7 @@ function PaymentContent() {
 
       // 2. Initialize Cashfree
       const cashfree = await load({
-        mode: (process.env.NEXT_PUBLIC_CASHFREE_MODE as any) || "sandbox",
+        mode: (process.env.NEXT_PUBLIC_CASHFREE_MODE as "sandbox" | "production") || "sandbox",
       });
 
       // 3. Start Checkout
@@ -103,10 +101,11 @@ function PaymentContent() {
         console.error("Cashfree Error:", result.error);
         alert(result.error.message);
       }
-    } catch (err: any) {
-      console.error("Cashfree Integration Error:", err);
+    } catch (err) {
+      const error = err as Error;
+      console.error("Cashfree Integration Error:", error);
       // Fallback for demo
-      alert("Payment Error: " + err.message);
+      alert("Payment Error: " + error.message);
     }
     setLoading(false);
   };
@@ -241,9 +240,11 @@ function PaymentContent() {
                       className="object-contain p-2"
                       priority
                       onError={(e) => {
-                        const target = e.target as any;
+                        const target = e.target as HTMLImageElement;
                         target.style.display = 'none';
-                        target.parentElement.innerHTML = '<div class="flex items-center justify-center h-full text-zinc-300 font-bold">QR Code Not Found</div>';
+                        if (target.parentElement) {
+                          target.parentElement.innerHTML = '<div class="flex items-center justify-center h-full text-zinc-300 font-bold">QR Code Not Found</div>';
+                        }
                       }}
                     />
                   </div>

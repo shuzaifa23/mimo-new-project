@@ -33,10 +33,11 @@ export async function POST(req: Request) {
     // Use the instance method
     const response = await cashfree.PGCreateOrder(request);
     return NextResponse.json(response.data);
-  } catch (error: any) {
-    console.error("Cashfree API Error:", error.response?.data || error.message);
+  } catch (error: unknown) {
+    const err = error as { response?: { data?: { message?: string } }; message: string };
+    console.error("Cashfree API Error:", err.response?.data || err.message);
     return NextResponse.json(
-      { error: error.response?.data?.message || error.message },
+      { error: err.response?.data?.message || err.message },
       { status: 500 }
     );
   }

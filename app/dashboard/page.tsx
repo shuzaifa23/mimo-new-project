@@ -5,14 +5,11 @@ import { db } from "@/lib/firebase";
 import { collection, query, orderBy, onSnapshot, doc, updateDoc } from "firebase/firestore";
 import { Button } from "@/components/ui/core";
 import { 
-  Printer, 
-  Download, 
+  Download,
   Clock, 
   CheckCircle2, 
   Loader2, 
   FileText, 
-  MoreVertical,
-  ChevronRight,
   PackageCheck
 } from "lucide-react";
 
@@ -28,7 +25,7 @@ interface Order {
   amount: number;
   paymentStatus: string;
   status: 'Pending' | 'Printing' | 'Ready' | 'Completed';
-  createdAt: any;
+  createdAt: { toDate: () => Date };
 }
 
 export default function DashboardPage() {
