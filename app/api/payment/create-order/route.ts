@@ -1,12 +1,14 @@
-import { Cashfree } from "cashfree-pg";
+import { Cashfree, CFEnvironment } from "cashfree-pg";
 import { NextResponse } from "next/server";
 
-// Configure Cashfree
-Cashfree.XConfig.XClientId = process.env.CASHFREE_APP_ID!;
-Cashfree.XConfig.XClientSecret = process.env.CASHFREE_SECRET_KEY!;
-Cashfree.XConfig.XEnvironment = process.env.NEXT_PUBLIC_CASHFREE_MODE === "production" 
-  ? Cashfree.Environment.PRODUCTION 
-  : Cashfree.Environment.SANDBOX;
+// Initialize Cashfree instance
+const cashfree = new Cashfree(
+  process.env.NEXT_PUBLIC_CASHFREE_MODE === "production" 
+    ? CFEnvironment.PRODUCTION 
+    : CFEnvironment.SANDBOX,
+  process.env.CASHFREE_APP_ID!,
+  process.env.CASHFREE_SECRET_KEY!
+);
 
 export async function POST(req: Request) {
   try {
@@ -28,7 +30,8 @@ export async function POST(req: Request) {
       }
     };
 
-    const response = await Cashfree.PGCreateOrder("2023-08-01", request);
+    // Use the instance method
+    const response = await cashfree.PGCreateOrder(request);
     return NextResponse.json(response.data);
   } catch (error: any) {
     console.error("Cashfree API Error:", error.response?.data || error.message);
