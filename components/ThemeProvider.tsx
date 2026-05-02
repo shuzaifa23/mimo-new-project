@@ -17,12 +17,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const initialColorValue = localStorage.getItem("mimo-theme") as Theme;
     
     if (initialColorValue && initialColorValue !== theme) {
-      setTheme(initialColorValue);
+      setTimeout(() => setTheme(initialColorValue), 0);
       root.classList.toggle("dark", initialColorValue === "dark");
     } else if (!initialColorValue) {
       const mql = window.matchMedia("(prefers-color-scheme: dark)");
       if (mql.matches && theme !== "dark") {
-        setTheme("dark");
+        setTimeout(() => setTheme("dark"), 0);
         root.classList.add("dark");
       }
     }
