@@ -37,6 +37,13 @@ export default function Navbar() {
             <PlusCircle size={16} />
             <span>New Order</span>
           </Link>
+          <Link 
+            href="/student" 
+            className={`flex items-center gap-2 text-sm font-bold transition-colors ${pathname === '/student' ? 'text-indigo-600' : 'text-zinc-500 hover:text-indigo-600'}`}
+          >
+            <LayoutDashboard size={16} />
+            <span>Track Order</span>
+          </Link>
         </div>
 
         {/* CTA Button */}

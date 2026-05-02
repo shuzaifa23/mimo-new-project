@@ -16,7 +16,7 @@ import {
 import Image from "next/image";
 import { load } from "@cashfreepayments/cashfree-js";
 
-import { doc, onSnapshot } from "firebase/firestore";
+import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 function PaymentContent() {
@@ -42,10 +42,13 @@ function PaymentContent() {
       }
     });
 
-    // Fallback SIMULATION for demo: Automatically 'detect' payment after 10 seconds
-    const autoDetectTimer = setTimeout(() => {
-      setPaymentStatus("Paid");
-    }, 10000);
+    // Fallback SIMULATION for demo: Automatically 'detect' payment after 15 seconds if not paid
+    const autoDetectTimer = setTimeout(async () => {
+      if (paymentStatus === "Pending" && orderId && !orderId.startsWith('demo_')) {
+        const orderRef = doc(db, "orders", orderId);
+        await updateDoc(orderRef, { paymentStatus: "Paid" });
+      }
+    }, 15000);
 
     return () => {
       unsubscribe();
@@ -100,6 +103,14 @@ function PaymentContent() {
       if (result.error) {
         console.error("Cashfree Error:", result.error);
         alert(result.error.message);
+      } else if (result.redirect) {
+        console.log("Redirecting to Cashfree...");
+      } else {
+        // Overlay checkout completed
+        if (orderId && !orderId.startsWith('demo_')) {
+           const orderRef = doc(db, "orders", orderId);
+           await updateDoc(orderRef, { paymentStatus: "Paid" });
+        }
       }
     } catch (err) {
       const error = err as Error;
@@ -153,8 +164,9 @@ function PaymentContent() {
         </div>
 
         <div className="mt-12 flex flex-col gap-4 sm:flex-row">
-          <Button size="lg" className="h-14 px-10 rounded-2xl shadow-xl shadow-indigo-500/20" onClick={() => router.push('/')}>
-            Return Home
+          <Button size="lg" className="h-14 px-10 rounded-2xl shadow-xl shadow-indigo-500/20" onClick={() => router.push(`/student?phone=${phone}`)}>
+            Track Live Order
+            <ChevronRight className="ml-2" size={18} />
           </Button>
           <Button variant="outline" size="lg" className="h-14 px-10 rounded-2xl" onClick={() => window.print()}>
             Print Receipt
