@@ -26,7 +26,7 @@ export async function POST(req: Request) {
         customer_phone: customerPhone || "9999999999",
       },
       order_meta: {
-        return_url: `${req.headers.get("origin")}/student/payment/status?order_id={order_id}`,
+        return_url: `${req.headers.get("origin")}/student/payment?order_id={order_id}`,
       }
     };
 
