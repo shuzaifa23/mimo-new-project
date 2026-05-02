@@ -14,6 +14,7 @@ import {
   Printer
 } from "lucide-react";
 import Image from "next/image";
+// @ts-ignore
 import { load } from "@cashfreepayments/cashfree-js";
 
 import { doc, onSnapshot } from "firebase/firestore";
