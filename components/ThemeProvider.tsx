@@ -13,13 +13,18 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("mimo-theme") as Theme;
-    if (savedTheme) {
-      setTheme(savedTheme);
-      document.documentElement.classList.toggle("dark", savedTheme === "dark");
-    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      setTheme("dark");
-      document.documentElement.classList.add("dark");
+    const root = window.document.documentElement;
+    const initialColorValue = localStorage.getItem("mimo-theme") as Theme;
+    
+    if (initialColorValue) {
+      setTheme(initialColorValue);
+      root.classList.toggle("dark", initialColorValue === "dark");
+    } else {
+      const mql = window.matchMedia("(prefers-color-scheme: dark)");
+      if (mql.matches) {
+        setTheme("dark");
+        root.classList.add("dark");
+      }
     }
   }, []);
 
