@@ -2,9 +2,9 @@ import { Cashfree } from "cashfree-pg";
 import { NextResponse } from "next/server";
 
 // Configure Cashfree
-Cashfree.XClientId = process.env.CASHFREE_APP_ID!;
-Cashfree.XClientSecret = process.env.CASHFREE_SECRET_KEY!;
-Cashfree.XEnvironment = process.env.NEXT_PUBLIC_CASHFREE_MODE === "production" 
+Cashfree.XConfig.XClientId = process.env.CASHFREE_APP_ID!;
+Cashfree.XConfig.XClientSecret = process.env.CASHFREE_SECRET_KEY!;
+Cashfree.XConfig.XEnvironment = process.env.NEXT_PUBLIC_CASHFREE_MODE === "production" 
   ? Cashfree.Environment.PRODUCTION 
   : Cashfree.Environment.SANDBOX;
 
