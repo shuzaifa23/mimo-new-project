@@ -249,7 +249,6 @@ function PaymentContent() {
             </p>
           </div>
         </div>
-        </div>
       </div>
     </div>
   );
