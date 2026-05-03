@@ -9,7 +9,7 @@ export default function Home() {
     <div className="flex flex-col bg-white dark:bg-zinc-950">
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative overflow-hidden px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
+        <section className="relative overflow-hidden px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
           <div className="absolute left-1/2 top-0 -z-10 h-[1000px] w-[1000px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_farthest-side,rgba(79,70,229,0.08),transparent)]"></div>
           
           <div className="mx-auto max-w-4xl text-center">
