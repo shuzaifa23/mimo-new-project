@@ -7,16 +7,11 @@ import {
   CheckCircle2,
   Loader2,
   Smartphone,
-  ShieldCheck,
-  QrCode,
-  ChevronRight,
-  Clock,
-  Printer
+  ShieldCheck
 } from "lucide-react";
-import Image from "next/image";
 import { load } from "@cashfreepayments/cashfree-js";
 
-import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 function PaymentContent() {
@@ -52,8 +47,8 @@ function PaymentContent() {
         });
         const data = await res.json();
 
-        if (data.order_status === "PAID" && paymentStatus !== "Paid") {
-          await updateDoc(orderRef, { paymentStatus: "Paid" });
+        if (data.status === "success" && paymentStatus !== "Paid") {
+          setPaymentStatus("Paid");
         }
       } catch (err) {
         console.error("Verification failed:", err);
@@ -84,11 +79,8 @@ function PaymentContent() {
     setLoading(true);
 
     if (!process.env.NEXT_PUBLIC_CASHFREE_MODE) {
-      // Simulation for demo if keys are placeholders
-      setTimeout(() => {
-        setLoading(false);
-        setPaymentStatus("Paid");
-      }, 1500);
+      alert("Cashfree is not configured yet. Please check environment variables.");
+      setLoading(false);
       return;
     }
 
@@ -237,87 +229,26 @@ function PaymentContent() {
         </div>
 
         {/* Main Area */}
-        <div className="flex-1 bg-white dark:bg-zinc-950">
-          <div className="flex items-center justify-between border-b border-zinc-100 p-6 dark:border-zinc-800">
-            <h2 className="text-sm font-bold text-zinc-500 uppercase tracking-wider">Payment Options</h2>
-          </div>
-
-          <div className="flex flex-col lg:flex-row">
-            {/* List - Horizontal on mobile, Vertical on desktop */}
-            <div className="flex lg:flex-col overflow-x-auto lg:overflow-x-visible border-b lg:border-b-0 lg:border-r border-zinc-100 dark:border-zinc-800 lg:w-48 scrollbar-hide">
-              {['UPI', 'Cards', 'Netbanking', 'Wallet'].map((m, i) => (
-                <div key={m} className={`flex shrink-0 items-center gap-3 p-4 lg:p-6 text-sm font-bold transition-colors cursor-pointer ${i === 0 ? 'bg-zinc-50 dark:bg-zinc-900 border-b-2 lg:border-b-0 lg:border-l-4 border-blue-600' : 'text-zinc-500'}`}>
-                  <span>{m}</span>
-                </div>
-              ))}
+        <div className="flex-1 bg-white dark:bg-zinc-950 p-8 flex flex-col items-center justify-center min-h-[400px]">
+          <div className="max-w-sm w-full text-center space-y-6">
+            <div className="bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 p-4 rounded-xl text-sm font-bold border border-indigo-100 dark:border-indigo-800/30">
+              Click the button below to safely pay with Cashfree. You can use UPI, Cards, or Netbanking.
             </div>
 
-            {/* Detail */}
-            <div className="flex-1 p-6 lg:p-8">
-              <div className="mb-8">
-                <div className="mb-4 flex items-center justify-between">
-                  <h3 className="text-sm font-bold text-zinc-900 dark:text-white uppercase tracking-wider">UPI QR Scanner</h3>
-                  <div className="flex items-center gap-1 text-[10px] font-bold text-zinc-400">
-                    <Clock size={12} />
-                    <span>Live Detection Active</span>
-                  </div>
-                </div>
+            <Button
+              onClick={handleCashfree}
+              className="w-full h-14 bg-zinc-900 text-white hover:bg-black text-sm font-bold rounded-xl shadow-lg shadow-zinc-200 dark:shadow-none"
+              disabled={loading}
+            >
+              {loading ? <Loader2 className="animate-spin" /> : `Pay ₹${amount} Securely`}
+            </Button>
 
-                <div className="flex flex-col items-center gap-6 rounded-2xl bg-zinc-50 p-8 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800">
-                  <div className="relative h-64 w-64 overflow-hidden rounded-2xl bg-white p-3 shadow-2xl ring-4 ring-blue-500/10 animate-pulse">
-                    <Image
-                      src="/upi-qr.jpg"
-                      alt="UPI QR Code"
-                      fill
-                      sizes="(max-width: 768px) 100vw, 256px"
-                      className="object-contain p-2"
-                      priority
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.style.display = 'none';
-                        if (target.parentElement) {
-                          target.parentElement.innerHTML = '<div class="flex items-center justify-center h-full text-zinc-300 font-bold">QR Code Not Found</div>';
-                        }
-                      }}
-                    />
-                  </div>
-
-                  <div className="text-center">
-                    <p className="text-sm font-bold text-zinc-900 dark:text-white">Scan & Pay ₹{amount}</p>
-                    <p className="mt-1 text-xs text-zinc-500">Waiting for payment confirmation...</p>
-                    <div className="mt-4 flex items-center justify-center gap-2">
-                      <Loader2 className="animate-spin text-blue-600" size={16} />
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-blue-600">Secure Live Link</span>
-                    </div>
-                  </div>
-
-                  <div className="w-full rounded-xl bg-blue-50 p-3 text-center dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/30">
-                    <p className="text-[10px] font-bold text-blue-700 dark:text-blue-400 uppercase tracking-tight">Step 1: Scan QR | Step 2: Pay | Step 3: Click Below</p>
-                  </div>
-
-                  <Button
-                    onClick={() => setPaymentStatus("Paid")}
-                    className="w-full h-12 bg-green-600 text-white hover:bg-green-700 text-xs font-bold rounded-xl shadow-lg shadow-green-200 dark:shadow-none"
-                  >
-                    I Have Paid via Scanner
-                  </Button>
-                </div>
-              </div>
-
-              <Button
-                onClick={handleCashfree}
-                className="w-full h-14 bg-zinc-900 text-white hover:bg-black text-sm font-bold rounded-xl shadow-lg shadow-zinc-200 dark:shadow-none"
-                disabled={loading}
-              >
-                {loading ? <Loader2 className="animate-spin" /> : `Pay ₹${amount} with Cashfree`}
-              </Button>
-
-              <p className="mt-4 text-center text-[10px] text-zinc-400 flex items-center justify-center gap-1">
-                <ShieldCheck size={10} />
-                Secure payment powered by Cashfree
-              </p>
-            </div>
+            <p className="text-[10px] text-zinc-400 flex items-center justify-center gap-1">
+              <ShieldCheck size={10} />
+              Secure payment powered by Cashfree
+            </p>
           </div>
+        </div>
         </div>
       </div>
     </div>

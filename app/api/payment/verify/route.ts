@@ -1,5 +1,7 @@
 import { Cashfree, CFEnvironment } from "cashfree-pg";
 import { NextResponse } from "next/server";
+import { db } from "@/lib/firebase";
+import { doc, updateDoc } from "firebase/firestore";
 
 const cashfree = new Cashfree(
   process.env.NEXT_PUBLIC_CASHFREE_MODE === "production" 
@@ -20,7 +22,14 @@ export async function POST(req: Request) {
     // Fetch order details from Cashfree
     const response = await cashfree.PGFetchOrder(orderId);
     
-    return NextResponse.json(response.data);
+    // Secure Server-side DB Update
+    if (response.data.order_status === "PAID") {
+      const orderRef = doc(db, "orders", orderId);
+      await updateDoc(orderRef, { paymentStatus: "Paid" });
+      return NextResponse.json({ status: "success", data: response.data });
+    }
+
+    return NextResponse.json({ status: "pending", data: response.data });
   } catch (error: unknown) {
     const err = error as { response?: { data?: { message?: string } }; message: string };
     console.error("Cashfree Verification Error:", err.response?.data || err.message);
