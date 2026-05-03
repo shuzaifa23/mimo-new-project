@@ -9,7 +9,7 @@ export default function Home() {
     <div className="flex flex-col bg-white dark:bg-zinc-950">
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative overflow-hidden px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+        <section className="relative overflow-hidden px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
           <div className="absolute left-1/2 top-0 -z-10 h-[1000px] w-[1000px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_farthest-side,rgba(79,70,229,0.08),transparent)]"></div>
           
           <div className="mx-auto max-w-4xl text-center">
@@ -17,14 +17,14 @@ export default function Home() {
               <Zap size={14} />
               <span>Modernizing Printing for Students</span>
             </div>
-            <h1 className="mt-8 text-5xl font-black tracking-tight text-zinc-900 dark:text-white sm:text-7xl">
+            <h1 className="mt-6 text-5xl font-black tracking-tight text-zinc-900 dark:text-white sm:text-7xl">
               From Screen, <br />
               <span className="bg-gradient-to-r from-indigo-600 to-violet-500 bg-clip-text text-transparent">To Sheets.</span>
             </h1>
-            <p className="mt-6 text-xl text-zinc-600 dark:text-zinc-400 sm:mx-auto sm:max-w-2xl">
+            <p className="mt-4 text-xl text-zinc-600 dark:text-zinc-400 sm:mx-auto sm:max-w-2xl">
               Upload documents, select your preferences, and get them printed at your nearest partner shop. No more waiting in lines.
             </p>
-            <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link href="/student/order">
                 <Button size="lg" className="h-14 w-full px-8 text-lg sm:w-auto">
                   Start Printing Now
