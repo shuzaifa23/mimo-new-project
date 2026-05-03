@@ -81,11 +81,7 @@ function PaymentContent() {
     }
     setLoading(true);
 
-    if (!process.env.NEXT_PUBLIC_CASHFREE_MODE) {
-      alert("Cashfree is not configured yet. Please check environment variables.");
-      setLoading(false);
-      return;
-    }
+
 
     try {
       // 1. Create order on backend
