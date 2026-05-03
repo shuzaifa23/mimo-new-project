@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button, Input } from "@/components/ui/core";
-import { Store, ShieldCheck, MapPin, CheckCircle2, Loader2, ArrowRight } from "lucide-react";
+import { ShieldCheck, CheckCircle2, Loader2 } from "lucide-react";
 
 export default function PartnerPage() {
   const [loading, setLoading] = useState(false);

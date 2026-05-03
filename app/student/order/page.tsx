@@ -2,7 +2,7 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Input } from "@/components/ui/core";
-import { Upload, Printer, CheckCircle2, Loader2, FileText, CreditCard } from "lucide-react";
+import { Upload, CheckCircle2, Loader2, CreditCard } from "lucide-react";
 import { db, storage } from "@/lib/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";

@@ -12,7 +12,8 @@ import {
   CreditCard,
   Printer,
   ChevronRight,
-  ArrowRight
+  ArrowRight,
+  Smartphone
 } from "lucide-react";
 import Link from "next/link";
 
@@ -183,8 +184,6 @@ function StudentDashboardContent() {
   );
 }
 
-// Re-use Smartphone icon from lucide-react (was missing in previous thought)
-import { Smartphone } from "lucide-react";
 
 export default function StudentDashboard() {
   return (

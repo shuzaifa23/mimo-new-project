@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button, Input } from "@/components/ui/core";
-import { FileText, Download, Send, Loader2, CheckCircle2 } from "lucide-react";
+import { FileText, Loader2, CheckCircle2 } from "lucide-react";
 import { generateResearchPaperFrontPages, ResearchPaperData } from "@/lib/pdf-utils";
 
 export default function ResearchPaperPage() {

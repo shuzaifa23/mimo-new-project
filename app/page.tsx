@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/core";
-import { Printer, FileText, LayoutDashboard, Store, ArrowRight, ShieldCheck, Zap, Globe } from "lucide-react";
+import { Printer, FileText, ArrowRight, Zap } from "lucide-react";
 
 export default function Home() {
   return (

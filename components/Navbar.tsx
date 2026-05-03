@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Printer, LayoutDashboard, Home, PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/core";
-import ThemeToggle from "./ThemeToggle";
 
 export default function Navbar() {
   const pathname = usePathname();

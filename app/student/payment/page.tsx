@@ -31,7 +31,7 @@ function PaymentContent() {
   const name = searchParams.get("name") || "User";
 
   useEffect(() => {
-    if (!orderId || orderId.startsWith('demo_')) return;
+    if (!orderId || typeof orderId !== "string" || orderId.startsWith('demo_')) return;
 
     // Real-time listener for payment status updates
     const orderRef = doc(db, "orders", orderId);
@@ -74,9 +74,13 @@ function PaymentContent() {
       unsubscribe();
       clearInterval(interval);
     };
-  }, [orderId]);
+  }, [orderId, paymentStatus]);
 
   const handleCashfree = async () => {
+    if (!orderId || !amount) {
+      alert("Missing order information. Please try again.");
+      return;
+    }
     setLoading(true);
 
     if (!process.env.NEXT_PUBLIC_CASHFREE_MODE) {
