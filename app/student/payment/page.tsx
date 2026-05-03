@@ -7,7 +7,10 @@ import {
   CheckCircle2,
   Loader2,
   Smartphone,
-  ShieldCheck
+  ShieldCheck,
+  ChevronRight,
+  QrCode,
+  Printer
 } from "lucide-react";
 import { load } from "@cashfreepayments/cashfree-js";
 
