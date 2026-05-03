@@ -5,14 +5,11 @@ import { db } from "@/lib/firebase";
 import { collection, query, where, orderBy, onSnapshot } from "firebase/firestore";
 import { Button } from "@/components/ui/core";
 import { 
-  Clock, 
   CheckCircle2, 
   Loader2, 
   FileText, 
   CreditCard,
   Printer,
-  ChevronRight,
-  ArrowRight,
   Smartphone
 } from "lucide-react";
 import Link from "next/link";
@@ -35,7 +32,7 @@ function StudentDashboardContent() {
 
   useEffect(() => {
     if (!phone) {
-      setLoading(false);
+      setTimeout(() => setLoading(false), 0);
       return;
     }
 
