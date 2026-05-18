@@ -32,6 +32,8 @@ const statusConfig: Record<string, { color: string; icon: any }> = {
 
 export default function AdminVendorDashboardPage() {
   const [orders, setOrders] = useState<Order[]>([]);
+  const [vendors, setVendors] = useState<any[]>([]);
+  const [selectedVendorId, setSelectedVendorId] = useState<string>("mimo-vendor");
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("All");
@@ -41,14 +43,23 @@ export default function AdminVendorDashboardPage() {
 
   const router = useRouter();
 
-  const fetchOrders = async () => {
+  const fetchVendors = async () => {
+    const { data, error } = await supabase
+      .from("vendors")
+      .select("*")
+      .order("shop_name", { ascending: true });
+    if (!error && data) {
+      setVendors(data);
+    }
+  };
+
+  const fetchOrders = async (vendorId = selectedVendorId) => {
     setLoading(true);
     
-    // Fetch all orders assigned to mimo-vendor
     const { data, error } = await supabase
       .from("orders")
       .select("*")
-      .eq("vendor_id", "mimo-vendor")
+      .eq("vendor_id", vendorId)
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -67,11 +78,12 @@ export default function AdminVendorDashboardPage() {
       return;
     }
 
-    fetchOrders();
+    fetchVendors();
+    fetchOrders(selectedVendorId);
 
     // Real-time listener for orders assigned to this vendor
     const channel = supabase
-      .channel('vendor-orders')
+      .channel('vendor-orders-realtime')
       .on(
         'postgres_changes',
         {
@@ -80,7 +92,7 @@ export default function AdminVendorDashboardPage() {
           table: 'orders',
         },
         () => {
-          fetchOrders();
+          fetchOrders(selectedVendorId);
         }
       )
       .subscribe();
@@ -88,7 +100,7 @@ export default function AdminVendorDashboardPage() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [router]);
+  }, [router, selectedVendorId]);
 
   const updateOrderStatus = async (orderId: string, newStatus: string) => {
     setUpdatingId(orderId);
@@ -143,10 +155,23 @@ export default function AdminVendorDashboardPage() {
         </div>
         
         <div className="flex flex-wrap items-center gap-3">
+          <select
+            className="rounded-xl border border-zinc-200 bg-white px-4 h-10 text-sm font-bold outline-none cursor-pointer dark:border-zinc-800 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 focus:ring-2 focus:ring-indigo-500/20 shadow-sm"
+            value={selectedVendorId}
+            onChange={(e) => setSelectedVendorId(e.target.value)}
+          >
+            <option value="mimo-vendor">MIMO Print (Default)</option>
+            {vendors.map(v => (
+              <option key={v.id} value={v.id}>
+                {v.shop_name || v.name || "Vendor"}
+              </option>
+            ))}
+          </select>
+
           <Button 
             variant="outline" 
             size="sm" 
-            onClick={fetchOrders}
+            onClick={() => fetchOrders(selectedVendorId)}
             disabled={loading}
             className="rounded-xl h-10 px-4 gap-2 flex-1 sm:flex-none"
           >

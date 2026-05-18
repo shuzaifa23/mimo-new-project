@@ -15,10 +15,42 @@ export default function VendorPage() {
 
   async function fetchOrders() {
     setLoading(true);
-    // Fetch orders, maybe limit to a few for now
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
+    let { data: vendorData } = await supabase
+      .from("vendors")
+      .select("id, shop_name")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (!vendorData) {
+      const email = localStorage.getItem("vendor-email");
+      if (email) {
+        const { data: fallbackVendor } = await supabase
+          .from("vendors")
+          .select("id, shop_name")
+          .eq("email", email)
+          .maybeSingle();
+        if (fallbackVendor) {
+          vendorData = fallbackVendor;
+        }
+      }
+    }
+
+    if (!vendorData) {
+      setOrders([]);
+      setLoading(false);
+      return;
+    }
+
     const { data, error } = await supabase
       .from('orders')
       .select('*')
+      .eq('vendor_id', vendorData.id)
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -35,8 +67,6 @@ export default function VendorPage() {
     const { data, error } = await supabase
       .from("orders")
       .update({
-        vendor_id: "mimo-vendor",
-        vendor_name: "MIMO Print",
         status: newStatus,
       })
       .eq("id", orderId)
