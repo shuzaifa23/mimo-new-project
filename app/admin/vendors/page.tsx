@@ -1,419 +1,195 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+import React, { useState, useEffect } from 'react';
 import { 
-  Loader2, 
-  Package, 
-  Clock, 
+  Search, 
+  Store, 
+  MapPin, 
+  Star, 
   CheckCircle2, 
-  Printer, 
-  Download, 
+  XCircle, 
+  MoreVertical,
+  ShieldCheck,
+  Ban,
   ExternalLink,
-  ChevronRight,
-  Filter,
-  RefreshCw,
-  Search,
-  Eye,
-  X
-} from "lucide-react";
-import { Button } from "@/components/ui/core";
+  Clock,
+  TrendingUp
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/core';
+import { supabase } from '@/lib/supabase';
+import type { Vendor } from '@/types/supabase';
 
-import type { Order, OrderStatus } from "@/types/supabase";
-
-const statusConfig: Record<string, { color: string; icon: any }> = {
-  Pending:   { color: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400", icon: Clock },
-  Accepted:  { color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400", icon: Package },
-  Printing:  { color: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400", icon: Printer },
-  Completed: { color: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400", icon: CheckCircle2 },
-  Delivered: { color: "bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400", icon: ChevronRight },
-};
-
-export default function AdminVendorDashboardPage() {
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [vendors, setVendors] = useState<any[]>([]);
-  const [selectedVendorId, setSelectedVendorId] = useState<string>("mimo-vendor");
+export default function VendorsPage() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [vendors, setVendors] = useState<Vendor[]>([]);
   const [loading, setLoading] = useState(true);
-  const [updatingId, setUpdatingId] = useState<string | null>(null);
-  const [filter, setFilter] = useState<string>("All");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [previewName, setPreviewName] = useState<string>("");
 
-  const router = useRouter();
+  useEffect(() => {
+    fetchVendors();
+  }, []);
 
   const fetchVendors = async () => {
+    setLoading(true);
     const { data, error } = await supabase
       .from("vendors")
-      .select("*")
-      .order("shop_name", { ascending: true });
+      .select("*");
+
     if (!error && data) {
       setVendors(data);
-    }
-  };
-
-  const fetchOrders = async (vendorId = selectedVendorId) => {
-    setLoading(true);
-    
-    const { data, error } = await supabase
-      .from("orders")
-      .select("*")
-      .eq("vendor_id", vendorId)
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error("Error fetching orders:", error);
     } else {
-      setOrders(data || []);
+      console.error("Error fetching vendors:", error);
     }
     setLoading(false);
   };
 
-  useEffect(() => {
-    // Auth Check for Admin
-    const adminAuth = localStorage.getItem("admin-auth");
-    if (!adminAuth) {
-      router.push("/admin/login");
-      return;
-    }
+  const activeVendors = vendors.filter(v => v.status?.toLowerCase() === "active").length;
+  const pendingVendors = vendors.filter(v => v.status?.toLowerCase() === "pending").length;
 
-    fetchVendors();
-    fetchOrders(selectedVendorId);
-
-    // Real-time listener for orders assigned to this vendor
-    const channel = supabase
-      .channel('vendor-orders-realtime')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'orders',
-        },
-        () => {
-          fetchOrders(selectedVendorId);
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [router, selectedVendorId]);
-
-  const updateOrderStatus = async (orderId: string, newStatus: string) => {
-    setUpdatingId(orderId);
-    
-    // Find the order for notification details
-    const order = orders.find(o => o.id === orderId);
-    
-    const { error } = await supabase
-      .from("orders")
-      .update({ status: newStatus })
-      .eq("id", orderId);
-
-    if (error) {
-      console.error("Error updating status:", error);
-    } else {
-      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
-      
-      // Auto-trigger WhatsApp notification
-      if (order?.phone) {
-        const cleanPhone = order.phone.replace(/\D/g, '');
-        const formattedPhone = cleanPhone.length === 10 ? '91' + cleanPhone : cleanPhone;
-        const message = `Hi! Your MIMO Print order #${orderId.slice(0, 8)} status has been updated to: *${newStatus}*. \n\nTrack your order here: https://mimo-print.vercel.app/student \n\nThank you for choosing MIMO!`;
-        window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`, "_blank");
-      }
-    }
-    setUpdatingId(null);
-  };
-
-  const filteredOrders = orders.filter(order => {
-    const matchesFilter = filter === "All" || order.status === filter;
-    const matchesSearch = 
-      (order.customer_name?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
-      (order.phone || "").includes(searchQuery);
-    return matchesFilter && matchesSearch;
+  const filteredVendors = vendors.filter(vendor => {
+    const search = searchTerm.toLowerCase();
+    return (
+      (vendor.shop_name?.toLowerCase() || "").includes(search) ||
+      (vendor.owner_name?.toLowerCase() || "").includes(search) ||
+      (vendor.phone || "").includes(search) ||
+      (vendor.email?.toLowerCase() || "").includes(search)
+    );
   });
 
-  const stats = {
-    total: orders.length,
-    pending: orders.filter(o => o.status === 'Pending').length,
-    accepted: orders.filter(o => o.status === 'Accepted').length,
-    printing: orders.filter(o => o.status === 'Printing').length,
-    delivered: orders.filter(o => o.status === 'Delivered').length,
-  };
-
   return (
-    <div className="space-y-8">
-      {/* Header Section */}
-      <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+    <div className="space-y-6">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-white">Vendor Dashboard</h1>
-          <p className="mt-1 text-zinc-500">Manage incoming print orders and update their status directly.</p>
+          <h1 className="text-2xl font-extrabold text-zinc-900 dark:text-white">Vendor Management</h1>
+          <p className="text-zinc-500">Manage printer shops, approve registrations, and monitor performance.</p>
+        </div>
+        <Button className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2">
+          <Store size={18} />
+          Onboard New Vendor
+        </Button>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2">
+        <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-50 dark:bg-zinc-900">
+              <ShieldCheck size={20} className="text-emerald-500" />
+            </div>
+            <div>
+              <p className="text-xs font-medium text-zinc-500">Active Vendors</p>
+              <p className="text-lg font-bold text-zinc-900 dark:text-white">{activeVendors}</p>
+            </div>
+          </div>
         </div>
         
-        <div className="flex flex-wrap items-center gap-3">
-          <select
-            className="rounded-xl border border-zinc-200 bg-white px-4 h-10 text-sm font-bold outline-none cursor-pointer dark:border-zinc-800 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 focus:ring-2 focus:ring-indigo-500/20 shadow-sm"
-            value={selectedVendorId}
-            onChange={(e) => setSelectedVendorId(e.target.value)}
-          >
-            <option value="mimo-vendor">MIMO Print (Default)</option>
-            {vendors.map(v => (
-              <option key={v.id} value={v.id}>
-                {v.shop_name || v.name || "Vendor"}
-              </option>
-            ))}
-          </select>
-
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={() => fetchOrders(selectedVendorId)}
-            disabled={loading}
-            className="rounded-xl h-10 px-4 gap-2 flex-1 sm:flex-none"
-          >
-            <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
-            Refresh
-          </Button>
+        <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-50 dark:bg-zinc-900">
+              <Clock size={20} className="text-orange-500" />
+            </div>
+            <div>
+              <p className="text-xs font-medium text-zinc-500">Pending Approval</p>
+              <p className="text-lg font-bold text-zinc-900 dark:text-white">{pendingVendors}</p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="flex h-12 items-center gap-2 rounded-2xl bg-white px-4 shadow-sm dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
-        <Search size={18} className="text-zinc-400" />
-        <input 
-          type="text" 
-          placeholder="Search name or phone..." 
-          className="bg-transparent text-sm outline-none flex-1 w-full"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-      </div>
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {[
-          { label: "Total Orders", value: stats.total, color: "bg-zinc-900 text-white" },
-          { label: "Pending", value: stats.pending, color: "bg-orange-500 text-white" },
-          { label: "In Print", value: stats.printing, color: "bg-purple-500 text-white" },
-          { label: "Delivered", value: stats.delivered, color: "bg-teal-500 text-white" }
-        ].map((stat, i) => (
-          <div key={i} className={`rounded-2xl p-6 shadow-sm ${stat.color}`}>
-            <p className="text-xs font-bold uppercase tracking-wider opacity-80">{stat.label}</p>
-            <p className="mt-2 text-3xl font-black">{stat.value}</p>
+      <div className="rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+        <div className="p-4 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
+          <div className="relative w-80">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" size={18} />
+            <input 
+              type="text" 
+              placeholder="Search by shop, owner, or phone..." 
+              className="w-full rounded-xl border border-zinc-200 bg-zinc-50 py-2 pl-10 pr-4 text-sm outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-900"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
-        ))}
-      </div>
-
-      {/* Filters */}
-      <div className="flex flex-wrap gap-2">
-        {["All", "Pending", "Accepted", "Printing", "Completed", "Delivered"].map((s) => (
-          <button
-            key={s}
-            onClick={() => setFilter(s)}
-            className={`rounded-full px-4 py-1.5 text-sm font-bold transition-all ${
-              filter === s 
-                ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/20" 
-                : "bg-white text-zinc-600 hover:bg-zinc-100 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800"
-            }`}
-          >
-            {s}
-          </button>
-        ))}
-      </div>
-
-      {/* Orders Table/List */}
-      <div className="overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-xl dark:border-zinc-800 dark:bg-zinc-950">
-        {loading && orders.length === 0 ? (
-          <div className="flex h-96 flex-col items-center justify-center gap-4">
-            <Loader2 className="animate-spin text-indigo-600" size={40} />
-            <p className="text-zinc-500 font-medium">Loading orders...</p>
-          </div>
-        ) : filteredOrders.length === 0 ? (
-          <div className="flex h-[450px] flex-col items-center justify-center text-center px-6">
-            <div className="mb-6 rounded-[2.5rem] bg-zinc-50 p-10 dark:bg-zinc-900/50 relative">
-              <Package size={60} className="text-zinc-200 dark:text-zinc-800" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Package size={32} className="text-zinc-400 dark:text-zinc-500 animate-pulse" />
-              </div>
-            </div>
-            <h3 className="text-2xl font-black text-zinc-900 dark:text-white tracking-tight">No orders yet</h3>
-            <p className="mt-2 max-w-[280px] text-zinc-500 font-medium">
-              When customers place print orders, they will appear here for you to manage.
-            </p>
-            {searchQuery || filter !== 'All' ? (
-              <Button 
-                variant="outline" 
-                className="mt-6 rounded-2xl"
-                onClick={() => {
-                  setSearchQuery('');
-                  setFilter('All');
-                }}
-              >
-                Clear all filters
-              </Button>
-            ) : null}
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-200 dark:border-zinc-800">
-                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-zinc-500">Customer</th>
-                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-zinc-500">Details</th>
-                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-zinc-500">Amount</th>
-                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-zinc-500">Status</th>
-                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-zinc-500 text-right">Actions</th>
+        </div>
+        
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead>
+              <tr className="border-b border-zinc-100 bg-zinc-50/50 text-xs font-bold uppercase tracking-wider text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900/50">
+                <th className="px-6 py-4">Shop Details</th>
+                <th className="px-6 py-4">Contact Info</th>
+                <th className="px-6 py-4">Status</th>
+                <th className="px-6 py-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+              {loading ? (
+                <tr>
+                  <td colSpan={4} className="px-6 py-8 text-center text-sm text-zinc-500">
+                    Loading vendors...
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
-                {filteredOrders.map((order) => {
-                  const StatusIcon = statusConfig[order.status as keyof typeof statusConfig]?.icon || Clock;
-                  return (
-                    <tr key={order.id} className="group hover:bg-zinc-50/50 dark:hover:bg-zinc-900/30 transition-colors">
-                      <td className="px-6 py-6">
+              ) : filteredVendors.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="px-6 py-8 text-center text-sm text-zinc-500">
+                    No vendors found.
+                  </td>
+                </tr>
+              ) : (
+                filteredVendors.map((vendor) => (
+                  <tr key={vendor.id} className="group hover:bg-zinc-50 dark:hover:bg-zinc-900/30">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400 font-bold uppercase shrink-0">
+                          {(vendor.shop_name || vendor.name || 'V').charAt(0)}
+                        </div>
                         <div>
-                          <p className="font-bold text-zinc-900 dark:text-white">{order.customer_name || 'Anonymous'}</p>
-                          <p className="text-xs text-zinc-500">{order.phone || 'No phone'}</p>
-                          <p className="mt-1 text-[10px] text-zinc-400">
-                            {new Date(order.created_at).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}
-                          </p>
+                          <div className="text-sm font-bold text-zinc-900 dark:text-white">{vendor.shop_name || vendor.name || 'Unnamed Shop'}</div>
+                          <div className="text-xs text-zinc-500">Owner: {vendor.owner_name || 'N/A'}</div>
                         </div>
-                      </td>
-                      <td className="px-6 py-6">
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2">
-                            <span className="inline-flex items-center rounded bg-zinc-100 px-1.5 py-0.5 text-[10px] font-bold text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400 uppercase">
-                              {order.print_type === 'bw' ? 'B&W' : 'Color'}
-                            </span>
-                            <span className="text-xs text-zinc-600 dark:text-zinc-400">
-                              {order.pages} pgs × {order.copies} copies
-                            </span>
-                          </div>
-                          <p className="text-xs text-zinc-500">
-                            Binding: <span className="capitalize">{order.binding}</span>
-                          </p>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col gap-1">
+                        <div className="text-sm text-zinc-900 dark:text-zinc-300 font-medium">
+                          {vendor.phone || 'No phone'}
                         </div>
-                      </td>
-                      <td className="px-6 py-6">
-                        <p className="text-lg font-black text-indigo-600 dark:text-indigo-400">₹{order.amount}</p>
-                        <p className="text-[10px] font-bold text-green-600 uppercase">{order.payment_status}</p>
-                      </td>
-                      <td className="px-6 py-6">
-                        <div className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${statusConfig[order.status as keyof typeof statusConfig]?.color}`}>
-                          <StatusIcon size={14} />
-                          {order.status}
-                        </div>
-                      </td>
-                      <td className="px-6 py-6">
-                        <div className="flex items-center justify-end gap-2">
-                          {order.file_url && (
-                            <div className="flex items-center gap-2">
-                              <button 
-                                onClick={() => {
-                                  setPreviewUrl(order.file_url);
-                                  setPreviewName(order.file_name || 'document.pdf');
-                                }}
-                                className="flex h-9 w-9 items-center justify-center rounded-xl bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700 transition-colors"
-                                title="Preview File"
-                              >
-                                <Eye size={18} />
-                              </button>
-                              <button 
-                                onClick={() => {
-                                  const a = document.createElement("a");
-                                  a.href = order.file_url;
-                                  a.download = order.file_name || "document.pdf";
-                                  document.body.appendChild(a);
-                                  a.click();
-                                  document.body.removeChild(a);
-                                }}
-                                className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 dark:bg-indigo-900/20 dark:text-indigo-400 dark:hover:bg-indigo-900/30 transition-colors"
-                                title="Download File"
-                              >
-                                <Download size={18} />
-                              </button>
-                              {order.phone && (
-                                <a 
-                                  href={`https://wa.me/${order.phone.replace(/\D/g, '').length === 10 ? '91' + order.phone.replace(/\D/g, '') : order.phone.replace(/\D/g, '')}?text=${encodeURIComponent(`Hi! Your MIMO Print order #${order.id.slice(0, 8)} status has been updated to: *${order.status}*. \n\nTrack your order here: https://mimo-print.vercel.app/student \n\nThank you for choosing MIMO!`)}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="flex h-9 w-9 items-center justify-center rounded-xl bg-green-50 text-green-600 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/30 transition-colors"
-                                  title="Notify via WhatsApp"
-                                >
-                                  <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
-                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                                  </svg>
-                                </a>
-                              )}
-                            </div>
-                          )}
-                          
-                          <select 
-                            className="h-9 rounded-xl border border-zinc-200 bg-white px-3 text-xs font-bold outline-none focus:ring-2 focus:ring-indigo-500 dark:border-zinc-800 dark:bg-zinc-900 cursor-pointer"
-                            value={order.status}
-                            disabled={updatingId === order.id}
-                            onChange={(e) => updateOrderStatus(order.id, e.target.value)}
-                          >
-                            {["Pending", "Accepted", "Printing", "Completed", "Delivered"].map(s => (
-                              <option key={s} value={s}>{s}</option>
-                            ))}
-                          </select>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-
-      {/* PDF Preview Modal */}
-      {previewUrl && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in-50 duration-200">
-          <div className="relative w-full max-w-4xl h-[90vh] bg-white dark:bg-zinc-900 rounded-3xl overflow-hidden shadow-2xl flex flex-col border border-zinc-200 dark:border-zinc-800 animate-in zoom-in-95 duration-200">
-            {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-100 dark:border-zinc-800 bg-white/85 dark:bg-zinc-900/85 backdrop-blur-md">
-              <div>
-                <h3 className="font-bold text-zinc-900 dark:text-white truncate max-w-md">{previewName || 'Document Preview'}</h3>
-                <p className="text-xs text-zinc-400">Previewing document before printing</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <a 
-                  href={previewUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-xl px-3 py-2 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white text-xs font-semibold flex items-center gap-1.5 transition-all"
-                >
-                  <ExternalLink size={14} />
-                  Open in New Tab
-                </a>
-                <button 
-                  onClick={() => {
-                    setPreviewUrl(null);
-                    setPreviewName("");
-                  }}
-                  className="rounded-xl p-2 text-zinc-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/30 dark:hover:text-rose-400 transition-all"
-                >
-                  <X size={20} />
-                </button>
-              </div>
-            </div>
-            {/* Content (iframe) */}
-            <div className="flex-1 bg-zinc-100 dark:bg-zinc-950 p-2">
-              <iframe 
-                src={previewUrl} 
-                className="w-full h-full rounded-2xl border-0 bg-white dark:bg-zinc-900"
-                title="Document Preview"
-              />
-            </div>
-          </div>
+                        <div className="text-xs text-zinc-500">{vendor.email || 'No email'}</div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={cn(
+                        "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider",
+                        vendor.status?.toLowerCase() === 'active' ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20" :
+                        vendor.status?.toLowerCase() === 'pending' ? "bg-orange-50 text-orange-600 dark:bg-orange-900/20" :
+                        "bg-rose-50 text-rose-600 dark:bg-rose-900/20"
+                      )}>
+                        {vendor.status || 'Pending'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        {vendor.status?.toLowerCase() === 'pending' ? (
+                          <>
+                            <Button size="sm" className="h-8 bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] uppercase font-bold">Approve</Button>
+                            <Button size="sm" variant="outline" className="h-8 text-rose-600 border-rose-200 hover:bg-rose-50 text-[10px] uppercase font-bold">Reject</Button>
+                          </>
+                        ) : (
+                          <>
+                            <button title="Disable Vendor" className="rounded-lg p-2 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800 dark:hover:text-white">
+                              <Ban size={16} />
+                            </button>
+                            <button title="View Details" className="rounded-lg p-2 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800 dark:hover:text-white">
+                              <ExternalLink size={16} />
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
-      )}
+      </div>
     </div>
   );
 }

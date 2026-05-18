@@ -1,27 +1,41 @@
-import { Printer } from "lucide-react";
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function StudentLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white/80 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/80">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white">
-              <Printer size={18} />
-            </div>
-            <span className="text-lg font-bold tracking-tight text-zinc-900 dark:text-white">MIMO<span className="text-indigo-600">Print</span></span>
+      <div className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
+        <div className="flex gap-6 border-b border-zinc-200 pb-3 dark:border-zinc-800">
+          <Link 
+            href="/student/order" 
+            className={`text-sm font-bold transition-colors ${
+              pathname === "/student/order" 
+                ? "text-indigo-600 border-b-2 border-indigo-600 pb-3 -mb-[14px]" 
+                : "text-zinc-500 hover:text-indigo-600 dark:text-zinc-400 dark:hover:text-indigo-400"
+            }`}
+          >
+            Order Print
           </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/student/order" className="text-sm font-medium text-zinc-600 hover:text-indigo-600 dark:text-zinc-400 dark:hover:text-indigo-400">Order Print</Link>
-            <Link href="/student/research" className="text-sm font-medium text-zinc-600 hover:text-indigo-600 dark:text-zinc-400 dark:hover:text-indigo-400">Research Paper</Link>
-          </div>
+          <Link 
+            href="/student/research" 
+            className={`text-sm font-bold transition-colors ${
+              pathname === "/student/research" 
+                ? "text-indigo-600 border-b-2 border-indigo-600 pb-3 -mb-[14px]" 
+                : "text-zinc-500 hover:text-indigo-600 dark:text-zinc-400 dark:hover:text-indigo-400"
+            }`}
+          >
+            Research Paper
+          </Link>
         </div>
-      </header>
+      </div>
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {children}
       </main>

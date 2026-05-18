@@ -17,14 +17,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing orderId' }, { status: 400 });
     }
 
-    const { error } = await supabaseAdmin
+    const { data, error } = await supabaseAdmin
       .from('orders')
       .delete()
-      .eq('id', orderId);
+      .eq('id', orderId)
+      .select();
 
     if (error) {
       console.error('[API] deleteOrder error:', error);
       return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    if (!data || data.length === 0) {
+      console.warn(`[API] Order ${orderId} was not deleted. This is likely due to a missing SUPABASE_SERVICE_ROLE_KEY in .env.local, which triggers Supabase RLS policies to silently block deletions.`);
+      return NextResponse.json({ 
+        error: 'Deletion blocked. Please define SUPABASE_SERVICE_ROLE_KEY in your local .env.local file to bypass Supabase Row Level Security (RLS).' 
+      }, { status: 403 });
     }
 
     console.log(`[API] Order ${orderId} successfully deleted`);

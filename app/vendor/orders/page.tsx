@@ -51,40 +51,10 @@ export default function VendorOrdersPage() {
       return;
     }
 
-    // Try to get the vendor matching the authenticated user's ID
-    let { data: vendorData, error: vendorError } = await supabase
-      .from("vendors")
-      .select("id")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    // Fallback: search by vendor-email stored during login
-    if (!vendorData || vendorError) {
-      const email = localStorage.getItem("vendor-email");
-      if (email) {
-        const { data: fallbackVendor } = await supabase
-          .from("vendors")
-          .select("id")
-          .eq("email", email)
-          .maybeSingle();
-        if (fallbackVendor) {
-          vendorData = fallbackVendor;
-        }
-      }
-    }
-
-    // If no vendor record found, show empty list
-    if (!vendorData) {
-      console.warn("No active vendor profile found for this user");
-      setOrders([]);
-      setLoading(false);
-      return;
-    }
-
     const { data, error } = await supabase
       .from("orders")
       .select("*")
-      .eq("vendor_id", vendorData.id)
+      .eq("vendor_id", "mimo-vendor")
       .order("created_at", { ascending: false });
 
     if (error) {

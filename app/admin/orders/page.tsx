@@ -16,8 +16,7 @@ import {
   UserPlus,
   RefreshCw,
   X,
-  ExternalLink,
-  Trash2
+  ExternalLink
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/core';
@@ -100,16 +99,16 @@ export default function OrdersPage() {
     }
   };
 
-  const handleVendorAssign = async (orderId: string, vendorId: string | null, vendorName: string | null) => {
+  const handleVendorAssign = async (orderId: string, vendorName: string) => {
     try {
       const res = await fetch('/api/admin/update-order-status', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           orderId, 
-          vendor_id: vendorId, 
+          vendor_id: "mimo-vendor", 
           vendor_name: vendorName,
-          status: vendorId ? "Accepted" : "Pending"
+          status: "Accepted"
         }),
       });
       const result = await res.json();
@@ -120,29 +119,6 @@ export default function OrdersPage() {
       }
     } catch (err: any) {
       alert('Failed to assign vendor: ' + err.message);
-    }
-  };
-
-  const handleDeleteOrder = async (orderId: string) => {
-    if (!confirm("Are you sure you want to delete this order? This will permanently remove it from the platform.")) {
-      return;
-    }
-
-    try {
-      const res = await fetch("/api/student/delete-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId }),
-      });
-      const result = await res.json();
-      if (!res.ok || result.error) {
-        alert("Failed to delete order: " + (result.error || "Server error"));
-      } else {
-        alert("Order successfully deleted.");
-        loadData();
-      }
-    } catch (err: any) {
-      alert("Failed to delete order: " + err.message);
     }
   };
 
@@ -264,28 +240,22 @@ export default function OrdersPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <select
-                        className="rounded-xl border border-zinc-200 bg-white px-2 py-1.5 text-xs font-semibold outline-none cursor-pointer dark:border-zinc-800 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 focus:ring-2 focus:ring-indigo-500/20"
-                        value={order.vendor_id || ""}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          if (val === "") {
-                            handleVendorAssign(order.id, null, null);
-                          } else {
-                            const selectedVendor = vendors.find(v => v.id === val);
-                            if (selectedVendor) {
-                              handleVendorAssign(order.id, selectedVendor.id, selectedVendor.shop_name || selectedVendor.name || "Vendor");
-                            }
-                          }
-                        }}
-                      >
-                        <option value="">Unassigned</option>
-                        {vendors.map(v => (
-                          <option key={v.id} value={v.id}>
-                            {v.shop_name || v.name || "Vendor"}
-                          </option>
-                        ))}
-                      </select>
+                      {order.vendor_id ? (
+                        <div className="flex items-center gap-2">
+                          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold">
+                            {(order.vendor_name || 'V')?.charAt(0)}
+                          </div>
+                          <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">{order.vendor_name || 'Unknown Vendor'}</span>
+                        </div>
+                      ) : (
+                        <Button 
+                          size="sm"
+                          onClick={() => handleVendorAssign(order.id, "MIMO Print")}
+                          className="h-8 bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] uppercase font-bold"
+                        >
+                          Assign Vendor
+                        </Button>
+                      )}
                     </td>
                     <td className="px-6 py-4">
                       <select 
@@ -342,13 +312,6 @@ export default function OrdersPage() {
                             </svg>
                           </a>
                         )}
-                        <button 
-                          onClick={() => handleDeleteOrder(order.id)}
-                          title="Delete Order" 
-                          className="rounded-lg p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/45 transition-colors"
-                        >
-                          <Trash2 size={16} />
-                        </button>
                       </div>
                     </td>
                   </tr>

@@ -4,11 +4,8 @@ import React from 'react';
 import { Bell, Search, Moon, Sun, User } from 'lucide-react';
 import { Button } from '@/components/ui/core';
 import { RealtimeNotifications } from './RealtimeNotifications';
-import { useTheme } from '../ThemeProvider';
 
 export function AdminNavbar({ onMenuClick }: { onMenuClick?: () => void }) {
-  const { toggleTheme } = useTheme();
-
   return (
     <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-zinc-200 bg-white/80 px-4 sm:px-8 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/80">
       <div className="flex items-center gap-4">
@@ -38,9 +35,9 @@ export function AdminNavbar({ onMenuClick }: { onMenuClick?: () => void }) {
       <div className="flex items-center gap-4">
         <RealtimeNotifications />
         
-        <button onClick={toggleTheme} className="rounded-full p-2 text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-900 transition-colors">
-          <Sun size={20} className="hidden dark:block" />
-          <Moon size={20} className="block dark:hidden" />
+        <button className="rounded-full p-2 text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-900 transition-colors">
+          <Moon size={20} className="hidden dark:block" />
+          <Sun size={20} className="block dark:hidden" />
         </button>
 
         <div className="h-8 w-px bg-zinc-200 dark:bg-zinc-800 mx-2"></div>
