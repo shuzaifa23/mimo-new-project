@@ -16,7 +16,8 @@ import {
   UserPlus,
   RefreshCw,
   X,
-  ExternalLink
+  ExternalLink,
+  Trash2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/core';
@@ -119,6 +120,29 @@ export default function OrdersPage() {
       }
     } catch (err: any) {
       alert('Failed to assign vendor: ' + err.message);
+    }
+  };
+
+  const handleDeleteOrder = async (orderId: string) => {
+    if (!confirm("Are you sure you want to delete this order? This will permanently remove it from the platform.")) {
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/student/delete-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId }),
+      });
+      const result = await res.json();
+      if (!res.ok || result.error) {
+        alert("Failed to delete order: " + (result.error || "Server error"));
+      } else {
+        alert("Order successfully deleted.");
+        loadData();
+      }
+    } catch (err: any) {
+      alert("Failed to delete order: " + err.message);
     }
   };
 
@@ -318,6 +342,13 @@ export default function OrdersPage() {
                             </svg>
                           </a>
                         )}
+                        <button 
+                          onClick={() => handleDeleteOrder(order.id)}
+                          title="Delete Order" 
+                          className="rounded-lg p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/45 transition-colors"
+                        >
+                          <Trash2 size={16} />
+                        </button>
                       </div>
                     </td>
                   </tr>
