@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Printer, LayoutDashboard, Home, PlusCircle, Menu, X } from "lucide-react";
 import { useState } from "react";
+import ThemeToggle from "./ThemeToggle";
 import { Button } from "@/components/ui/core";
 
 export default function Navbar() {
@@ -49,6 +50,8 @@ export default function Navbar() {
 
         {/* Right Section */}
         <div className="flex items-center gap-4">
+          <ThemeToggle />
+          
           <Link href="/student/order" className="hidden sm:block">
             <Button size="sm" className="h-9 px-4 rounded-full font-bold shadow-md shadow-indigo-500/20">
               Print Now
