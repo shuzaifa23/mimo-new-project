@@ -127,7 +127,14 @@ export default function SignupPage() {
 
           <div className="mt-8 pt-6 border-t border-zinc-100 dark:border-zinc-800 text-center">
             <p className="text-sm text-zinc-500">
-              Already have an account? <Link href="/login" className="text-indigo-600 font-bold hover:underline">Sign In</Link>
+              Already have an account?{" "}
+              <button 
+                type="button"
+                onClick={() => router.push("/login")}
+                className="text-indigo-600 font-bold hover:underline bg-transparent border-none p-0 cursor-pointer outline-none inline"
+              >
+                Sign In
+              </button>
             </p>
           </div>
         </div>
