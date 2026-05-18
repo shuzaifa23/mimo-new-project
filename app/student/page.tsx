@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button, Input } from "@/components/ui/core";
 import { supabase } from "@/lib/supabase";
-import { Check, Clock, Package, Printer as PrinterIcon, CheckCircle2, ChevronRight, XCircle, Eye, Download as DownloadIcon } from "lucide-react";
+import { Check, Clock, Package, Printer as PrinterIcon, CheckCircle2, ChevronRight, XCircle, Eye, Download as DownloadIcon, Trash2 } from "lucide-react";
 
 interface Order {
   id: string;
@@ -129,6 +129,33 @@ export default function StudentPage() {
       console.error(error);
     } else {
       setOrders(data || []);
+    }
+  };
+
+  const handleDeleteOrder = async (orderId: string) => {
+    if (!confirm("Are you sure you want to delete this order? This action cannot be undone.")) {
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/student/delete-order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ orderId }),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        setOrders((prevOrders) => prevOrders.filter((order) => order.id !== orderId));
+        alert("Order successfully deleted.");
+      } else {
+        alert(result.error || "Failed to delete the order. Please try again.");
+      }
+    } catch (err) {
+      console.error("Delete error:", err);
+      alert("An unexpected error occurred while deleting the order.");
     }
   };
 
@@ -301,6 +328,16 @@ export default function StudentPage() {
                           </a>
                         </>
                       )}
+
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => handleDeleteOrder(order.id)}
+                        className="rounded-xl font-bold h-10 px-4 gap-2 text-rose-600 border-rose-200 hover:bg-rose-50 hover:text-rose-700 dark:border-rose-900/30 dark:hover:bg-rose-900/10 flex-1 sm:flex-initial"
+                      >
+                        <Trash2 size={16} />
+                        Delete
+                      </Button>
                     </div>
                   </div>
                 </div>
