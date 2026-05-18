@@ -35,11 +35,6 @@ export function AdminNavbar({ onMenuClick }: { onMenuClick?: () => void }) {
       <div className="flex items-center gap-4">
         <RealtimeNotifications />
         
-        <button className="rounded-full p-2 text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-900 transition-colors">
-          <Moon size={20} className="hidden dark:block" />
-          <Sun size={20} className="block dark:hidden" />
-        </button>
-
         <div className="h-8 w-px bg-zinc-200 dark:bg-zinc-800 mx-2"></div>
 
         <div className="flex items-center gap-3">
