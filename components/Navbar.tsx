@@ -2,11 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Printer, LayoutDashboard, Home, PlusCircle } from "lucide-react";
+import { Printer, LayoutDashboard, Home, PlusCircle, Menu, X } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/core";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   return (
     <nav className="fixed top-0 z-50 w-full border-b border-zinc-200 bg-white/80 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/80">
@@ -45,15 +47,55 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* CTA Button */}
+        {/* Right Section */}
         <div className="flex items-center gap-4">
           <Link href="/student/order" className="hidden sm:block">
             <Button size="sm" className="h-9 px-4 rounded-full font-bold shadow-md shadow-indigo-500/20">
               Print Now
             </Button>
           </Link>
+          
+          {/* Mobile Menu Toggle */}
+          <button 
+            className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-50 text-zinc-600 md:hidden dark:bg-zinc-900 dark:text-zinc-400"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div className="border-t border-zinc-100 bg-white p-6 md:hidden dark:border-zinc-800 dark:bg-zinc-950 animate-in slide-in-from-top duration-300">
+          <div className="flex flex-col gap-4">
+            <Link 
+              href="/" 
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center gap-3 rounded-2xl p-4 text-sm font-bold ${pathname === '/' ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20' : 'text-zinc-600 dark:text-zinc-400'}`}
+            >
+              <Home size={20} />
+              <span>Home</span>
+            </Link>
+            <Link 
+              href="/student/order" 
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center gap-3 rounded-2xl p-4 text-sm font-bold ${pathname.startsWith('/student/order') ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20' : 'text-zinc-600 dark:text-zinc-400'}`}
+            >
+              <PlusCircle size={20} />
+              <span>New Order</span>
+            </Link>
+            <Link 
+              href="/student" 
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center gap-3 rounded-2xl p-4 text-sm font-bold ${pathname === '/student' ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20' : 'text-zinc-600 dark:text-zinc-400'}`}
+            >
+              <LayoutDashboard size={20} />
+              <span>Track Order</span>
+            </Link>
+          </div>
+        </div>
+      )}
     </nav>
   );
 }

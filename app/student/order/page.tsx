@@ -3,9 +3,7 @@ import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Input } from "@/components/ui/core";
 import { Upload, CheckCircle2, Loader2, CreditCard } from "lucide-react";
-import { db, storage } from "@/lib/firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { supabase } from "@/lib/supabase";
 import { PDFDocument } from "pdf-lib";
 
 export default function OrderPage() {
@@ -38,14 +36,13 @@ export default function OrderPage() {
   const amount = useMemo(() => {
     const pageRate = formData.printType === "bw" ? 1 : 5;
     const bindingPrice = { none: 0, spiral: 20, hard: 130, soft: 20 }[formData.binding] || 0;
-    const basePrice = 0; // Removed convenience fee
+    const basePrice = 0; 
     return (basePrice + (pageRate * formData.pages * formData.copies) + bindingPrice);
   }, [formData]);
 
   const processFile = async (selectedFile: File) => {
     setFile(selectedFile);
 
-    // Smart Page Counting for PDFs
     if (selectedFile.type === "application/pdf") {
       try {
         const arrayBuffer = await selectedFile.arrayBuffer();
@@ -54,7 +51,11 @@ export default function OrderPage() {
         setFormData(prev => ({ ...prev, pages: pageCount }));
       } catch (err) {
         console.error("Error reading PDF pages:", err);
+        setFormData(prev => ({ ...prev, pages: 1 }));
       }
+    } else {
+      // For images and other docs, default to 1 page
+      setFormData(prev => ({ ...prev, pages: 1 }));
     }
   };
 
@@ -87,51 +88,55 @@ export default function OrderPage() {
     e.preventDefault();
     setMessage(null);
 
-    // Validation
-    if (!file) return setMessage({ type: 'error', text: "Please upload a document" });
+    if (!file) return setMessage({ type: 'error', text: "Please upload your documents" });
     if (!formData.name.trim()) return setMessage({ type: 'error', text: "Name is required" });
     if (!formData.phone.trim()) return setMessage({ type: 'error', text: "Phone number is required" });
+    
+    // Validate phone number format for Cashfree (10 digits)
+    const phoneRegex = /^[6-9]\d{9}$/;
+    if (!phoneRegex.test(formData.phone.replace(/\s/g, ''))) {
+      return setMessage({ type: 'error', text: "Please enter a valid 10-digit phone number." });
+    }
+
     if (formData.copies < 1) return setMessage({ type: 'error', text: "Number of copies must be at least 1" });
 
     setLoading(true);
 
-    const submissionPromise = async () => {
-      // 1. Upload File to Firebase Storage
-      const fileRef = ref(storage, `orders/${Date.now()}_${file.name}`);
-      await uploadBytes(fileRef, file);
-      const fileUrl = await getDownloadURL(fileRef);
+    try {
+      const orderId = crypto.randomUUID();
+      const fileName = `${Date.now()}_${file.name}`;
+      
+      // 1. Upload to Supabase Storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('documents')
+        .upload(fileName, file);
 
-      // 2. Save Order to Firestore
-      const docRef = await addDoc(collection(db, "orders"), {
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = supabase.storage
+        .from('documents')
+        .getPublicUrl(fileName);
+
+      const fileUrl = urlData.publicUrl;
+
+      // 2. Store metadata in localStorage (to be inserted after payment success)
+      const orderData = {
         ...formData,
         amount,
         fileName: file.name,
         fileUrl,
-        paymentStatus: "Pending",
-        status: "Pending",
-        createdAt: serverTimestamp(),
-      });
-
-      return docRef.id;
-    };
-
-    try {
-      // Race between submission and timeout
-      const orderId = await Promise.race([
-        submissionPromise(),
-        new Promise<string>((_, reject) =>
-          setTimeout(() => reject(new Error("Timeout")), 5000)
-        )
-      ]);
+        orderId,
+      };
+      
+      localStorage.setItem('mimo_order_data', JSON.stringify(orderData));
+      localStorage.setItem('student_phone', formData.phone);
 
       setMessage({ type: 'success', text: "Redirecting to payment..." });
-      const currentData = { ...formData, orderId };
-      resetForm();
-      router.push(`/student/payment?orderId=${currentData.orderId}&amount=${amount}&name=${encodeURIComponent(currentData.name)}&phone=${encodeURIComponent(currentData.phone)}`);
+      router.push(`/student/payment?orderId=${orderId}&amount=${amount}&name=${encodeURIComponent(formData.name)}&phone=${encodeURIComponent(formData.phone)}`);
 
-    } catch (error) {
-      console.warn("Redirecting in demo mode", error);
-      router.push(`/student/payment?orderId=demo_${Date.now()}&amount=${amount}&name=${encodeURIComponent(formData.name)}&phone=${formData.phone}`);
+    } catch (error: any) {
+      console.error("Submission Error:", error);
+      setMessage({ type: 'error', text: error.message || "Failed to process order. Please try again." });
     } finally {
       setLoading(false);
     }
@@ -141,13 +146,12 @@ export default function OrderPage() {
     <div className="mx-auto max-w-4xl">
       <div className="mb-10">
         <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">Place Print Order</h1>
-        <p className="mt-2 text-zinc-600 dark:text-zinc-400">Upload your document and select your preferences.</p>
+        <p className="mt-2 text-zinc-600 dark:text-zinc-400">Upload your documents and select your preferences.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
-            {/* File Upload */}
             <div
               onDragEnter={handleDrag}
               onDragLeave={handleDrag}
@@ -162,7 +166,7 @@ export default function OrderPage() {
                 type="file"
                 id="file-upload"
                 className="hidden"
-                accept=".pdf,.doc,.docx"
+                accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
                 onChange={handleFileChange}
               />
               <label htmlFor="file-upload" className="cursor-pointer">
@@ -178,11 +182,10 @@ export default function OrderPage() {
                     Smart Detect: {formData.pages} Pages
                   </div>
                 )}
-                <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">PDF or DOC up to 20MB</p>
+                <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">PDF, DOC, or Images up to 20MB</p>
               </label>
             </div>
 
-            {/* Print Options */}
             <div className="rounded-2xl border border-zinc-200 bg-white p-8 dark:border-zinc-800 dark:bg-zinc-950">
               <h3 className="mb-6 text-lg font-bold text-zinc-900 dark:text-white">Print Settings</h3>
               <div className="grid gap-6 sm:grid-cols-2">
@@ -233,7 +236,6 @@ export default function OrderPage() {
           </div>
 
           <div className="space-y-6">
-            {/* Personal Details */}
             <div className="rounded-2xl border border-zinc-200 bg-white p-8 dark:border-zinc-800 dark:bg-zinc-950">
               <h3 className="mb-6 text-lg font-bold text-zinc-900 dark:text-white">Contact Info</h3>
               <div className="space-y-4">
@@ -252,7 +254,6 @@ export default function OrderPage() {
               </div>
             </div>
 
-            {/* Price Summary */}
             <div className="rounded-2xl bg-indigo-600 p-8 text-white shadow-xl shadow-indigo-500/20">
               <h3 className="text-lg font-bold opacity-90">Order Summary</h3>
               <div className="mt-4 space-y-2 border-b border-indigo-500/50 pb-4 text-sm">

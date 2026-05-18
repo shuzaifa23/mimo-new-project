@@ -13,9 +13,9 @@ import {
   Printer
 } from "lucide-react";
 import { load } from "@cashfreepayments/cashfree-js";
+import { supabase } from "@/lib/supabase";
 
-import { doc, onSnapshot } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+// Firebase imports removed
 
 function PaymentContent() {
   const searchParams = useSearchParams();
@@ -31,27 +31,28 @@ function PaymentContent() {
   useEffect(() => {
     if (!orderId || typeof orderId !== "string" || orderId.startsWith('demo_')) return;
 
-    // Real-time listener for payment status updates
-    const orderRef = doc(db, "orders", orderId);
-    const unsubscribe = onSnapshot(orderRef, (docSnap) => {
-      if (docSnap.exists()) {
-        const status = docSnap.data().paymentStatus as "Pending" | "Paid" | "Completed";
-        setPaymentStatus(status || "Pending");
-      }
-    });
+    // Real-time listener removed; relying on polling and direct verify checks
 
     // Verification Logic: Check Cashfree API directly for 'PAID' status
     const verifyPayment = async () => {
       try {
+        const orderDataStr = localStorage.getItem('mimo_order_data');
+        const orderData = orderDataStr ? JSON.parse(orderDataStr) : null;
+
         const res = await fetch("/api/payment/verify", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ orderId }),
+          body: JSON.stringify({ orderId, orderData }),
         });
         const data = await res.json();
 
         if (data.status === "success" && paymentStatus !== "Paid") {
+          if (orderData?.phone) {
+            localStorage.setItem("student_phone", orderData.phone);
+          }
+
           setPaymentStatus("Paid");
+          localStorage.removeItem('mimo_order_data'); // Clean up
         }
       } catch (err) {
         console.error("Verification failed:", err);
@@ -68,9 +69,28 @@ function PaymentContent() {
       }
     }, 5000);
 
+    // Real-time listener for order status updates
+    const channel = supabase
+      .channel(`payment-order-${orderId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'orders',
+          filter: `id=eq.${orderId}`,
+        },
+        (payload) => {
+          if (payload.new.status === 'Completed' || payload.new.status === 'Delivered') {
+            setPaymentStatus('Completed');
+          }
+        }
+      )
+      .subscribe();
+
     return () => {
-      unsubscribe();
       clearInterval(interval);
+      supabase.removeChannel(channel);
     };
   }, [orderId, paymentStatus]);
 
@@ -112,17 +132,17 @@ function PaymentContent() {
       // 3. Start Checkout
       const result = await cashfree.checkout({
         paymentSessionId: data.payment_session_id,
-        returnUrl: `${window.location.origin}/student/payment?orderId=${orderId}&amount=${amount}`,
+        returnUrl: `${window.location.origin}/student/payment-success?order_id=${orderId}`,
+        redirectTarget: "_self",
       });
 
       if (result.error) {
         console.error("Cashfree Error:", result.error);
         alert(result.error.message);
       } else if (result.redirect) {
-        console.log("Redirecting to Cashfree...");
+        // Redirect target handles redirect automatically
       } else {
         // Overlay checkout completed - we'll let the polling/listener handle the update
-        console.log("Checkout overlay closed");
       }
     } catch (err) {
       const error = err as Error;

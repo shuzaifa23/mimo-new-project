@@ -1,10 +1,7 @@
 import { Cashfree, CFEnvironment } from "cashfree-pg";
 import { NextResponse } from "next/server";
 
-// Debug Logs for Vercel
-console.log("CASHFREE INIT -> APP_ID:", process.env.CASHFREE_APP_ID ? "PRESENT" : "MISSING");
-console.log("CASHFREE INIT -> SECRET:", process.env.CASHFREE_SECRET_KEY ? "PRESENT" : "MISSING");
-console.log("CASHFREE INIT -> MODE:", process.env.NEXT_PUBLIC_CASHFREE_MODE);
+
 
 if (!process.env.CASHFREE_APP_ID || !process.env.CASHFREE_SECRET_KEY) {
   throw new Error("Cashfree is not configured");
@@ -39,13 +36,21 @@ export async function POST(req: Request) {
         customer_phone: customerPhone || "9999999999",
       },
       order_meta: {
-        return_url: `${req.headers.get("origin")}/student/payment?order_id={order_id}`,
+        return_url: `${req.headers.get("origin")}/student/payment-success?order_id={order_id}`,
       }
     };
 
-    // Use the instance method
-    const response = await cashfree.PGCreateOrder(request);
-    return NextResponse.json(response.data);
+    // Use the instance method - handle existing orders gracefully
+    try {
+      const response = await cashfree.PGCreateOrder(request);
+      return NextResponse.json(response.data);
+    } catch (error: any) {
+      if (error.response?.data?.code === 'order_already_exists') {
+        const existingOrder = await cashfree.PGFetchOrder(request.order_id);
+        return NextResponse.json(existingOrder.data);
+      }
+      throw error;
+    }
   } catch (error: unknown) {
     const err = error as { response?: { data?: { message?: string } }; message: string };
     console.error("Cashfree API Error:", err.response?.data || err.message);
