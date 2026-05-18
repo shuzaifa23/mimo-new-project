@@ -52,7 +52,16 @@ export default function Home() {
             </div>
             <span className="text-lg font-bold tracking-tight text-zinc-900 dark:text-white">MIMO<span className="text-indigo-600">Print</span></span>
           </div>
-          <p className="mt-4 text-sm text-zinc-500 dark:text-zinc-400">© 2026 MIMO Vision Print. All rights reserved by S.Huzaifa.</p>
+          <p className="text-sm text-muted-foreground">
+            © 2026 MIMO Vision Print. All rights reserved by{" "}
+            <Link
+              href="/admin"
+              className="font-medium hover:text-primary transition"
+            >
+              S.Huzaifa
+            </Link>
+            .
+          </p>
         </div>
       </footer>
     </div>
