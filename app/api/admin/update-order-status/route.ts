@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
+// This route uses the service role key to bypass RLS
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  { auth: { persistSession: false } }
+);
+
 export async function POST(req: NextRequest) {
-  // Initialize inside the handler to prevent build-time "supabaseUrl is required" errors
-  const supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co',
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder',
-    { auth: { persistSession: false } }
-  );
   try {
     const { orderId, status, vendor_id, vendor_name } = await req.json();
     console.log(`[API] Received update request: orderId=${orderId}, status=${status}, vendor_id=${vendor_id}`);
