@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Button, Input } from "@/components/ui/core";
-import { FileText, Loader2, CheckCircle2, UserPlus, Trash2, Plus, Minus } from "lucide-react";
+import { FileText, Loader2, CheckCircle2, UserPlus, Trash2 } from "lucide-react";
 import { generateResearchPaperFrontPages, ResearchPaperData } from "@/lib/pdf-utils";
 
 export default function ResearchPaperPage() {
@@ -20,9 +20,15 @@ export default function ResearchPaperPage() {
     degree: "Bachelor of Technology",
     departmentName: "Computer Science and Engineering",
     guideName: "",
+    guideAffiliation: "Associate Professor, School of C&SE, REVA University",
     coGuideName: "",
+    coGuideAffiliation: "Assistant Professor, School of C&SE, REVA University",
+    hodName: "Dr. M. Devendra",
     directorName: "Dr. Sunilkumar S. Manvi",
-    academicYear: "2026",
+    viceChancellorName: "Dr. M. Dhanamjaya",
+    academicYear: "2025-2026",
+    plagiarismScore: "less than 20%",
+    projectType: "mini project",
     abstract: "",
     keywords: "",
     acknowledgement: "",
@@ -31,9 +37,9 @@ export default function ResearchPaperPage() {
   // Automatically update dynamic acknowledgement when guide/candidates/department names change
   useEffect(() => {
     const names = candidates.filter(c => c.name.trim() !== "").map(c => c.name).join(", ");
-    const defaultAck = `First and foremost, we express our profound gratitude to our esteemed guide, ${formData.guideName || "[Guide Name]"}, whose encouragement, continuous support, and invaluable guidance throughout this project played a pivotal role. We are highly indebted for the time and efforts invested in directing us.\n\nWe express our sincere thanks to ${formData.directorName || "[Director Name]"}, Director of the ${formData.schoolName || "[School Name]"}, REVA University, for providing us with the necessary campus resources and support structures to implement this project.\n\nLastly, we wish to express our heartfelt gratitude to our parents, family members, and friends for their constant emotional support and blessings, which motivated us during times of difficulty.`;
+    const defaultAck = `Any given task achieved is never the result of the efforts of a single individual. There are always a bunch of people who play an instrumental role leading a task to its completion. Our joy at having successfully finished our ${formData.projectType || "mini project"} work would be incomplete without thanking everyone who helped us out along the way. We would like to express our sense of gratitude to our REVA University for providing us the means of attaining our most cherished goal.\n\nWe would like to thank our Hon'ble Chancellor, Dr. P. Shyama Raju and Hon'ble Vice-Chancellor, ${formData.viceChancellorName || "[Vice-Chancellor Name]"} for their immense support towards students to showcase innovative ideas.\n\nWe cannot express enough thanks to our respected Director, ${formData.directorName || "[Director Name]"} for providing us with a highly conducive environment and encouraging the growth and creativity of each and every student. We would also like to offer our sincere gratitude to our Project Coordinators for the numerous learning opportunities that have been provided.\n\nWe would like to take this opportunity to express our gratitude to our Project Guide, ${formData.guideName || "[Guide Name]"}, for continuously supporting and guiding us in our every endeavor as well as for taking a keen and active interest in the progress of every phase of our Project. Thank you for providing us with the necessary inputs and suggestions for advancing with our Project work. We deeply appreciate the wise guidance that sir/ma'am has provided.\n\nFinally, we would like to extend our sincere thanks to all the faculty members and staff from the ${formData.schoolName || "[School Name]"}.`;
     setFormData(prev => ({ ...prev, acknowledgement: defaultAck }));
-  }, [formData.guideName, formData.directorName, formData.schoolName, candidates]);
+  }, [formData.guideName, formData.directorName, formData.schoolName, formData.viceChancellorName, formData.projectType, candidates]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -102,7 +108,7 @@ export default function ResearchPaperPage() {
         </div>
         <h1 className="text-3xl font-bold text-zinc-900 dark:text-white">Front Pages Generated Successfully!</h1>
         <p className="mt-4 max-w-md text-zinc-600 dark:text-zinc-400">
-          Your project report front pages (Cover Page, Declaration, Certificate, Certificate of Revision, Acknowledgement, Abstract) have been downloaded. You can now merge them with your main report!
+          Your project report front pages (Cover Page, Declaration, Certificate, Acknowledgement, Table of Contents, Abstract) have been downloaded. You can now merge them with your main report!
         </p>
         <div className="mt-10 flex gap-4">
           <Button onClick={() => setSuccess(false)} variant="outline">Create Another</Button>
@@ -113,7 +119,7 @@ export default function ResearchPaperPage() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <div className="mx-auto max-w-4xl font-sans">
       <div className="mb-10">
         <h1 className="text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white">REVA University Project Report Generator</h1>
         <p className="mt-2 text-zinc-600 dark:text-zinc-400">Dynamically fill out your details to auto-generate all required standard front pages matching the REVA University specimen layout.</p>
@@ -135,12 +141,26 @@ export default function ResearchPaperPage() {
                 onChange={handleChange}
               />
             </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-bold text-zinc-700 dark:text-zinc-300">Project Type</label>
+              <select
+                name="projectType"
+                className="flex h-11 w-full rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 dark:border-zinc-800 dark:bg-zinc-950 text-zinc-950 dark:text-white"
+                value={formData.projectType}
+                onChange={handleChange as any}
+              >
+                <option value="mini project">Mini Project</option>
+                <option value="major project">Major Project</option>
+                <option value="project">Project / Dissertation</option>
+              </select>
+            </div>
             
             <div>
               <label className="mb-2 block text-sm font-bold text-zinc-700 dark:text-zinc-300">Degree</label>
               <select
                 name="degree"
-                className="flex h-11 w-full rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 dark:border-zinc-800 dark:bg-zinc-950"
+                className="flex h-11 w-full rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 dark:border-zinc-800 dark:bg-zinc-950 text-zinc-950 dark:text-white"
                 value={formData.degree}
                 onChange={handleChange as any}
               >
@@ -184,6 +204,17 @@ export default function ResearchPaperPage() {
                 onChange={handleChange}
               />
             </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-bold text-zinc-700 dark:text-zinc-300">Plagiarism similarity score limit</label>
+              <Input 
+                name="plagiarismScore" 
+                placeholder="e.g. less than 20%" 
+                required 
+                value={formData.plagiarismScore}
+                onChange={handleChange}
+              />
+            </div>
           </div>
         </div>
 
@@ -210,7 +241,7 @@ export default function ResearchPaperPage() {
                 <div className="flex-1">
                   <label className="mb-1 block text-xs font-bold text-zinc-500">Student {idx + 1} Name</label>
                   <Input 
-                    placeholder="e.g. RAMESH KUMAR"
+                    placeholder="e.g. Mr. RAMESH KUMAR / Ms. PRIYA S"
                     value={cand.name}
                     onChange={(e) => handleCandidateChange(idx, 'name', e.target.value)}
                     required
@@ -248,9 +279,20 @@ export default function ResearchPaperPage() {
               <label className="mb-2 block text-sm font-bold text-zinc-700 dark:text-zinc-300">Project Guide Name</label>
               <Input 
                 name="guideName" 
-                placeholder="e.g. Prof. Aruna Kumar" 
+                placeholder="e.g. Dr. Prof. Aruna Kumar" 
                 required 
                 value={formData.guideName}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-bold text-zinc-700 dark:text-zinc-300">Project Guide Affiliation / Designation</label>
+              <Input 
+                name="guideAffiliation" 
+                placeholder="e.g. Associate Professor, School of C&SE, REVA University" 
+                required 
+                value={formData.guideAffiliation}
                 onChange={handleChange}
               />
             </div>
@@ -265,12 +307,45 @@ export default function ResearchPaperPage() {
               />
             </div>
 
-            <div className="sm:col-span-2">
+            <div>
+              <label className="mb-2 block text-sm font-bold text-zinc-700 dark:text-zinc-300">Co-Guide Affiliation / Designation (Optional)</label>
+              <Input 
+                name="coGuideAffiliation" 
+                placeholder="e.g. Assistant Professor, School of C&SE, REVA University" 
+                value={formData.coGuideAffiliation}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-bold text-zinc-700 dark:text-zinc-300">Head of Department (HoD) Name</label>
+              <Input 
+                name="hodName" 
+                placeholder="e.g. Dr. M. Devendra" 
+                required 
+                value={formData.hodName}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div>
               <label className="mb-2 block text-sm font-bold text-zinc-700 dark:text-zinc-300">School Director Name</label>
               <Input 
                 name="directorName" 
                 placeholder="e.g. Dr. Sunilkumar S. Manvi" 
+                required 
                 value={formData.directorName}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="sm:col-span-2">
+              <label className="mb-2 block text-sm font-bold text-zinc-700 dark:text-zinc-300">Vice Chancellor Name</label>
+              <Input 
+                name="viceChancellorName" 
+                placeholder="e.g. Dr. M. Dhanamjaya" 
+                required 
+                value={formData.viceChancellorName}
                 onChange={handleChange}
               />
             </div>
@@ -287,7 +362,7 @@ export default function ResearchPaperPage() {
               <textarea 
                 name="abstract"
                 rows={6}
-                className="flex w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:border-zinc-800 dark:bg-zinc-950"
+                className="flex w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:border-zinc-800 dark:bg-zinc-950 text-zinc-950 dark:text-white"
                 placeholder="Enter your project summary / abstract here (up to 500 words)..."
                 required
                 value={formData.abstract}
@@ -311,7 +386,7 @@ export default function ResearchPaperPage() {
               <textarea 
                 name="acknowledgement"
                 rows={8}
-                className="flex w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:border-zinc-800 dark:bg-zinc-950"
+                className="flex w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:border-zinc-800 dark:bg-zinc-950 text-zinc-950 dark:text-white"
                 placeholder="Customize acknowledgement message..."
                 value={formData.acknowledgement}
                 onChange={handleChange}
