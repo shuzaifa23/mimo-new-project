@@ -46,19 +46,19 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t border-zinc-200 bg-white py-12 dark:border-zinc-800 dark:bg-zinc-950">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex items-center justify-center gap-3 mb-4">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white">
               <Printer size={18} />
             </div>
-            <span className="text-lg font-bold tracking-tight text-zinc-900 dark:text-white">MIMO<span className="text-indigo-600">Print</span></span>
+            <span className="text-lg font-bold tracking-tight text-zinc-900 dark:text-white">MIMO <span className="text-indigo-600">Print</span></span>
           </div>
-          <p className="text-sm text-muted-foreground">
-            © 2026 MIMO Vision Print. All rights reserved by{" "}
+          <p className="text-sm text-muted-foreground mt-2">
+            © 2026 MIMO Print. All rights reserved by{" "}
             <Link
               href="/admin"
               className="font-medium hover:text-primary transition"
             >
-              S.Huzaifa
+              S. Huzaifa
             </Link>
             .
           </p>

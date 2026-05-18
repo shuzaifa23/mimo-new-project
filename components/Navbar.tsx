@@ -19,7 +19,7 @@ export default function Navbar() {
             <Printer size={22} />
           </div>
           <span className="text-xl font-black tracking-tight text-zinc-900 dark:text-white">
-            MIMO <span className="text-indigo-600 italic uppercase">Vision Print</span>
+            MIMO <span className="text-indigo-600 italic uppercase">Print</span>
           </span>
         </Link>
 
