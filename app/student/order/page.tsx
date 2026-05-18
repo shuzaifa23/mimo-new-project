@@ -104,7 +104,8 @@ export default function OrderPage() {
 
     try {
       const orderId = crypto.randomUUID();
-      const fileName = `${Date.now()}_${file.name}`;
+      const cleanFileName = file.name.replace(/[^a-zA-Z0-9.]/g, "_");
+      const fileName = `${Date.now()}_${cleanFileName}`;
       
       // 1. Upload to Supabase Storage
       const { data: uploadData, error: uploadError } = await supabase.storage
