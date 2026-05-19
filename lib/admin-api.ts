@@ -9,8 +9,10 @@ export async function getAdminSession() {
 }
 
 export async function signInAdmin(email: string, password: string) {
+  const lowerEmail = email.trim().toLowerCase();
+  
   // Direct credential bypass for visionprintt@gmail.com
-  if (email === "visionprintt@gmail.com" && password === "Vishal@2006") {
+  if (lowerEmail === "visionprintt@gmail.com" && password === "Vishal@2006") {
     return {
       user: {
         id: "visionprintt-admin-bypass-id",
@@ -45,7 +47,7 @@ export async function signInAdmin(email: string, password: string) {
     .single();
 
   // Bypass for owner if profile check fails (common in new/uninitialized DBs)
-  if (email === "shuzaifasamee@gmail.com") {
+  if (lowerEmail === "shuzaifasamee@gmail.com") {
     return {
       user: data.user,
       error: null,
