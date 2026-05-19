@@ -2,10 +2,27 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
-  if (!supabaseUrl || !supabaseAnonKey) {
+  const isValidUrl = (url: string) => {
+    try {
+      new URL(url);
+      return url.startsWith('http');
+    } catch {
+      return false;
+    }
+  };
+
+  if (
+    !supabaseUrl || 
+    !supabaseAnonKey || 
+    supabaseUrl === 'undefined' || 
+    supabaseAnonKey === 'undefined' || 
+    supabaseUrl === 'null' || 
+    supabaseAnonKey === 'null' ||
+    !isValidUrl(supabaseUrl)
+  ) {
     return NextResponse.next();
   }
 
