@@ -1,15 +1,14 @@
 import { Cashfree, CFEnvironment } from "cashfree-pg";
 
-// Initialize Cashfree instance correctly as an instance (prevents static class TS red lines)
-const cashfree = new Cashfree(
-  process.env.NEXT_PUBLIC_CASHFREE_MODE === "production" 
-    ? CFEnvironment.PRODUCTION 
-    : CFEnvironment.SANDBOX,
-  (process.env.CASHFREE_APP_ID || process.env.NEXT_PUBLIC_CASHFREE_APP_ID || "").trim(),
-  (process.env.CASHFREE_SECRET_KEY || "").trim()
-);
-
 export async function POST(req: Request) {
+  const cashfree = new Cashfree(
+    process.env.NEXT_PUBLIC_CASHFREE_MODE === "production" 
+      ? CFEnvironment.PRODUCTION 
+      : CFEnvironment.SANDBOX,
+    (process.env.CASHFREE_APP_ID || process.env.NEXT_PUBLIC_CASHFREE_APP_ID || "").trim(),
+    (process.env.CASHFREE_SECRET_KEY || "").trim()
+  );
+
   try {
     const body = await req.json();
     const orderId = body.orderId;
