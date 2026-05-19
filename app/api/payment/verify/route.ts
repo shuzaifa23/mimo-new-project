@@ -2,24 +2,20 @@ import { Cashfree, CFEnvironment } from "cashfree-pg";
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
-if (!process.env.CASHFREE_APP_ID || !process.env.CASHFREE_SECRET_KEY) {
-  throw new Error("Cashfree is not configured");
-}
-
-const cashfree = new Cashfree(
-  process.env.NEXT_PUBLIC_CASHFREE_MODE === "production" 
-    ? CFEnvironment.PRODUCTION 
-    : CFEnvironment.SANDBOX,
-  (process.env.CASHFREE_APP_ID || "missing_app_id").trim(),
-  (process.env.CASHFREE_SECRET_KEY || "missing_secret_key").trim()
-);
-
 export async function POST(req: Request) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://xsfoszzgqtacapudsuba.supabase.co',
+    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'dummy_key'
+  );
+
+  const cashfree = new Cashfree(
+    process.env.NEXT_PUBLIC_CASHFREE_MODE === "production" 
+      ? CFEnvironment.PRODUCTION 
+      : CFEnvironment.SANDBOX,
+    (process.env.CASHFREE_APP_ID || "missing_app_id").trim(),
+    (process.env.CASHFREE_SECRET_KEY || "missing_secret_key").trim()
+  );
+
   try {
     if (!process.env.CASHFREE_APP_ID || !process.env.CASHFREE_SECRET_KEY) {
       return NextResponse.json({ error: "Server Configuration Error: Cashfree keys are missing" }, { status: 500 });
