@@ -126,7 +126,7 @@ function PaymentContent() {
 
       // 2. Initialize Cashfree
       const cashfree = await load({
-        mode: (process.env.NEXT_PUBLIC_CASHFREE_MODE as "sandbox" | "production") || "sandbox",
+        mode: "production",
       });
 
       // 3. Start Checkout

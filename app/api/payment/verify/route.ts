@@ -9,11 +9,9 @@ export async function POST(req: Request) {
   );
 
   const cashfree = new Cashfree(
-    process.env.NEXT_PUBLIC_CASHFREE_MODE === "production" 
-      ? CFEnvironment.PRODUCTION 
-      : CFEnvironment.SANDBOX,
-    (process.env.CASHFREE_APP_ID || "missing_app_id").trim(),
-    (process.env.CASHFREE_SECRET_KEY || "missing_secret_key").trim()
+    CFEnvironment.PRODUCTION,
+    (process.env.CASHFREE_APP_ID || "").trim(),
+    (process.env.CASHFREE_SECRET_KEY || "").trim()
   );
 
   try {
