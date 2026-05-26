@@ -199,7 +199,9 @@ export async function updateOrderStatus(orderId: string, status: string) {
  */
 export function getWhatsAppLink(phone: string | null, status: string, orderId: string) {
   if (!phone) return null;
-  const message = `Hi! Your MIMO Print order #${orderId.slice(0, 8)} status has been updated to: *${status}*. \n\nTrack your order here: https://mimo-print.vercel.app/student \n\nThank you for choosing MIMO!`;
+  const message = status === 'Completed'
+    ? `Hi! Your MIMO Print order #${orderId.slice(0, 8)} status has been updated to: *${status}*. \n\ncollect your document from printshop\nThank you for choosing MIMO!`
+    : `Hi! Your MIMO Print order #${orderId.slice(0, 8)} status has been updated to: *${status}*. \n\nTrack your order here: https://mimo-print.vercel.app/student \n\nThank you for choosing MIMO!`;
   const encoded = encodeURIComponent(message);
   // Clean phone number (remove spaces, non-digits)
   const cleanPhone = phone.replace(/\D/g, '');
