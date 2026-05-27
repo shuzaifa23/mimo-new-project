@@ -84,7 +84,7 @@ export default function VendorOrdersPage() {
     const { data, error } = await supabase
       .from("orders")
       .select("*")
-      .eq("vendor_id", vendorData.id)
+      .in("vendor_id", [vendorData.id, "mimo-vendor"])
       .order("created_at", { ascending: false });
 
     if (error) {
