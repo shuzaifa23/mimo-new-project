@@ -45,8 +45,38 @@ export default function VendorOrdersPage() {
     
     // Get current user to filter by vendor_id
     const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
+
+    // Try to find the vendor record by authenticated user_id first
+    let vendorData: { id: string; shop_name?: string } | null = null;
+
+    if (user) {
+      const { data } = await supabase
+        .from("vendors")
+        .select("id, shop_name")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      vendorData = data;
+    }
+
+    // Fallback: search by vendor-email stored during login (covers hardcoded logins)
+    if (!vendorData) {
+      const email = localStorage.getItem("vendor-email");
+      if (email) {
+        const { data: fallbackVendor } = await supabase
+          .from("vendors")
+          .select("id, shop_name")
+          .eq("email", email)
+          .maybeSingle();
+        if (fallbackVendor) {
+          vendorData = fallbackVendor;
+        }
+      }
+    }
+
+    // If no vendor record found, show empty list
+    if (!vendorData) {
+      console.warn("No active vendor profile found for this user");
+      setOrders([]);
       setLoading(false);
       return;
     }
@@ -54,7 +84,7 @@ export default function VendorOrdersPage() {
     const { data, error } = await supabase
       .from("orders")
       .select("*")
-      .eq("vendor_id", "mimo-vendor")
+      .eq("vendor_id", vendorData.id)
       .order("created_at", { ascending: false });
 
     if (error) {
