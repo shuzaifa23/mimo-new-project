@@ -45,21 +45,21 @@ export default function VendorPage() {
     
     // Get current user to filter by vendor_id
     const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-      setLoading(false);
-      return;
+
+    // Try to find the vendor record by authenticated user_id first
+    let vendorData: { id: string; shop_name?: string } | null = null;
+
+    if (user) {
+      const { data } = await supabase
+        .from("vendors")
+        .select("id, shop_name")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      vendorData = data;
     }
 
-    // Try to get the vendor matching the authenticated user's ID
-    let { data: vendorData, error: vendorError } = await supabase
-      .from("vendors")
-      .select("id, shop_name")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    // Fallback: search by vendor-email stored during login
-    if (!vendorData || vendorError) {
+    // Fallback: search by vendor-email stored during login (covers hardcoded logins)
+    if (!vendorData) {
       const email = localStorage.getItem("vendor-email");
       if (email) {
         const { data: fallbackVendor } = await supabase
@@ -98,6 +98,7 @@ export default function VendorPage() {
     }
     setLoading(false);
   };
+
 
   const router = useRouter();
 
