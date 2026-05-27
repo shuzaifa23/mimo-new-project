@@ -134,14 +134,19 @@ export default function VendorOrdersPage() {
     // Find the order for notification details
     const order = orders.find(o => o.id === orderId);
     
-    const { error } = await supabase
-      .from("orders")
-      .update({ status: newStatus })
-      .eq("id", orderId);
+    try {
+      const res = await fetch("/api/admin/update-order-status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId, status: newStatus })
+      });
+      
+      const data = await res.json();
+      
+      if (!res.ok || data.error) {
+        throw new Error(data.error || "Failed to update status");
+      }
 
-    if (error) {
-      console.error("Error updating status:", error);
-    } else {
       setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
       
       // Auto-trigger WhatsApp notification
@@ -153,8 +158,11 @@ export default function VendorOrdersPage() {
           : `Hi! Your MIMO Print order #${orderId.slice(0, 8)} status has been updated to: *${newStatus}*. \n\nTrack your order here: https://mimo-print.vercel.app/student \n\nThank you for choosing MIMO!`;
         window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`, "_blank");
       }
+    } catch (err) {
+      console.error("Error updating status:", err);
+    } finally {
+      setUpdatingId(null);
     }
-    setUpdatingId(null);
   };
 
   const filteredOrders = orders.filter(order => {
