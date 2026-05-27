@@ -103,29 +103,9 @@ export async function middleware(request: NextRequest) {
   }
   */
 
-  // 3. User Protection
-  const isPublicPath = path === '/login' || path === '/vendor-login' || path === '/admin/login';
-  
-  if (!session && !isPublicPath && (path === '/' || path.startsWith('/student'))) {
-    return NextResponse.redirect(new URL('/login', request.url));
-  }
-
-  if (session && path === '/login') {
-    return NextResponse.redirect(new URL('/', request.url));
-  }
-
   return response
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * Feel free to modify this pattern to include more paths.
-     */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
-  ],
+  matcher: ['/admin/:path*', '/vendor/:path*'],
 }
