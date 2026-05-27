@@ -10,21 +10,6 @@ export async function getAdminSession() {
 
 export async function signInAdmin(email: string, password: string) {
   const lowerEmail = email.trim().toLowerCase();
-  
-  // Direct credential bypass for visionprintt@gmail.com
-  if (lowerEmail === "visionprintt@gmail.com" && password === "Vishal@2006") {
-    return {
-      user: {
-        id: "visionprintt-admin-bypass-id",
-        email: "visionprintt@gmail.com",
-        user_metadata: {},
-        app_metadata: {},
-        aud: "authenticated",
-        created_at: new Date().toISOString()
-      } as any,
-      error: null,
-    };
-  }
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email,

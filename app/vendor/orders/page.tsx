@@ -135,16 +135,18 @@ export default function VendorOrdersPage() {
     const order = orders.find(o => o.id === orderId);
     
     try {
-      const res = await fetch("/api/admin/update-order-status", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId, status: newStatus })
-      });
+      const { data, error } = await supabase
+        .from("orders")
+        .update({ status: newStatus })
+        .eq("id", orderId)
+        .select();
+        
+      if (error) {
+        throw new Error(error.message);
+      }
       
-      const data = await res.json();
-      
-      if (!res.ok || data.error) {
-        throw new Error(data.error || "Failed to update status");
+      if (!data || data.length === 0) {
+        throw new Error("Update blocked by database security. Are you logged in properly?");
       }
 
       setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
@@ -158,8 +160,9 @@ export default function VendorOrdersPage() {
           : `Hi! Your MIMO Print order #${orderId.slice(0, 8)} status has been updated to: *${newStatus}*. \n\nTrack your order here: https://mimo-print.vercel.app/student \n\nThank you for choosing MIMO!`;
         window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`, "_blank");
       }
-    } catch (err) {
-      console.error("Error updating status:", err);
+    } catch (err: any) {
+      console.error("Error updating status:", err.message);
+      alert(err.message || "Failed to update order status. Please try refreshing.");
     } finally {
       setUpdatingId(null);
     }
