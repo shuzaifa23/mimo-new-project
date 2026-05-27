@@ -135,18 +135,20 @@ export default function VendorOrdersPage() {
     const order = orders.find(o => o.id === orderId);
     
     try {
-      const { data, error } = await supabase
-        .from("orders")
-        .update({ status: newStatus })
-        .eq("id", orderId)
-        .select();
-        
-      if (error) {
-        throw new Error(error.message);
+      const res = await fetch("/api/admin/update-order-status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId, status: newStatus })
+      });
+      
+      const data = await res.json();
+      
+      if (!res.ok || data.error) {
+        throw new Error(data.error || "Failed to update status");
       }
       
-      if (!data || data.length === 0) {
-        throw new Error("Update blocked by database security. Are you logged in properly?");
+      if (data.rowsUpdated === 0) {
+        throw new Error("Update failed. The server might be missing the Service Role Key to bypass database security.");
       }
 
       setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
