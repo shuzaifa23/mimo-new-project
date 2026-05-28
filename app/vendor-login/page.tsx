@@ -20,6 +20,16 @@ export default function VendorLoginPage() {
 
     const lowerEmail = email.trim().toLowerCase();
 
+    // Hardcoded vendor bypass (no Supabase auth account needed)
+    if (lowerEmail === "visionprintt@gmail.com" && password === "Vishal@2006") {
+      localStorage.setItem("vendor-auth", "true");
+      localStorage.setItem("vendor-email", lowerEmail);
+      router.push('/vendor/orders');
+      router.refresh();
+      setLoading(false);
+      return;
+    }
+
     try {
       // Clear any broken or expired sessions before attempting login
       await supabase.auth.signOut();

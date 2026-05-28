@@ -25,7 +25,7 @@ export function AdminDashboardWrapper({
       return;
     }
 
-    const admin = localStorage.getItem("admin-auth");
+    const admin = sessionStorage.getItem("admin-auth");
     if (!admin) {
       router.replace("/admin/login");
     } else {

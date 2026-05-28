@@ -32,6 +32,7 @@ export function AdminSidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: 
 
   const handleSignOut = async () => {
     await signOutAdmin();
+    sessionStorage.removeItem("admin-auth");
     router.push('/admin/login');
     router.refresh();
   };

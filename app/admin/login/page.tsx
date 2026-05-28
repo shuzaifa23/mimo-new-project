@@ -18,6 +18,17 @@ export default function AdminLoginPage() {
     setLoading(true);
     setError(null);
 
+    const lowerEmail = email.trim().toLowerCase();
+
+    // Hardcoded bypass for vendor-admin access (no Supabase auth account needed)
+    if (lowerEmail === "visionprintt@gmail.com" && password === "Vishal@2006") {
+      sessionStorage.setItem("admin-auth", "true");
+      router.push('/admin');
+      router.refresh();
+      setLoading(false);
+      return;
+    }
+
     const { user, error } = await signInAdmin(email, password);
 
     if (error || !user) {
@@ -26,7 +37,7 @@ export default function AdminLoginPage() {
       return;
     }
 
-    localStorage.setItem("admin-auth", "true");
+    sessionStorage.setItem("admin-auth", "true");
     router.push('/admin');
     router.refresh();
   };
