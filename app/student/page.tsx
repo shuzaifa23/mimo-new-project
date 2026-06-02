@@ -160,7 +160,7 @@ export default function StudentPage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+    <div className="min-h-screen">
       {/* Main */}
       <main className="mx-auto max-w-5xl px-6 py-12">
         <div className="mb-12 flex items-center justify-between">
@@ -256,7 +256,7 @@ export default function StudentPage() {
                   className="overflow-hidden rounded-[2.5rem] border border-zinc-200 bg-white shadow-xl shadow-zinc-200/50 transition-all hover:shadow-2xl hover:shadow-zinc-300/50 dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none"
                 >
                   {/* Top Header: Name and Status Badges */}
-                  <div className="flex items-start justify-between border-b border-zinc-50 p-8 dark:border-zinc-800/50">
+                  <div className="flex items-start justify-between border-b border-zinc-50 p-6 sm:p-8 dark:border-zinc-800/50">
                     <div>
                       <div className="flex items-center gap-3">
                         <h3 className="text-2xl font-black text-zinc-900 dark:text-white">
@@ -281,12 +281,12 @@ export default function StudentPage() {
                   </div>
 
                   {/* Status Timeline */}
-                  <div className="px-8 bg-zinc-50/50 dark:bg-zinc-950/20 py-4 border-b border-zinc-50 dark:border-zinc-800/50">
+                  <div className="px-6 sm:px-8 bg-zinc-50/50 dark:bg-zinc-950/20 py-4 border-b border-zinc-50 dark:border-zinc-800/50">
                     <StatusTimeline currentStatus={order.status} />
                   </div>
 
                   {/* Body: Order Details */}
-                  <div className="flex flex-col sm:flex-row items-center justify-between p-8 gap-6">
+                  <div className="flex flex-col sm:flex-row items-center justify-between p-6 sm:p-8 gap-6">
                     <div className="flex gap-12 flex-wrap sm:flex-nowrap">
                       <div>
                         <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Print Type</p>

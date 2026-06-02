@@ -157,7 +157,7 @@ export default function OrderPage() {
               onDragLeave={handleDrag}
               onDragOver={handleDrag}
               onDrop={handleDrop}
-              className={`relative rounded-2xl border-2 border-dashed p-12 text-center transition-all ${dragActive
+              className={`relative rounded-2xl border-2 border-dashed p-8 sm:p-12 text-center transition-all ${dragActive
                   ? "border-blue-500 bg-blue-50 dark:bg-blue-900/10 scale-[1.02]"
                   : "border-zinc-200 bg-white hover:border-indigo-400 dark:border-zinc-800 dark:bg-zinc-950"
                 }`}
@@ -186,7 +186,7 @@ export default function OrderPage() {
               </label>
             </div>
 
-            <div className="rounded-2xl border border-zinc-200 bg-white p-8 dark:border-zinc-800 dark:bg-zinc-950">
+            <div className="rounded-2xl border border-zinc-200 bg-white p-6 sm:p-8 dark:border-zinc-800 dark:bg-zinc-950">
               <h3 className="mb-6 text-lg font-bold text-zinc-900 dark:text-white">Print Settings</h3>
               <div className="grid gap-6 sm:grid-cols-2">
                 <div>
@@ -236,7 +236,7 @@ export default function OrderPage() {
           </div>
 
           <div className="space-y-6">
-            <div className="rounded-2xl border border-zinc-200 bg-white p-8 dark:border-zinc-800 dark:bg-zinc-950">
+            <div className="rounded-2xl border border-zinc-200 bg-white p-6 sm:p-8 dark:border-zinc-800 dark:bg-zinc-950">
               <h3 className="mb-6 text-lg font-bold text-zinc-900 dark:text-white">Contact Info</h3>
               <div className="space-y-4">
                 <Input
@@ -254,7 +254,7 @@ export default function OrderPage() {
               </div>
             </div>
 
-            <div className="rounded-2xl bg-indigo-600 p-8 text-white shadow-xl shadow-indigo-500/20">
+            <div className="rounded-2xl bg-indigo-600 p-6 sm:p-8 text-white shadow-xl shadow-indigo-500/20">
               <h3 className="text-lg font-bold opacity-90">Order Summary</h3>
               <div className="mt-4 space-y-2 border-b border-indigo-500/50 pb-4 text-sm">
                 <div className="flex justify-between">

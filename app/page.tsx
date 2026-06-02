@@ -6,13 +6,12 @@ import { Printer, FileText, ArrowRight, Zap } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="flex flex-col bg-white dark:bg-zinc-950">
+    <div className="flex flex-col">
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative overflow-hidden px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
-          <div className="absolute left-1/2 top-0 -z-10 h-[1000px] w-[1000px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_farthest-side,rgba(79,70,229,0.08),transparent)]"></div>
+        <section className="relative overflow-hidden px-4 py-16 sm:px-6 lg:px-8 lg:py-24 min-h-[90vh] flex flex-col justify-center">
           
-          <div className="mx-auto max-w-4xl text-center">
+          <div className="mx-auto max-w-4xl text-center relative z-10">
             <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50/50 px-4 py-1.5 text-sm font-medium text-indigo-700 dark:border-indigo-900/30 dark:bg-indigo-900/20 dark:text-indigo-300">
               <Zap size={14} />
               <span>Modernizing Printing for Students</span>

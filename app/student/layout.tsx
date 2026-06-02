@@ -11,9 +11,9 @@ export default function StudentLayout({
   const pathname = usePathname();
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+    <div className="min-h-screen">
       <div className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
-        <div className="flex gap-6 border-b border-zinc-200 pb-3 dark:border-zinc-800">
+        <div className="flex gap-6 overflow-x-auto whitespace-nowrap border-b border-zinc-200 pb-3 dark:border-zinc-800 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <Link 
             href="/student/order" 
             className={`text-sm font-bold transition-colors ${

@@ -31,10 +31,17 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-white transition-colors duration-300 dark:bg-zinc-950">
+      <body className="min-h-full flex flex-col bg-white transition-colors duration-300 dark:bg-zinc-950 relative isolate">
         <ThemeProvider>
+          {/* Global Background Images */}
+          <img src="/images/bg-mockup.png" alt="" aria-hidden="true" className="fixed inset-0 h-full w-full object-cover -z-20 dark:hidden" />
+          <img src="/images/bg-mockup-dark.png" alt="" aria-hidden="true" className="fixed inset-0 h-full w-full object-cover -z-20 hidden dark:block" />
+          {/* Global Background Overlay for Readability */}
+          <div className="fixed inset-0 dark:hidden" style={{ zIndex: -15, background: "radial-gradient(ellipse 70% 80% at 50% 50%, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.1) 100%)" }}></div>
+          <div className="fixed inset-0 hidden dark:block" style={{ zIndex: -15, background: "radial-gradient(ellipse 70% 80% at 50% 50%, rgba(9,9,11,0.6) 0%, rgba(9,9,11,0) 100%)" }}></div>
+
           <Navbar />
-          <main className="flex-1 pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+          <main className="flex-1 pt-24 pb-12 px-4 sm:px-6 lg:px-8 relative z-10">
             {children}
           </main>
         </ThemeProvider>
