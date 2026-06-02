@@ -127,7 +127,7 @@ export default function ResearchPaperPage() {
 
       <form onSubmit={handleGenerate} className="space-y-8">
         {/* SECTION 1: REPORT & BRANCH DETAILS */}
-        <div className="rounded-2xl border border-zinc-200 bg-white p-6 sm:p-8 dark:border-zinc-800 dark:bg-zinc-950">
+        <div className="rounded-2xl border border-zinc-200 bg-white p-8 dark:border-zinc-800 dark:bg-zinc-950">
           <h2 className="text-xl font-bold text-zinc-900 dark:text-white mb-6 border-b border-zinc-100 dark:border-zinc-800 pb-3">1. Academic & Report Details</h2>
           
           <div className="grid gap-6 sm:grid-cols-2">
@@ -219,7 +219,7 @@ export default function ResearchPaperPage() {
         </div>
 
         {/* SECTION 2: CANDIDATE DETAILS (UP TO 4) */}
-        <div className="rounded-2xl border border-zinc-200 bg-white p-6 sm:p-8 dark:border-zinc-800 dark:bg-zinc-950">
+        <div className="rounded-2xl border border-zinc-200 bg-white p-8 dark:border-zinc-800 dark:bg-zinc-950">
           <div className="flex items-center justify-between mb-6 border-b border-zinc-100 dark:border-zinc-800 pb-3">
             <h2 className="text-xl font-bold text-zinc-900 dark:text-white">2. Student Candidates</h2>
             {candidates.length < 4 && (
@@ -271,7 +271,7 @@ export default function ResearchPaperPage() {
         </div>
 
         {/* SECTION 3: GUIDES & AUTHORITIES */}
-        <div className="rounded-2xl border border-zinc-200 bg-white p-6 sm:p-8 dark:border-zinc-800 dark:bg-zinc-950">
+        <div className="rounded-2xl border border-zinc-200 bg-white p-8 dark:border-zinc-800 dark:bg-zinc-950">
           <h2 className="text-xl font-bold text-zinc-900 dark:text-white mb-6 border-b border-zinc-100 dark:border-zinc-800 pb-3">3. Guides & Approval Authorities</h2>
           
           <div className="grid gap-6 sm:grid-cols-2">
@@ -353,7 +353,7 @@ export default function ResearchPaperPage() {
         </div>
 
         {/* SECTION 4: ABSTRACT, KEYWORDS & ACKNOWLEDGEMENT */}
-        <div className="rounded-2xl border border-zinc-200 bg-white p-6 sm:p-8 dark:border-zinc-800 dark:bg-zinc-950">
+        <div className="rounded-2xl border border-zinc-200 bg-white p-8 dark:border-zinc-800 dark:bg-zinc-950">
           <h2 className="text-xl font-bold text-zinc-900 dark:text-white mb-6 border-b border-zinc-100 dark:border-zinc-800 pb-3">4. Summary, Abstract & Acknowledgement</h2>
           
           <div className="space-y-6">
