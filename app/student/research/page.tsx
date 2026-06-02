@@ -28,7 +28,7 @@ export default function ResearchPaperPage() {
     viceChancellorName: "Dr. M. Dhanamjaya",
     academicYear: "2025-2026",
     plagiarismScore: "less than 20%",
-    projectType: "mini project",
+    projectType: "minor project",
     abstract: "",
     keywords: "",
     acknowledgement: "",
@@ -37,7 +37,7 @@ export default function ResearchPaperPage() {
   // Automatically update dynamic acknowledgement when guide/candidates/department names change
   useEffect(() => {
     const names = candidates.filter(c => c.name.trim() !== "").map(c => c.name).join(", ");
-    const defaultAck = `Any given task achieved is never the result of the efforts of a single individual. There are always a bunch of people who play an instrumental role leading a task to its completion. Our joy at having successfully finished our ${formData.projectType || "mini project"} work would be incomplete without thanking everyone who helped us out along the way. We would like to express our sense of gratitude to our REVA University for providing us the means of attaining our most cherished goal.\n\nWe would like to thank our Hon'ble Chancellor, Dr. P. Shyama Raju and Hon'ble Vice-Chancellor, ${formData.viceChancellorName || "[Vice-Chancellor Name]"} for their immense support towards students to showcase innovative ideas.\n\nWe cannot express enough thanks to our respected Director, ${formData.directorName || "[Director Name]"} for providing us with a highly conducive environment and encouraging the growth and creativity of each and every student. We would also like to offer our sincere gratitude to our Project Coordinators for the numerous learning opportunities that have been provided.\n\nWe would like to take this opportunity to express our gratitude to our Project Guide, ${formData.guideName || "[Guide Name]"}, for continuously supporting and guiding us in our every endeavor as well as for taking a keen and active interest in the progress of every phase of our Project. Thank you for providing us with the necessary inputs and suggestions for advancing with our Project work. We deeply appreciate the wise guidance that sir/ma'am has provided.\n\nFinally, we would like to extend our sincere thanks to all the faculty members and staff from the ${formData.schoolName || "[School Name]"}.`;
+    const defaultAck = `Any given task achieved is never the result of the efforts of a single individual. There are always a bunch of people who play an instrumental role leading a task to its completion. Our joy at having successfully finished our ${formData.projectType || "minor project"} work would be incomplete without thanking everyone who helped us out along the way. We would like to express our sense of gratitude to our REVA University for providing us the means of attaining our most cherished goal.\n\nWe would like to thank our Hon'ble Chancellor, Dr. P. Shyama Raju and Hon'ble Vice-Chancellor, ${formData.viceChancellorName || "[Vice-Chancellor Name]"} for their immense support towards students to showcase innovative ideas.\n\nWe cannot express enough thanks to our respected Director, ${formData.directorName || "[Director Name]"} for providing us with a highly conducive environment and encouraging the growth and creativity of each and every student. We would also like to offer our sincere gratitude to our Project Coordinators for the numerous learning opportunities that have been provided.\n\nWe would like to take this opportunity to express our gratitude to our Project Guide, ${formData.guideName || "[Guide Name]"}, for continuously supporting and guiding us in our every endeavor as well as for taking a keen and active interest in the progress of every phase of our Project. Thank you for providing us with the necessary inputs and suggestions for advancing with our Project work. We deeply appreciate the wise guidance that sir/ma'am has provided.\n\nFinally, we would like to extend our sincere thanks to all the faculty members and staff from the ${formData.schoolName || "[School Name]"}.`;
     setFormData(prev => ({ ...prev, acknowledgement: defaultAck }));
   }, [formData.guideName, formData.directorName, formData.schoolName, formData.viceChancellorName, formData.projectType, candidates]);
 
@@ -150,7 +150,7 @@ export default function ResearchPaperPage() {
                 value={formData.projectType}
                 onChange={handleChange as any}
               >
-                <option value="mini project">Mini Project</option>
+                <option value="minor project">Minor Project</option>
                 <option value="major project">Major Project</option>
                 <option value="project">Project / Dissertation</option>
               </select>

@@ -299,7 +299,7 @@ export async function generateResearchPaperFrontPages(data: ResearchPaperData) {
   page4.drawLine({ start: { x: 200, y: height - 85 }, end: { x: width - 200, y: height - 85 }, color: rgb(0,0,0), thickness: 1 });
 
   // Exact paragraph text from Image 3
-  const ackP1 = `Any given task achieved is never the result of the efforts of a single individual. There are always a bunch of people who play an instrumental role leading a task to its completion. Our joy at having successfully finished our ${data.projectType || "mini project"} work would be incomplete without thanking everyone who helped us out along the way. We would like to express our sense of gratitude to our REVA University for providing us the means of attaining our most cherished goal.`;
+  const ackP1 = `Any given task achieved is never the result of the efforts of a single individual. There are always a bunch of people who play an instrumental role leading a task to its completion. Our joy at having successfully finished our ${data.projectType || "minor project"} work would be incomplete without thanking everyone who helped us out along the way. We would like to express our sense of gratitude to our REVA University for providing us the means of attaining our most cherished goal.`;
   
   const ackP2 = `We would like to thank our Hon'ble Chancellor, Dr. P. Shyama Raju and Hon'ble Vice-Chancellor, ${data.viceChancellorName || "[Vice-Chancellor Name]"} for their immense support towards students to showcase innovative ideas.`;
   
