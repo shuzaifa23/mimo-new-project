@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button, Input } from "@/components/ui/core";
 import { supabase } from "@/lib/supabase";
-import { Check, Clock, Package, Printer as PrinterIcon, CheckCircle2, ChevronRight, XCircle, Eye, Download as DownloadIcon, Trash2 } from "lucide-react";
+import { Check, Clock, Package, Printer as PrinterIcon, CheckCircle2, ChevronRight, XCircle, Eye, Trash2 } from "lucide-react";
 
 interface Order {
   id: string;
@@ -304,29 +304,17 @@ export default function StudentPage() {
                     
                     <div className="flex items-center gap-3 w-full sm:w-auto">
                       {order.file_url && (
-                        <>
-                          <a 
-                            href={order.file_url} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="flex-1 sm:flex-initial"
-                          >
-                            <Button variant="outline" size="sm" className="w-full rounded-xl font-bold h-10 px-4 gap-2">
-                              <Eye size={16} />
-                              Preview
-                            </Button>
-                          </a>
-                          <a 
-                            href={order.file_url} 
-                            download={order.file_name || 'document.pdf'}
-                            className="flex-1 sm:flex-initial"
-                          >
-                            <Button variant="outline" size="sm" className="w-full rounded-xl font-bold h-10 px-4 gap-2">
-                              <DownloadIcon size={16} />
-                              Download
-                            </Button>
-                          </a>
-                        </>
+                        <a 
+                          href={order.file_url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex-1 sm:flex-initial"
+                        >
+                          <Button variant="outline" size="sm" className="w-full rounded-xl font-bold h-10 px-4 gap-2">
+                            <Eye size={16} />
+                            Preview
+                          </Button>
+                        </a>
                       )}
 
                       <Button 

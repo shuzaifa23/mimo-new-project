@@ -5,11 +5,13 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --bg-mockup: url('/images/bg-mockup.png');
 }
 
 .dark {
   --background: #0a0a0a;
   --foreground: #ededed;
+  --bg-mockup: url('/images/bg-mockup-dark.png');
 }
 
 @theme inline {

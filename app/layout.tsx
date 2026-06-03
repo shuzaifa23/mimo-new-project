@@ -34,7 +34,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-white transition-colors duration-300 dark:bg-zinc-950">
         <ThemeProvider>
           <Navbar />
-          <main className="flex-1 pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+          <main className="flex-1">
             {children}
           </main>
         </ThemeProvider>
