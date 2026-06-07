@@ -39,60 +39,87 @@ export default function VendorPage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewName, setPreviewName] = useState<string>("");
   const [shopName, setShopName] = useState("MIMO Print (Default)");
+  const [vendors, setVendors] = useState<{ id: string; shop_name: string }[]>([]);
+  const [selectedVendorId, setSelectedVendorId] = useState<string | null>(null);
 
-  const fetchOrders = async () => {
-    setLoading(true);
-    
-    // Get current user to filter by vendor_id
-    const { data: { user } } = await supabase.auth.getUser();
-
-    // Try to find the vendor record by authenticated user_id first
-    let vendorData: { id: string; shop_name?: string } | null = null;
-
-    if (user) {
-      const { data } = await supabase
-        .from("vendors")
-        .select("id, shop_name")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      vendorData = data;
+  // Load all vendors from Supabase for the switcher dropdown
+  const fetchVendors = async () => {
+    const { data, error } = await supabase
+      .from("vendors")
+      .select("id, shop_name")
+      .order("shop_name", { ascending: true });
+    if (!error && data && data.length > 0) {
+      setVendors(data);
     }
+  };
 
-    // Fallback: search by vendor-email stored during login (covers hardcoded logins)
-    if (!vendorData) {
-      const email = localStorage.getItem("vendor-email");
-      if (email) {
-        const { data: fallbackVendor } = await supabase
+  const fetchOrders = async (overrideVendorId?: string) => {
+    setLoading(true);
+
+    let resolvedVendorId: string | null = overrideVendorId ?? selectedVendorId;
+
+    // If no vendor selected yet, try to resolve from auth or localStorage
+    if (!resolvedVendorId) {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      let vendorData: { id: string; shop_name?: string } | null = null;
+
+      if (user) {
+        const { data } = await supabase
           .from("vendors")
           .select("id, shop_name")
-          .eq("email", email)
+          .eq("user_id", user.id)
           .maybeSingle();
-        if (fallbackVendor) {
-          vendorData = fallbackVendor;
+        vendorData = data;
+      }
+
+      if (!vendorData) {
+        const email = localStorage.getItem("vendor-email");
+        if (email) {
+          const { data: fallbackVendor } = await supabase
+            .from("vendors")
+            .select("id, shop_name")
+            .eq("email", email)
+            .maybeSingle();
+          if (fallbackVendor) vendorData = fallbackVendor;
         }
       }
-    }
 
-    // If no vendor record found, show empty list
-    if (!vendorData) {
-      console.warn("No active vendor profile found for this user");
-      setOrders([]);
-      setLoading(false);
-      return;
-    }
+      if (!vendorData) {
+        // Pick first available vendor as default
+        const { data: firstVendor } = await supabase
+          .from("vendors")
+          .select("id, shop_name")
+          .order("shop_name", { ascending: true })
+          .limit(1)
+          .maybeSingle();
+        if (firstVendor) vendorData = firstVendor;
+      }
 
-    if (vendorData.shop_name) {
-      setShopName(vendorData.shop_name);
+      if (!vendorData) {
+        console.warn("No active vendor profile found for this user");
+        setOrders([]);
+        setLoading(false);
+        return;
+      }
+
+      resolvedVendorId = vendorData.id;
+      setSelectedVendorId(vendorData.id);
+      if (vendorData.shop_name) setShopName(vendorData.shop_name);
+    } else {
+      // Update shopName to match selected vendor
+      const found = vendors.find(v => v.id === resolvedVendorId);
+      if (found) setShopName(found.shop_name);
     }
 
     const { data, error } = await supabase
       .from("orders")
       .select("*")
-      .in("vendor_id", [vendorData.id, "mimo-vendor"])
+      .eq("vendor_id", resolvedVendorId)
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("Error fetching orders:", error);
+      console.warn("Error fetching orders:", error);
     } else {
       setOrders(data || []);
     }
@@ -110,6 +137,7 @@ export default function VendorPage() {
       return;
     }
 
+    fetchVendors();
     fetchOrders();
 
     // Real-time listener for orders assigned to this vendor
@@ -204,10 +232,20 @@ export default function VendorPage() {
           <div className="flex flex-wrap items-center gap-3">
             <select
               className="rounded-xl border border-zinc-200 bg-white px-4 h-10 text-sm font-bold outline-none cursor-pointer dark:border-zinc-800 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 focus:ring-2 focus:ring-indigo-500/20 shadow-sm"
-              value="current"
-              disabled
+              value={selectedVendorId ?? ""}
+              onChange={(e) => {
+                const newId = e.target.value;
+                setSelectedVendorId(newId);
+                fetchOrders(newId);
+              }}
             >
-              <option value="current">{shopName}</option>
+              {vendors.length === 0 ? (
+                <option value="">{shopName}</option>
+              ) : (
+                vendors.map((v) => (
+                  <option key={v.id} value={v.id}>{v.shop_name}</option>
+                ))
+              )}
             </select>
 
             <Button 
