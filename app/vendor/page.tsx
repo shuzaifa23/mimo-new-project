@@ -115,7 +115,7 @@ export default function VendorPage() {
     const { data, error } = await supabase
       .from("orders")
       .select("*")
-      .in("vendor_id", [resolvedVendorId, "mimo-vendor", "mimo-print-internal"])
+      .eq("vendor_id", resolvedVendorId)
       .order("created_at", { ascending: false });
 
     if (error) {
