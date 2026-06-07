@@ -12,9 +12,11 @@ export default function OrderPage() {
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const [file, setFile] = useState<File | null>(null);
+  const [vendors, setVendors] = useState<{ id: string; shop_name: string }[]>([]);
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
+    vendorId: "",
     printType: "bw",
     copies: 1,
     binding: "none",
@@ -25,6 +27,7 @@ export default function OrderPage() {
     setFormData({
       name: "",
       phone: "",
+      vendorId: vendors.length > 0 ? vendors[0].id : "",
       printType: "bw",
       copies: 1,
       binding: "none",
@@ -39,6 +42,18 @@ export default function OrderPage() {
     const basePrice = 0; 
     return (basePrice + (pageRate * formData.pages * formData.copies) + bindingPrice);
   }, [formData]);
+
+  // Load vendors on mount
+  useState(() => {
+    const fetchVendors = async () => {
+      const { data } = await supabase.from("vendors").select("id, shop_name").order("shop_name");
+      if (data && data.length > 0) {
+        setVendors(data);
+        setFormData(prev => ({ ...prev, vendorId: data[0].id }));
+      }
+    };
+    fetchVendors();
+  });
 
   const processFile = async (selectedFile: File) => {
     setFile(selectedFile);
@@ -91,6 +106,7 @@ export default function OrderPage() {
     if (!file) return setMessage({ type: 'error', text: "Please upload your documents" });
     if (!formData.name.trim()) return setMessage({ type: 'error', text: "Name is required" });
     if (!formData.phone.trim()) return setMessage({ type: 'error', text: "Phone number is required" });
+    if (!formData.vendorId) return setMessage({ type: 'error', text: "Please select a print shop" });
     
     // Validate phone number format for Cashfree (10 digits)
     const phoneRegex = /^[6-9]\d{9}$/;
@@ -119,9 +135,12 @@ export default function OrderPage() {
 
       const fileUrl = urlData.publicUrl;
 
+      const selectedVendor = vendors.find(v => v.id === formData.vendorId);
+      
       // 2. Store metadata in localStorage (to be inserted after payment success)
       const orderData = {
         ...formData,
+        vendorName: selectedVendor ? selectedVendor.shop_name : "MIMO Print",
         amount,
         fileName: file.name,
         fileUrl,
@@ -237,7 +256,7 @@ export default function OrderPage() {
 
           <div className="space-y-6">
             <div className="rounded-2xl border border-zinc-200 bg-white p-8 dark:border-zinc-800 dark:bg-zinc-950">
-              <h3 className="mb-6 text-lg font-bold text-zinc-900 dark:text-white">Contact Info</h3>
+              <h3 className="mb-6 text-lg font-bold text-zinc-900 dark:text-white">Contact Info & Shop Selection</h3>
               <div className="space-y-4">
                 <Input
                   placeholder="Your Name"
@@ -251,6 +270,20 @@ export default function OrderPage() {
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   required
                 />
+                <div className="pt-2">
+                  <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">Select Print Shop</label>
+                  <select
+                    className="flex h-11 w-full rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-bold focus:ring-2 focus:ring-indigo-500 dark:border-zinc-800 dark:bg-zinc-950"
+                    value={formData.vendorId}
+                    onChange={(e) => setFormData({ ...formData, vendorId: e.target.value })}
+                    required
+                  >
+                    <option value="" disabled>Choose a shop</option>
+                    {vendors.map(v => (
+                      <option key={v.id} value={v.id}>{v.shop_name}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
 
