@@ -37,8 +37,8 @@ export function AdminDashboardWrapper({
   // Show nothing until the auth check completes (prevents content flash)
   if (!authChecked) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-950">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+      <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: 'var(--admin-bg)' }}>
+        <Loader2 className="h-8 w-8 animate-spin text-violet-600" />
       </div>
     );
   }
@@ -56,7 +56,7 @@ export function AdminDashboardWrapper({
   return (
     <>
       <AdminSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <div className="lg:pl-64">
+      <div className="lg:pl-64" style={{ backgroundColor: 'var(--admin-bg)', minHeight: '100vh' }}>
         <AdminNavbar onMenuClick={() => setSidebarOpen(true)} />
         <main className="p-4 sm:p-8">{children}</main>
       </div>

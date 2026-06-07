@@ -75,11 +75,12 @@ export function RealtimeNotifications() {
     <div className="relative">
       <button 
         onClick={() => setShowDropdown(!showDropdown)}
-        className="relative rounded-full p-2 text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-900 transition-colors"
+        className="relative rounded-full p-2 text-slate-500 hover:bg-violet-50 dark:text-zinc-400 dark:hover:bg-violet-900/20 transition-colors"
       >
         <Bell size={20} />
         {notifications.length > 0 && (
-          <span className="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-indigo-600 text-[10px] font-bold text-white border-2 border-white dark:border-zinc-950">
+          <span className="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold text-white border-2 border-white dark:border-zinc-950"
+            style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)' }}>
             {notifications.length}
           </span>
         )}
@@ -89,7 +90,7 @@ export function RealtimeNotifications() {
         <div className="absolute right-0 mt-2 w-80 rounded-2xl border border-zinc-200 bg-white p-4 shadow-2xl dark:border-zinc-800 dark:bg-zinc-950 z-50">
           <div className="mb-4 flex items-center justify-between">
             <h3 className="text-sm font-bold text-zinc-900 dark:text-white">Notifications</h3>
-            <button onClick={() => setNotifications([])} className="text-xs font-medium text-zinc-500 hover:text-indigo-600">Clear All</button>
+            <button onClick={() => setNotifications([])} className="text-xs font-medium text-slate-400 hover:text-violet-600 transition-colors">Clear All</button>
           </div>
           
           <div className="space-y-3">
@@ -102,9 +103,9 @@ export function RealtimeNotifications() {
                 <div key={n.id} className="flex gap-3 rounded-xl border border-zinc-50 p-3 dark:border-zinc-900 bg-zinc-50/50 dark:bg-zinc-900/30">
                   <div className={cn(
                     "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg",
-                    n.type === 'order' ? "bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30" :
+                    n.type === 'order' ? "bg-violet-100 text-violet-600 dark:bg-violet-900/30" :
                     n.type === 'vendor' ? "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30" :
-                    "bg-blue-100 text-blue-600 dark:bg-blue-900/30"
+                    "bg-pink-100 text-pink-600 dark:bg-pink-900/30"
                   )}>
                     {n.type === 'order' ? <Package size={14} /> : n.type === 'vendor' ? <Store size={14} /> : <UserPlus size={14} />}
                   </div>

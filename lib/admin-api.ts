@@ -79,12 +79,12 @@ export async function fetchDashboardStats(): Promise<DashboardStats> {
       supabase.from('profiles').select('id').eq('role', 'customer').limit(1000),
       supabase.from('vendors').select('id').limit(1000),
       supabase.from('vendors').select('id').eq('status', 'Active').limit(1000),
-      supabase.from('orders').select('amount').eq('payment_status', 'Paid').gte('created_at', todayStart),
-      supabase.from('orders').select('amount').eq('payment_status', 'Paid').gte('created_at', monthStart),
+      supabase.from('orders').select('amount').in('payment_status', ['Paid', 'PAID']).gte('created_at', todayStart),
+      supabase.from('orders').select('amount').in('payment_status', ['Paid', 'PAID']).gte('created_at', monthStart),
     ]);
 
     const orders = (ordersRes?.data || []) as any[];
-    const totalRevenue = orders.filter(o => o.payment_status === 'Paid').reduce((sum, o) => sum + (o.amount || 0), 0);
+    const totalRevenue = orders.filter(o => (o.payment_status || '').toLowerCase() === 'paid').reduce((sum, o) => sum + (o.amount || 0), 0);
     
     // Today's stats
     const todayOrdersData = ((todayRevenueRes as any)?.data || []);
@@ -101,7 +101,7 @@ export async function fetchDashboardStats(): Promise<DashboardStats> {
           performanceMap[o.vendor_name] = { name: o.vendor_name, orders: 0, revenue: 0 };
         }
         performanceMap[o.vendor_name].orders += 1;
-        if (o.payment_status === 'Paid') {
+        if ((o.payment_status || '').toLowerCase() === 'paid') {
           performanceMap[o.vendor_name].revenue += (o.amount || 0);
         }
       }
@@ -127,7 +127,7 @@ export async function fetchDashboardStats(): Promise<DashboardStats> {
       vendorPerformance,
     };
   } catch (err) {
-    console.error("Dashboard stats fetch error:", err);
+    console.warn("Dashboard stats fetch error (no Supabase config?):", err);
     return {
       totalOrders: 0, todayOrders: 0, pendingOrders: 0, completedOrders: 0, cancelledOrders: 0,
       totalRevenue: 0, todayRevenue: 0, monthRevenue: 0,
@@ -146,10 +146,76 @@ export async function fetchAllOrders(): Promise<Order[]> {
     .order('created_at', { ascending: false });
 
   if (error) { 
-    console.error("Fetch orders failed:", error);
+    console.warn("Fetch orders failed (no Supabase config?):", error);
     return []; 
   }
   return (data as any[]) || [];
+}
+
+// ─── WEEKLY REVENUE CHART ─────────────────────────────────────────────────────
+
+export async function fetchWeeklyRevenue(): Promise<{ name: string; revenue: number }[]> {
+  let now = new Date();
+
+  // Dynamically anchor the week on the latest order's date to ensure
+  // dev/demo databases with older seeds still display chart data.
+  try {
+    const { data: latestOrder } = await supabase
+      .from('orders')
+      .select('created_at')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (latestOrder?.created_at) {
+      now = new Date(latestOrder.created_at);
+    }
+  } catch (e) {
+    console.warn("Could not fetch latest order date for weekly chart:", e);
+  }
+
+  const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+  // Build ordered last-7-days array (oldest → newest)
+  const last7: { label: string; date: Date }[] = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    last7.push({ label: DAY_NAMES[d.getDay()], date: d });
+  }
+
+  const weekAgo = new Date(now);
+  weekAgo.setDate(weekAgo.getDate() - 6);
+  weekAgo.setHours(0, 0, 0, 0);
+
+  const { data, error } = await supabase
+    .from('orders')
+    .select('amount, created_at, payment_status')
+    .gte('created_at', weekAgo.toISOString())
+    .lte('created_at', now.toISOString())
+    .order('created_at', { ascending: true });
+
+  // Initialize map: "YYYY-MM-DD" → revenue
+  const revenueByDate: Record<string, number> = {};
+  last7.forEach(({ date }) => {
+    revenueByDate[date.toISOString().slice(0, 10)] = 0;
+  });
+
+  if (!error && data) {
+    data.forEach((order: any) => {
+      const isPaid = (order.payment_status || '').toLowerCase() === 'paid';
+      if (isPaid) {
+        const dateKey = new Date(order.created_at).toISOString().slice(0, 10);
+        if (revenueByDate[dateKey] !== undefined) {
+          revenueByDate[dateKey] += order.amount || 0;
+        }
+      }
+    });
+  }
+
+  return last7.map(({ label, date }) => ({
+    name: label,
+    revenue: revenueByDate[date.toISOString().slice(0, 10)] ?? 0,
+  }));
 }
 
 export async function updateOrderStatus(orderId: string, status: string) {
@@ -157,7 +223,7 @@ export async function updateOrderStatus(orderId: string, status: string) {
   console.log(`[DEBUG] updateOrderStatus: id=${orderId}, status=${status}, hasSession=${!!session}`);
   
   if (!session) {
-    console.error("[ERROR] No active session found. Database update will likely fail.");
+    console.warn("[WARN] No active session found. Database update will likely fail.");
   }
 
   const { data, error } = await supabase
@@ -167,7 +233,7 @@ export async function updateOrderStatus(orderId: string, status: string) {
     .select();
 
   if (error) {
-    console.error("[ERROR] updateOrderStatus failed:", error.message, error.details);
+    console.warn("[WARN] updateOrderStatus failed:", error.message, error.details);
   } else if (data && data.length > 0) {
     console.log("[SUCCESS] updateOrderStatus saved to DB:", data[0]);
     // Mock auto-notification trigger
@@ -278,7 +344,7 @@ export async function fetchAllUsers(): Promise<Profile[]> {
     .order('created_at', { ascending: false });
 
   if (error) { 
-    console.error("Error fetching users:", error);
+    console.warn("Error fetching users (no Supabase config?):", error);
     return []; 
   }
 

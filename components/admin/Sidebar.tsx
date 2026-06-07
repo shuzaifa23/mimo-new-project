@@ -42,22 +42,24 @@ export function AdminSidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: 
       {/* Backdrop */}
       {isOpen && (
         <div 
-          className="fixed inset-0 z-30 bg-zinc-900/50 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-30 bg-violet-900/30 backdrop-blur-sm lg:hidden"
           onClick={onClose}
         />
       )}
 
       <aside className={cn(
-        "fixed left-0 top-0 z-40 flex h-screen w-64 flex-col border-r border-zinc-200 bg-white transition-transform duration-300 dark:border-zinc-800 dark:bg-zinc-950",
+        "fixed left-0 top-0 z-40 flex h-screen w-64 flex-col border-r border-violet-100 bg-white transition-transform duration-300 dark:border-violet-900/30 dark:bg-zinc-950",
         isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
       {/* Logo */}
-      <Link href="/admin" className="flex items-center gap-3 border-b border-zinc-100 px-6 py-5 dark:border-zinc-800">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-lg shadow-indigo-500/20">
+      <Link href="/admin" className="flex items-center gap-3 border-b border-violet-100 px-6 py-5 dark:border-violet-900/20">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl text-white shadow-lg shadow-violet-500/30"
+          style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #9333EA 100%)' }}>
           <Package size={22} />
         </div>
         <span className="text-xl font-black tracking-tight text-zinc-900 dark:text-white">MIMO</span>
-        <span className="ml-auto rounded-full bg-indigo-100 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400">
+        <span className="ml-auto rounded-full px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-violet-600 dark:text-violet-400"
+          style={{ backgroundColor: 'var(--violet-light)' }}>
           Admin
         </span>
       </Link>
@@ -77,23 +79,34 @@ export function AdminSidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: 
               className={cn(
                 'group flex items-center justify-between rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-150',
                 isActive
-                  ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400'
-                  : 'text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900/50 dark:hover:text-zinc-100'
+                  ? 'text-white shadow-md shadow-violet-500/20'
+                  : 'text-slate-500 hover:text-violet-700 dark:text-zinc-400 dark:hover:text-violet-300'
               )}
+              style={isActive ? { background: 'linear-gradient(135deg, #7C3AED 0%, #9333EA 100%)' } : {}}
+              onMouseEnter={(e) => {
+                if (!isActive) {
+                  (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--violet-light)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isActive) {
+                  (e.currentTarget as HTMLElement).style.backgroundColor = '';
+                }
+              }}
             >
               <div className="flex items-center gap-3">
                 <item.icon
                   size={20}
                   className={cn(
                     isActive
-                      ? 'text-indigo-600 dark:text-indigo-400'
-                      : 'text-zinc-400 group-hover:text-zinc-700 dark:group-hover:text-zinc-200'
+                      ? 'text-white'
+                      : 'text-slate-400 group-hover:text-violet-600 dark:group-hover:text-violet-300'
                   )}
                 />
                 {item.label}
               </div>
               {isActive && (
-                <ChevronRight size={14} className="text-indigo-400 dark:text-indigo-500" />
+                <ChevronRight size={14} className="text-white/70" />
               )}
             </Link>
           );
@@ -101,10 +114,10 @@ export function AdminSidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: 
       </nav>
 
       {/* Sign Out */}
-      <div className="border-t border-zinc-100 p-3 dark:border-zinc-800">
+      <div className="border-t border-violet-100 p-3 dark:border-violet-900/20">
         <button
           onClick={handleSignOut}
-          className="flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-zinc-500 transition-all hover:bg-rose-50 hover:text-rose-600 dark:text-zinc-400 dark:hover:bg-rose-900/10 dark:hover:text-rose-400"
+          className="flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-600 dark:text-zinc-400 dark:hover:bg-rose-900/10 dark:hover:text-rose-400"
         >
           <LogOut size={18} />
           Sign Out

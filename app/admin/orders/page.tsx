@@ -43,7 +43,7 @@ export default function OrdersPage() {
       setOrders(o || []);
       setVendors((v || []).filter(vendor => vendor.status === 'Active'));
     } catch (err) {
-      console.error("Error in loadData:", err);
+      console.warn("Error in loadData (no Supabase config?):", err);
     } finally {
       setLoading(false);
     }
@@ -137,13 +137,13 @@ export default function OrdersPage() {
 
   const getStatusStyle = (status: string) => {
     switch (status) {
-      case 'Pending': return 'bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400';
-      case 'Accepted': return 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400';
+      case 'Pending': return 'bg-pink-50 text-pink-600 dark:bg-pink-900/20 dark:text-pink-400';
+      case 'Accepted': return 'bg-violet-50 text-violet-600 dark:bg-violet-900/20 dark:text-violet-400';
       case 'Printing': return 'bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400';
-      case 'Completed': return 'bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400';
+      case 'Completed': return 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400';
       case 'Delivered': return 'bg-teal-50 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400';
       case 'Cancelled': return 'bg-rose-50 text-rose-600 dark:bg-rose-900/20 dark:text-rose-400';
-      default: return 'bg-zinc-50 text-zinc-600';
+      default: return 'bg-violet-50 text-violet-600';
     }
   };
 
@@ -152,13 +152,13 @@ export default function OrdersPage() {
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-2xl font-extrabold text-zinc-900 dark:text-white">Order Management</h1>
-          <p className="text-zinc-500">Monitor and manage all print orders across the platform.</p>
+          <p className="text-slate-400">Monitor and manage all print orders across the platform.</p>
         </div>
         <div className="flex items-center gap-3">
-          <button onClick={loadData} className="p-2 rounded-xl border border-zinc-200 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900">
+          <button onClick={loadData} className="p-2 rounded-xl border border-violet-200 bg-white hover:bg-violet-50 text-violet-600 dark:border-violet-800/40 dark:hover:bg-violet-900/10">
             <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
           </button>
-          <Button variant="outline" className="gap-2">
+          <Button variant="outline" className="gap-2 border-violet-200 text-violet-600 hover:bg-violet-50 dark:border-violet-800/40">
             <Download size={16} />
             Export CSV
           </Button>
@@ -166,38 +166,38 @@ export default function OrdersPage() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col gap-4 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-950 md:flex-row md:items-center">
+      <div className="flex flex-col gap-4 rounded-2xl border border-violet-100/80 bg-white p-4 shadow-sm dark:border-violet-900/20 dark:bg-zinc-950 md:flex-row md:items-center">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" size={18} />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-violet-400" size={18} />
           <input 
             type="text" 
             placeholder="Search by ID, customer or file..." 
-            className="w-full rounded-xl border border-zinc-200 bg-zinc-50 py-2 pl-10 pr-4 text-sm outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-900"
+            className="w-full rounded-xl border border-violet-100 bg-violet-50/50 py-2 pl-10 pr-4 text-sm outline-none focus:ring-2 focus:ring-violet-500/20 dark:border-violet-900/20 dark:bg-violet-900/10"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         <div className="flex items-center gap-2">
           <select 
-            className="rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-2 text-sm outline-none dark:border-zinc-800 dark:bg-zinc-900"
+            className="rounded-xl border border-violet-100 bg-violet-50/50 px-4 py-2 text-sm outline-none dark:border-violet-900/20 dark:bg-violet-900/10"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
             <option>All Status</option>
             {STATUS_OPTIONS.map(status => <option key={status} value={status}>{status}</option>)}
           </select>
-          <Button variant="outline" size="sm" className="h-10 px-3">
+          <Button variant="outline" size="sm" className="h-10 px-3 border-violet-200 text-violet-600 hover:bg-violet-50">
             <Filter size={18} />
           </Button>
         </div>
       </div>
 
       {/* Table */}
-      <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+      <div className="overflow-hidden rounded-2xl border border-violet-100/80 bg-white shadow-sm dark:border-violet-900/20 dark:bg-zinc-950">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-zinc-100 bg-zinc-50/50 text-xs font-bold uppercase tracking-wider text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900/50">
+              <tr className="border-b border-violet-100/80 bg-violet-50/40 text-xs font-bold uppercase tracking-wider text-violet-500 dark:border-violet-900/20 dark:bg-violet-900/10">
                 <th className="px-6 py-4">Order ID</th>
                 <th className="px-6 py-4">Customer</th>
                 <th className="px-6 py-4">Document</th>
@@ -207,7 +207,7 @@ export default function OrdersPage() {
                 <th className="px-6 py-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            <tbody className="divide-y divide-violet-50 dark:divide-violet-900/10">
               {loading ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-10 text-center">
@@ -221,9 +221,9 @@ export default function OrdersPage() {
                 </tr>
               ) : (
                 filteredOrders.map((order) => (
-                  <tr key={order.id} className="group hover:bg-zinc-50 dark:hover:bg-zinc-900/30 transition-colors">
+                  <tr key={order.id} className="group hover:bg-violet-50/40 dark:hover:bg-violet-900/10 transition-colors">
                     <td className="px-6 py-4">
-                      <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 font-mono">{order.id.slice(0, 8)}...</span>
+                      <span className="text-xs font-bold text-violet-600 dark:text-violet-400 font-mono">{order.id.slice(0, 8)}...</span>
                       <div className="text-[10px] text-zinc-400 mt-0.5">{new Date(order.created_at).toLocaleDateString()}</div>
                     </td>
                     <td className="px-6 py-4">
@@ -253,7 +253,8 @@ export default function OrdersPage() {
                         <Button 
                           size="sm"
                           onClick={() => handleVendorAssign(order.id, "MIMO Print")}
-                          className="h-8 bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] uppercase font-bold"
+                          className="h-8 text-white text-[10px] uppercase font-bold shadow-sm shadow-violet-400/30"
+                          style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #9333EA 100%)' }}
                         >
                           Assign Vendor
                         </Button>
@@ -296,8 +297,8 @@ export default function OrdersPage() {
                             a.click();
                             document.body.removeChild(a);
                           }}
-                          title="Download File" 
-                          className="rounded-lg p-2 text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
+                          title="Download File"                           
+                          className="rounded-lg p-2 text-violet-500 hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-colors"
                         >
                           <Download size={16} />
                         </button>

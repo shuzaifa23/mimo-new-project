@@ -50,13 +50,13 @@ export default function RevenuePage() {
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-2xl font-extrabold text-zinc-900 dark:text-white">Revenue & Payments</h1>
-          <p className="text-zinc-500">Track all financial transactions and platform revenue.</p>
+          <p className="text-slate-400">Track all financial transactions and platform revenue.</p>
         </div>
         <div className="flex items-center gap-3">
-          <button onClick={loadData} className="p-2 rounded-xl border border-zinc-200 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900">
+          <button onClick={loadData} className="p-2 rounded-xl border border-violet-200 bg-white hover:bg-violet-50 text-violet-600 dark:border-violet-800/40 dark:hover:bg-violet-900/10">
             <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
           </button>
-          <Button variant="outline" className="gap-2">
+          <Button variant="outline" className="gap-2 border-violet-200 text-violet-600 hover:bg-violet-50 dark:border-violet-800/40">
             <Download size={16} />
             Export Statement
           </Button>
@@ -65,49 +65,49 @@ export default function RevenuePage() {
 
       {loading ? (
         <div className="flex h-64 items-center justify-center">
-          <Loader2 className="animate-spin text-indigo-600" size={40} />
+          <Loader2 className="animate-spin text-violet-600" size={40} />
         </div>
       ) : (
         <>
           <div className="grid gap-6 md:grid-cols-3">
-            <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+            <div className="rounded-2xl border border-violet-100/80 bg-white p-6 shadow-sm hover:shadow-md hover:shadow-violet-200/40 dark:border-violet-900/20 dark:bg-zinc-950">
               <div className="flex items-center justify-between">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-violet-100 text-violet-600 dark:bg-violet-900/30 dark:text-violet-400">
                   <DollarSign size={24} />
                 </div>
               </div>
               <div className="mt-4">
-                <p className="text-sm font-medium text-zinc-500">Net Revenue</p>
+                <p className="text-sm font-medium text-slate-400">Net Revenue</p>
                 <p className="text-3xl font-black text-zinc-900 dark:text-white">{formatCurrency(stats?.totalRevenue || 0)}</p>
               </div>
             </div>
 
-            <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+            <div className="rounded-2xl border border-violet-100/80 bg-white p-6 shadow-sm hover:shadow-md hover:shadow-violet-200/40 dark:border-violet-900/20 dark:bg-zinc-950">
               <div className="flex items-center justify-between">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400">
                   <CheckCircle2 size={24} />
                 </div>
               </div>
               <div className="mt-4">
-                <p className="text-sm font-medium text-zinc-500">Month Revenue</p>
+                <p className="text-sm font-medium text-slate-400">Month Revenue</p>
                 <p className="text-3xl font-black text-zinc-900 dark:text-white">{formatCurrency(stats?.monthRevenue || 0)}</p>
               </div>
             </div>
 
-            <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+            <div className="rounded-2xl border border-violet-100/80 bg-white p-6 shadow-sm hover:shadow-md hover:shadow-violet-200/40 dark:border-violet-900/20 dark:bg-zinc-950">
               <div className="flex items-center justify-between">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-pink-100 text-pink-600 dark:bg-pink-900/20 dark:text-pink-400">
                   <TrendingUp size={24} />
                 </div>
               </div>
               <div className="mt-4">
-                <p className="text-sm font-medium text-zinc-500">Today Revenue</p>
+                <p className="text-sm font-medium text-slate-400">Today Revenue</p>
                 <p className="text-3xl font-black text-zinc-900 dark:text-white">{formatCurrency(stats?.todayRevenue || 0)}</p>
               </div>
             </div>
           </div>
           
-          <div className="rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+          <div className="rounded-2xl border border-violet-100/80 bg-white p-8 shadow-sm dark:border-violet-900/20 dark:bg-zinc-950">
             <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-6">Revenue Performance</h3>
             <div className="h-[350px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -116,11 +116,21 @@ export default function RevenuePage() {
                   { name: 'Month', amount: stats?.monthRevenue || 0 },
                   { name: 'Today', amount: stats?.todayRevenue || 0 },
                 ]}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e4e4e7" />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} />
-                  <YAxis axisLine={false} tickLine={false} tickFormatter={(v) => `₹${v}`} />
-                  <Tooltip cursor={{fill: 'transparent'}} contentStyle={{ borderRadius: '12px' }} />
-                  <Bar dataKey="amount" fill="#4f46e5" radius={[8, 8, 0, 0]} barSize={60} />
+                  <defs>
+                    <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#7C3AED" stopOpacity={1} />
+                      <stop offset="100%" stopColor="#EC4899" stopOpacity={0.8} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#ede9fe" />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#a78bfa', fontSize: 12 }} />
+                  <YAxis axisLine={false} tickLine={false} tickFormatter={(v) => `₹${v}`} tick={{ fill: '#a78bfa', fontSize: 12 }} />
+                  <Tooltip
+                    cursor={{ fill: 'rgba(124,58,237,0.05)' }}
+                    contentStyle={{ backgroundColor: '#1e1b4b', border: 'none', borderRadius: '12px', color: '#ede9fe', fontSize: 12 }}
+                    formatter={(v: any) => [`₹${v}`, 'Revenue']}
+                  />
+                  <Bar dataKey="amount" fill="url(#barGrad)" radius={[8, 8, 0, 0]} barSize={60} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

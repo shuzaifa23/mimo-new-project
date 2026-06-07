@@ -43,14 +43,15 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-zinc-50 via-indigo-50/30 to-zinc-50 px-4 dark:from-zinc-950 dark:via-indigo-950/20 dark:to-zinc-950">
+    <div className="flex min-h-screen items-center justify-center px-4" style={{ background: 'linear-gradient(135deg, #F5F3FF 0%, #FAF5FF 40%, #FDF2F8 100%)' }}>
       {/* Background grid pattern */}
       <div className="pointer-events-none absolute inset-0 bg-[url('/grid.svg')] opacity-5" />
 
       <div className="relative w-full max-w-md">
         {/* Logo & Heading */}
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-2xl shadow-indigo-500/30 ring-4 ring-indigo-600/20">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl text-white shadow-2xl shadow-violet-500/30 ring-4 ring-violet-600/20"
+            style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)' }}>
             <PackageCheck size={30} />
           </div>
           <h1 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-white">MIMO Admin</h1>
@@ -102,7 +103,8 @@ export default function AdminLoginPage() {
             <Button
               id="admin-login-btn"
               type="submit"
-              className="w-full h-12 gap-2 bg-indigo-600 text-base font-bold shadow-lg shadow-indigo-500/20 hover:bg-indigo-700 disabled:opacity-60"
+              className="w-full h-12 gap-2 text-base font-bold shadow-lg shadow-violet-500/20 disabled:opacity-60"
+              style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)', color: '#fff' }}
               disabled={loading}
             >
               {loading ? (
