@@ -81,6 +81,16 @@ export async function middleware(request: NextRequest) {
   const { data: { session } } = await supabase.auth.getSession()
 
   const path = request.nextUrl.pathname
+  
+  // Catch OAuth code redirects that fell back to the root Site URL
+  // and forward them to the proper auth callback route handler.
+  const code = request.nextUrl.searchParams.get('code')
+  if (code && !path.startsWith('/auth/callback')) {
+    const callbackUrl = new URL('/auth/callback', request.url)
+    callbackUrl.searchParams.set('code', code)
+    callbackUrl.searchParams.set('next', '/student')
+    return NextResponse.redirect(callbackUrl)
+  }
 
   // 1. Admin Protection (Handled by client-side guard)
   /*
