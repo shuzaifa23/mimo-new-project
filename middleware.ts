@@ -104,6 +104,12 @@ export async function middleware(request: NextRequest) {
   */
 
   // 3. Student Protection
+  if (path === '/') {
+    if (!session) {
+      return NextResponse.redirect(new URL('/student/login', request.url))
+    }
+  }
+
   if (path.startsWith('/student')) {
     if (path === '/student/login') {
       if (session) {
@@ -120,6 +126,6 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/vendor/:path*', '/student/:path*'],
+  matcher: ['/admin/:path*', '/vendor/:path*', '/student/:path*', '/'],
 }
 
