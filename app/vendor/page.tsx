@@ -251,7 +251,7 @@ export default function VendorPage() {
             <Button 
               variant="outline" 
               size="sm" 
-              onClick={fetchOrders}
+              onClick={() => fetchOrders()}
               disabled={loading}
               className="rounded-xl h-10 px-4 gap-2 flex-1 sm:flex-none"
             >

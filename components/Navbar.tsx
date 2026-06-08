@@ -1,15 +1,38 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Printer, LayoutDashboard, Home, PlusCircle, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { Printer, LayoutDashboard, Home, PlusCircle, Menu, X, LogOut } from "lucide-react";
+import { useState, useEffect } from "react";
 import ThemeToggle from "./ThemeToggle";
 import { Button } from "@/components/ui/core";
+import { supabase } from "@/lib/supabase";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/student/login");
+    router.refresh();
+  };
   
   const isSpecialPath = pathname?.startsWith('/admin') || 
                         pathname?.startsWith('/vendor') || 
@@ -64,6 +87,17 @@ export default function Navbar() {
               Print Now
             </Button>
           </Link>
+
+          {user && (
+            <Button
+              onClick={handleLogout}
+              variant="outline"
+              size="sm"
+              className="hidden sm:inline-flex h-9 px-4 rounded-full font-bold border-zinc-200 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
+            >
+              Log Out
+            </Button>
+          )}
           
           {/* Mobile Menu Toggle */}
           <button 
@@ -103,6 +137,18 @@ export default function Navbar() {
               <LayoutDashboard size={20} />
               <span>Track Order</span>
             </Link>
+            {user && (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  handleLogout();
+                }}
+                className="flex items-center gap-3 rounded-2xl p-4 text-sm font-bold text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950/20 text-left w-full cursor-pointer"
+              >
+                <LogOut size={20} />
+                <span>Log Out ({user.email})</span>
+              </button>
+            )}
           </div>
         </div>
       )}
