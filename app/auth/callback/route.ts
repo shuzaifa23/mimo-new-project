@@ -28,13 +28,13 @@ export async function GET(request: Request) {
           getAll() {
             return cookieStore.getAll();
           },
-          setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value, options }) => {
+          async setAll(cookiesToSet) {
+            for (const { name, value, options } of cookiesToSet) {
               // Set on the next/headers cookie store
-              cookieStore.set(name, value, options);
+              await cookieStore.set(name, value, options);
               // ALSO set directly on the redirect response headers
               response.cookies.set(name, value, options);
-            });
+            }
           },
         },
       }
