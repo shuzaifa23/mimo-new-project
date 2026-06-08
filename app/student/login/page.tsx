@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button, Input } from "@/components/ui/core";
 import { supabase } from "@/lib/supabase";
 import { Mail, Lock, ArrowRight, Sparkles, Loader2 } from "lucide-react";
 
-export default function StudentLoginPage() {
+function StudentLoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const errorParam = searchParams.get("error");
@@ -229,5 +229,20 @@ export default function StudentLoginPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function StudentLoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="relative flex min-h-[85vh] items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+          <p className="text-zinc-500 font-bold text-sm">Loading Student Portal...</p>
+        </div>
+      </div>
+    }>
+      <StudentLoginForm />
+    </Suspense>
   );
 }
