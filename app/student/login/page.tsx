@@ -43,7 +43,7 @@ function StudentLoginForm() {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/auth/callback?next=/student`,
+            emailRedirectTo: `${window.location.origin}/auth/callback?next=/`,
           },
         });
 
@@ -56,7 +56,7 @@ function StudentLoginForm() {
           });
         } else {
           setMessage({ type: "success", text: "Welcome! Redirecting..." });
-          router.push("/student");
+          router.push("/");
           router.refresh();
         }
       } else {
@@ -68,7 +68,7 @@ function StudentLoginForm() {
         if (error) throw error;
 
         setMessage({ type: "success", text: "Welcome back! Redirecting..." });
-        router.push("/student");
+        router.push("/");
         router.refresh();
       }
     } catch (err: any) {
@@ -86,7 +86,7 @@ function StudentLoginForm() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/auth/callback?next=/student`,
+          redirectTo: `${window.location.origin}/auth/callback?next=/`,
         },
       });
 

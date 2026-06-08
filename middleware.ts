@@ -88,7 +88,7 @@ export async function middleware(request: NextRequest) {
   if (code && !path.startsWith('/auth/callback')) {
     const callbackUrl = new URL('/auth/callback', request.url)
     callbackUrl.searchParams.set('code', code)
-    callbackUrl.searchParams.set('next', '/student')
+    callbackUrl.searchParams.set('next', '/')
     return NextResponse.redirect(callbackUrl)
   }
 
@@ -123,7 +123,7 @@ export async function middleware(request: NextRequest) {
   if (path.startsWith('/student')) {
     if (path === '/student/login') {
       if (session) {
-        return NextResponse.redirect(new URL('/student', request.url))
+        return NextResponse.redirect(new URL('/', request.url))
       }
       return response
     }

@@ -37,7 +37,8 @@ export default function Navbar() {
   const isSpecialPath = pathname?.startsWith('/admin') || 
                         pathname?.startsWith('/vendor') || 
                         pathname?.startsWith('/vendor-login') || 
-                        pathname?.startsWith('/dashboard');
+                        pathname?.startsWith('/dashboard') ||
+                        pathname?.startsWith('/student/login');
 
   if (isSpecialPath) return null;
   
