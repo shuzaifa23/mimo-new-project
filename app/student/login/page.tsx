@@ -87,6 +87,9 @@ function StudentLoginForm() {
         provider: "google",
         options: {
           redirectTo: `${window.location.origin}/auth/callback?next=/`,
+          queryParams: {
+            prompt: 'select_account'
+          }
         },
       });
 
