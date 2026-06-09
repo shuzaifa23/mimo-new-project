@@ -251,7 +251,7 @@ export async function updateOrderStatus(orderId: string, status: string) {
 export function getWhatsAppLink(phone: string | null, status: string, orderId: string) {
   if (!phone) return null;
   const message = status === 'Completed'
-    ? `Hi! Your MIMO Print order #${orderId.slice(0, 8)} status has been updated to: *${status}*. \n\ncollect your document from printshop\nThank you for choosing MIMO!`
+    ? `Hi! Your MIMO Print order #${orderId.slice(0, 8)} status has been updated to: *${status}*. \n\ncollect your document from printshop\nTrack your order here: https://www.printmimo.page/student/track \n\nThank you for choosing MIMO!`
     : `Hi! Your MIMO Print order #${orderId.slice(0, 8)} status has been updated to: *${status}*. \n\nTrack your order here: https://www.printmimo.page/student/track \n\nThank you for choosing MIMO!`;
   const encoded = encodeURIComponent(message);
   // Clean phone number (remove spaces, non-digits)
