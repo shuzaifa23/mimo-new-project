@@ -6,6 +6,8 @@ import { Button, Input } from '@/components/ui/core';
 import { supabase } from '@/lib/supabase';
 import { Lock, Mail, Loader2, ArrowRight } from 'lucide-react';
 
+import ThemeToggle from '@/components/ThemeToggle';
+
 export default function VendorLoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -80,7 +82,12 @@ export default function VendorLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950 px-4 relative">
+      {/* Theme Toggle in Top Right */}
+      <div className="absolute top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
+
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-xl shadow-indigo-500/20 mb-4">

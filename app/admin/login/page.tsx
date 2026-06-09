@@ -6,6 +6,8 @@ import { PackageCheck, ShieldCheck, ArrowRight, Loader2, AlertCircle } from 'luc
 import { Button, Input } from '@/components/ui/core';
 import { signInAdmin } from '@/lib/admin-api';
 
+import ThemeToggle from '@/components/ThemeToggle';
+
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -43,7 +45,12 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4" style={{ background: 'linear-gradient(135deg, #F5F3FF 0%, #FAF5FF 40%, #FDF2F8 100%)' }}>
+    <div className="flex min-h-screen items-center justify-center px-4 bg-zinc-50 dark:bg-zinc-950 transition-colors duration-300 relative">
+      {/* Theme Toggle in Top Right */}
+      <div className="absolute top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
+
       {/* Background grid pattern */}
       <div className="pointer-events-none absolute inset-0 bg-[url('/grid.svg')] opacity-5" />
 

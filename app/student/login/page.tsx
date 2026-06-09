@@ -4,7 +4,63 @@ import React, { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button, Input } from "@/components/ui/core";
 import { supabase } from "@/lib/supabase";
-import { Mail, Lock, ArrowRight, Printer, Loader2 } from "lucide-react";
+import { Mail, Lock, ArrowRight, Loader2 } from "lucide-react";
+import Image from "next/image";
+import ThemeToggle from "@/components/ThemeToggle";
+
+function ThreeDLogo() {
+  const [rotate, setRotate] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = e.currentTarget;
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    
+    // Scale down rotation (max 15 degrees)
+    const rotateX = -(y / (rect.height / 2)) * 15;
+    const rotateY = (x / (rect.width / 2)) * 15;
+    
+    setRotate({ x: rotateX, y: rotateY });
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    setRotate({ x: 0, y: 0 });
+  };
+
+  return (
+    <div 
+      className="mx-auto mb-6 flex h-20 w-64 items-center justify-center cursor-pointer select-none"
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={handleMouseLeave}
+      style={{ perspective: "1000px" }}
+    >
+      <div 
+        className="w-full h-full transition-all duration-200 ease-out flex items-center justify-center rounded-2xl bg-zinc-950 p-4 shadow-xl shadow-indigo-500/10 border border-zinc-800"
+        style={{
+          transform: isHovered 
+            ? `rotateX(${rotate.x}deg) rotateY(${rotate.y}deg) scale(1.08)` 
+            : `rotateX(0deg) rotateY(0deg) scale(1)`,
+          transformStyle: "preserve-3d"
+        }}
+      >
+        <div style={{ transform: "translateZ(20px)" }} className="relative w-full h-full flex items-center justify-center">
+          <Image 
+            src="/logo.png" 
+            alt="MIMO Print Logo" 
+            width={200} 
+            height={60}
+            className="object-contain filter drop-shadow-[0_8px_16px_rgba(99,102,241,0.25)]"
+            priority
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function StudentLoginForm() {
   const router = useRouter();
@@ -102,15 +158,18 @@ function StudentLoginForm() {
 
   return (
     <div className="relative flex min-h-[85vh] items-center justify-center overflow-hidden px-4 py-12">
+      {/* Theme Toggle in Top Right */}
+      <div className="absolute top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
+
       {/* Decorative background blobs */}
       <div className="absolute top-1/4 left-1/4 -z-10 h-72 w-72 -translate-x-1/2 rounded-full bg-indigo-400/20 blur-3xl dark:bg-indigo-600/10" />
       <div className="absolute bottom-1/4 right-1/4 -z-10 h-72 w-72 translate-x-1/2 rounded-full bg-pink-400/20 blur-3xl dark:bg-pink-600/10" />
 
       <div className="w-full max-w-md overflow-hidden rounded-[2.5rem] border border-zinc-200/60 bg-white/70 p-8 shadow-2xl backdrop-blur-xl dark:border-zinc-800/60 dark:bg-zinc-900/70 dark:shadow-none sm:p-10">
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-500/30">
-            <Printer size={26} />
-          </div>
+          <ThreeDLogo />
           <h2 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-white">
             {isSignUp ? "Create Account" : "Welcome to MIMO"}
           </h2>

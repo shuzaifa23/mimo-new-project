@@ -6,6 +6,8 @@ import { Store, ShieldCheck, ArrowRight, Loader2, AlertCircle } from 'lucide-rea
 import { Button, Input } from '@/components/ui/core';
 import { supabase } from '@/lib/supabase';
 
+import ThemeToggle from '@/components/ThemeToggle';
+
 export default function VendorLoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -59,7 +61,12 @@ export default function VendorLoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-zinc-50 via-emerald-50/30 to-zinc-50 px-4 dark:from-zinc-950 dark:via-emerald-950/20 dark:to-zinc-950">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-zinc-50 via-emerald-50/30 to-zinc-50 px-4 dark:from-zinc-950 dark:via-emerald-950/20 dark:to-zinc-950 relative">
+      {/* Theme Toggle in Top Right */}
+      <div className="absolute top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
+
       <div className="relative w-full max-w-md">
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-600 text-white shadow-2xl shadow-emerald-500/30 ring-4 ring-emerald-600/20">
