@@ -91,7 +91,7 @@ export default function OrdersPage() {
           const formattedPhone = cleanPhone.length === 10 ? '91' + cleanPhone : cleanPhone;
           const message = newStatus === 'Completed'
             ? `Hi! Your MIMO Print order #${orderId.slice(0, 8)} status has been updated to: *${newStatus}*. \n\ncollect your document from printshop\nThank you for choosing MIMO!`
-            : `Hi! Your MIMO Print order #${orderId.slice(0, 8)} status has been updated to: *${newStatus}*. \n\nTrack your order here: https://mimo-print.vercel.app/student \n\nThank you for choosing MIMO!`;
+            : `Hi! Your MIMO Print order #${orderId.slice(0, 8)} status has been updated to: *${newStatus}*. \n\nTrack your order here: https://www.printmimo.page/student/track \n\nThank you for choosing MIMO!`;
           window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`, "_blank");
         }
       }
@@ -307,7 +307,7 @@ export default function OrdersPage() {
                             href={`https://wa.me/${(order.phone || order.profiles?.phone || "").replace(/\D/g, '').length === 10 ? '91' + (order.phone || order.profiles?.phone || "").replace(/\D/g, '') : (order.phone || order.profiles?.phone || "").replace(/\D/g, '')}?text=${encodeURIComponent(
                               order.status === 'Completed'
                                 ? `Hi! Your MIMO Print order #${order.id.slice(0, 8)} status has been updated to: *${order.status}*. \n\ncollect your document from printshop\nThank you for choosing MIMO!`
-                                : `Hi! Your MIMO Print order #${order.id.slice(0, 8)} status has been updated to: *${order.status}*. \n\nTrack your order here: https://mimo-print.vercel.app/student \n\nThank you for choosing MIMO!`
+                                : `Hi! Your MIMO Print order #${order.id.slice(0, 8)} status has been updated to: *${order.status}*. \n\nTrack your order here: https://www.printmimo.page/student/track \n\nThank you for choosing MIMO!`
                             )}`}
                             target="_blank" 
                             rel="noopener noreferrer" 
