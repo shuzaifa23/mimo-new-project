@@ -71,8 +71,8 @@ export default function Navbar() {
             <span>New Order</span>
           </Link>
           <Link 
-            href="/student" 
-            className={`flex items-center gap-2 text-sm font-bold transition-colors ${pathname === '/student' ? 'text-indigo-600' : 'text-zinc-500 hover:text-indigo-600'}`}
+            href="/student/track" 
+            className={`flex items-center gap-2 text-sm font-bold transition-colors ${pathname === '/student/track' ? 'text-indigo-600' : 'text-zinc-500 hover:text-indigo-600'}`}
           >
             <LayoutDashboard size={16} />
             <span>Track Order</span>
@@ -131,9 +131,9 @@ export default function Navbar() {
               <span>New Order</span>
             </Link>
             <Link 
-              href="/student" 
+              href="/student/track" 
               onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-3 rounded-2xl p-4 text-sm font-bold ${pathname === '/student' ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20' : 'text-zinc-600 dark:text-zinc-400'}`}
+              className={`flex items-center gap-3 rounded-2xl p-4 text-sm font-bold ${pathname === '/student/track' ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20' : 'text-zinc-600 dark:text-zinc-400'}`}
             >
               <LayoutDashboard size={20} />
               <span>Track Order</span>

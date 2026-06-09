@@ -221,7 +221,7 @@ function SuccessContent() {
       <div className="flex flex-col sm:flex-row gap-4">
         <Button 
           className="flex-1 h-12 bg-indigo-600 text-white hover:bg-indigo-700 font-bold rounded-2xl shadow-lg shadow-indigo-600/10 flex items-center justify-center gap-2"
-          onClick={() => router.push("/student")}
+          onClick={() => router.push("/student/track")}
         >
           Track My Orders
           <ArrowRight size={16} />
