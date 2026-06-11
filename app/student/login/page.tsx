@@ -40,7 +40,7 @@ function ThreeDLogo() {
         style={{ perspective: "1000px" }}
       >
         <div 
-          className="flex items-center gap-2.5 transition-all duration-200 ease-out p-2 rounded-2xl hover:bg-zinc-100 dark:hover:bg-zinc-900/60"
+          className="flex items-end gap-0 transition-all duration-200 ease-out p-2 rounded-2xl hover:bg-zinc-100 dark:hover:bg-zinc-900/60"
           style={{
             transform: isHovered 
               ? `rotateX(${rotate.x}deg) rotateY(${rotate.y}deg) scale(1.05)` 
@@ -50,15 +50,16 @@ function ThreeDLogo() {
         >
           <div 
             style={{ transform: "translateZ(15px)" }}
-            className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-lg shadow-indigo-500/30"
+            className="flex items-end"
           >
-            <Printer size={20} />
+            <img src="/mimo-x-light.png" alt="MIMO X Logo" className="h-8 md:h-10 object-contain block dark:hidden" />
+            <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="h-8 md:h-10 object-contain hidden dark:block" />
           </div>
           <span 
             style={{ transform: "translateZ(10px)" }}
-            className="text-lg font-black tracking-tight text-zinc-900 dark:text-white"
+            className="text-[10px] md:text-xs font-black tracking-widest text-zinc-900 dark:text-white -ml-4 md:-ml-5 mb-1 md:mb-1.5 italic uppercase"
           >
-            MIMO <span className="text-indigo-600 italic uppercase">Print</span>
+            PRESS
           </span>
         </div>
       </div>
