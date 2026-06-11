@@ -91,9 +91,9 @@ export default function VendorLoginPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="mx-auto mb-4 flex h-16 items-end justify-center">
-            <img src="/mimo-x-light.png" alt="MIMO X Logo" className="h-10 md:h-12 object-contain block dark:hidden" />
+            <img src="/mimo-x-light.png" alt="MIMO X Logo" className="h-10 md:h-12 object-contain block dark:hidden mix-blend-multiply" />
             <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="h-10 md:h-12 object-contain hidden dark:block" />
-            <span className="text-xs md:text-sm font-black tracking-widest text-zinc-900 dark:text-white -ml-5 md:-ml-6 mb-1.5 md:mb-2 italic uppercase">PRESS</span>
+            <span className="relative z-10 text-xs md:text-sm font-black tracking-widest text-zinc-900 dark:text-white -ml-5 md:-ml-6 mb-1.5 md:mb-2 italic uppercase">PRESS</span>
           </div>
           <h1 className="text-3xl font-black text-zinc-900 dark:text-white tracking-tight">Vendor Portal</h1>
           <p className="text-zinc-500 mt-2">Sign in to manage your print shop orders</p>

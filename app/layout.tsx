@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MIMO Print",
-  description: "Modern student printing platform. Order print jobs online and pick them up at partner shops.",
+  title: "MIMO X PRESS | The Ultimate Student Printing Portal",
+  description: "Lightning-fast modern student printing platform. Experience seamless document printing and order tracking with MIMO X PRESS.",
 };
 
 import Navbar from "@/components/Navbar";

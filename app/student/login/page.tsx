@@ -52,15 +52,14 @@ function ThreeDLogo() {
             style={{ transform: "translateZ(15px)" }}
             className="flex items-end"
           >
-            <img src="/mimo-x-light.png" alt="MIMO X Logo" className="h-8 md:h-10 object-contain block dark:hidden" />
+            <img src="/mimo-x-light.png" alt="MIMO X Logo" className="h-8 md:h-10 object-contain block dark:hidden mix-blend-multiply" />
             <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="h-8 md:h-10 object-contain hidden dark:block" />
+            <span 
+              className="relative z-10 text-[10px] md:text-xs font-black tracking-widest text-zinc-900 dark:text-white -ml-4 md:-ml-5 mb-1 md:mb-1.5 italic uppercase"
+            >
+              PRESS
+            </span>
           </div>
-          <span 
-            style={{ transform: "translateZ(10px)" }}
-            className="text-[10px] md:text-xs font-black tracking-widest text-zinc-900 dark:text-white -ml-4 md:-ml-5 mb-1 md:mb-1.5 italic uppercase"
-          >
-            PRESS
-          </span>
         </div>
       </div>
     </Link>
