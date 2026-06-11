@@ -125,9 +125,14 @@ export default function AdminLoginPage() {
           </form>
         </div>
 
-        <p className="mt-8 text-center text-xs text-zinc-400">
-          &copy; {new Date().getFullYear()} MIMO Printing Platform &mdash; All rights reserved by S. Huzaifa.
-        </p>
+        <div className="mt-8 flex flex-col items-center gap-1.5 text-center">
+          <p className="text-xs font-semibold tracking-wide text-zinc-500 dark:text-zinc-400">
+            Software Designed & Developed by <span className="font-bold text-indigo-600 dark:text-indigo-400">S Huzaifa</span>
+          </p>
+          <p className="text-[10px] font-medium text-zinc-400 dark:text-zinc-500">
+            &copy; 2026 Vision Printt Technologies. All Rights Reserved.
+          </p>
+        </div>
       </div>
     </div>
   );

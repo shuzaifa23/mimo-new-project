@@ -42,12 +42,17 @@ export default function Home() {
             <img src="/mimo-x-light.png" alt="MIMO X Logo" className="h-6 object-contain block dark:hidden" />
             <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="h-6 object-contain hidden dark:block" />
           </Link>
-          <p className="mt-4 text-sm text-zinc-500 dark:text-zinc-400">
-            © 2026 vision printt technologies All rights reserved by{" "}
-            <Link href="/admin" className="font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors">
-              S.Huzaifa
-            </Link>
-          </p>
+          <div className="mt-6 flex flex-col items-center gap-1.5">
+            <p className="text-sm font-semibold tracking-wide text-zinc-500 dark:text-zinc-400">
+              Software Designed & Developed by{" "}
+              <Link href="/admin" className="font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors">
+                S Huzaifa
+              </Link>
+            </p>
+            <p className="text-xs font-medium text-zinc-400 dark:text-zinc-500">
+              © 2026 Vision Printt Technologies. All Rights Reserved.
+            </p>
+          </div>
         </div>
       </footer>
     </div>
