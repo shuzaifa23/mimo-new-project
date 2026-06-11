@@ -287,22 +287,33 @@ export default function StudentPage() {
                     <StatusTimeline currentStatus={order.status} />
                   </div>
 
-                  {/* Body: Order Details */}
-                  <div className="flex flex-col sm:flex-row items-center justify-between p-8 gap-6">
-                    <div className="flex gap-12 flex-wrap sm:flex-nowrap">
-                      <div>
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Print Type</p>
-                        <p className="mt-1.5 font-bold text-zinc-900 dark:text-white">{order.print_type === 'bw' ? 'Black & White' : 'Full Color'}</p>
+                    <div className="flex flex-col sm:flex-row items-center justify-between p-8 gap-6">
+                      <div className="flex gap-12 flex-wrap sm:flex-nowrap">
+                        <div>
+                          <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Print Type</p>
+                          <p className="mt-1.5 font-bold text-zinc-900 dark:text-white">{order.print_type === 'bw' ? 'Black & White' : 'Full Color'}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Volume</p>
+                          <p className="mt-1.5 font-bold text-zinc-900 dark:text-white">{order.pages} Pages × {order.copies} Copies</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Binding</p>
+                          <p className="mt-1.5 font-bold text-zinc-900 dark:text-white capitalize">{(order as any).binding || 'None'}</p>
+                        </div>
+                        {order.file_name?.includes('GSM:') && (
+                          <>
+                            <div>
+                              <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">GSM</p>
+                              <p className="mt-1.5 font-bold text-zinc-900 dark:text-white">{order.file_name.split(' | ').find((p: string) => p.startsWith('GSM:'))?.replace('GSM: ', '') || '75'}</p>
+                            </div>
+                            <div>
+                              <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Sides</p>
+                              <p className="mt-1.5 font-bold text-zinc-900 dark:text-white">{order.file_name.split(' | ').find((p: string) => p.startsWith('Sides:'))?.replace('Sides: ', '') || 'Single'}</p>
+                            </div>
+                          </>
+                        )}
                       </div>
-                      <div>
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Volume</p>
-                        <p className="mt-1.5 font-bold text-zinc-900 dark:text-white">{order.pages} Pages × {order.copies} Copies</p>
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Binding</p>
-                        <p className="mt-1.5 font-bold text-zinc-900 dark:text-white capitalize">{(order as any).binding || 'None'}</p>
-                      </div>
-                    </div>
                     
                     <div className="flex items-center gap-3 w-full sm:w-auto">
                       {order.file_url && (

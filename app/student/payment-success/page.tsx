@@ -59,23 +59,43 @@ function SuccessContent() {
         // Since backend already inserted/updated the order, we fetch the order from the DB to display the receipt!
         const { data: dbOrder } = await supabase
           .from("orders")
-          .select("id, customer_name, amount, file_name, phone, vendor_name")
+          .select("id, customer_name, amount, file_name, phone, vendor_name, print_type, copies, binding")
           .or(`id.eq.${orderId},payment_order_id.eq.${orderId}`)
           .single();
 
         if (dbOrder) {
-          setOrderInfo(dbOrder);
+          const fileNameParts = (dbOrder.file_name || "").split(' | ');
+          const parsedFileName = fileNameParts[0];
+          const parsedGsm = fileNameParts.find((p: string) => p.startsWith('GSM:'))?.replace('GSM: ', '') || orderData?.gsm || "75";
+          const parsedSidesStr = fileNameParts.find((p: string) => p.startsWith('Sides:'))?.replace('Sides: ', '');
+          const parsedSides = parsedSidesStr ? (parsedSidesStr === 'Front & Back' ? 'double' : 'single') : (orderData?.sides || "single");
+
+          setOrderInfo({
+            ...dbOrder,
+            file_name: parsedFileName,
+            gsm: parsedGsm,
+            sides: parsedSides,
+            print_type: dbOrder.print_type || orderData?.printType || "bw",
+            copies: dbOrder.copies || orderData?.copies || 1,
+            binding: dbOrder.binding || orderData?.binding || "none"
+          });
           if (dbOrder.phone) {
             localStorage.setItem("student_phone", dbOrder.phone);
           }
         } else if (orderData) {
+          const fileNameParts = (orderData.fileName || "").split(' | ');
           localStorage.setItem("student_phone", orderData.phone);
           setOrderInfo({
             id: orderId,
             customer_name: orderData.name,
             amount: orderData.amount,
-            file_name: orderData.fileName,
-            vendor_name: orderData.vendorName || "REVA UNIVERSITY"
+            file_name: fileNameParts[0],
+            vendor_name: orderData.vendorName || "REVA UNIVERSITY",
+            print_type: orderData.printType || "bw",
+            copies: orderData.copies || 1,
+            binding: orderData.binding || "none",
+            gsm: fileNameParts.find((p: string) => p.startsWith('GSM:'))?.replace('GSM: ', '') || orderData.gsm || "75",
+            sides: fileNameParts.find((p: string) => p.startsWith('Sides:'))?.replace('Sides: ', '') === 'Front & Back' ? 'double' : (orderData.sides || "single")
           });
         } else {
           setOrderInfo({
@@ -83,7 +103,12 @@ function SuccessContent() {
             customer_name: "Student",
             amount: cashfreeData.order_amount,
             file_name: "Document",
-            vendor_name: "REVA UNIVERSITY"
+            vendor_name: "REVA UNIVERSITY",
+            print_type: "bw",
+            copies: 1,
+            binding: "none",
+            gsm: "75",
+            sides: "single"
           });
         }
 
@@ -204,6 +229,46 @@ function SuccessContent() {
             </div>
             <div className="font-semibold text-zinc-800 dark:text-zinc-200 text-right truncate pl-4">
               {orderInfo?.file_name}
+            </div>
+
+            <div className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400">
+              <Printer size={16} />
+              <span>Print Type</span>
+            </div>
+            <div className="font-semibold text-zinc-800 dark:text-zinc-200 text-right">
+              {orderInfo?.print_type === "color" ? "Color Print" : "Black & White"}
+            </div>
+
+            <div className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400">
+              <FileText size={16} />
+              <span>GSM</span>
+            </div>
+            <div className="font-semibold text-zinc-800 dark:text-zinc-200 text-right">
+              {orderInfo?.gsm} GSM
+            </div>
+
+            <div className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400">
+              <FileText size={16} />
+              <span>Sides</span>
+            </div>
+            <div className="font-semibold text-zinc-800 dark:text-zinc-200 text-right">
+              {orderInfo?.sides === "double" ? "Front & Back" : "Single Side"}
+            </div>
+
+            <div className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400">
+              <FileText size={16} />
+              <span>Copies</span>
+            </div>
+            <div className="font-semibold text-zinc-800 dark:text-zinc-200 text-right">
+              {orderInfo?.copies}
+            </div>
+
+            <div className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400">
+              <FileText size={16} />
+              <span>Binding</span>
+            </div>
+            <div className="font-semibold text-zinc-800 dark:text-zinc-200 text-right capitalize">
+              {orderInfo?.binding}
             </div>
 
             <div className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400">

@@ -94,16 +94,13 @@ export async function fetchDashboardStats(): Promise<DashboardStats> {
     const monthRevenue = ((monthRevenueRes as any)?.data || []).reduce((sum: number, o: any) => sum + (o.amount || 0), 0);
 
     // Calculate Vendor Performance
-    const performanceMap: Record<string, { name: string; orders: number; revenue: number }> = {};
+    const performanceMap: Record<string, { name: string; orders: number; revenue: number }> = {
+      "MIMO Print": { name: "MIMO Print", orders: 0, revenue: 0 }
+    };
     orders.forEach(o => {
-      if (o.vendor_name) {
-        if (!performanceMap[o.vendor_name]) {
-          performanceMap[o.vendor_name] = { name: o.vendor_name, orders: 0, revenue: 0 };
-        }
-        performanceMap[o.vendor_name].orders += 1;
-        if ((o.payment_status || '').toLowerCase() === 'paid') {
-          performanceMap[o.vendor_name].revenue += (o.amount || 0);
-        }
+      performanceMap["MIMO Print"].orders += 1;
+      if ((o.payment_status || '').toLowerCase() === 'paid') {
+        performanceMap["MIMO Print"].revenue += (o.amount || 0);
       }
     });
 

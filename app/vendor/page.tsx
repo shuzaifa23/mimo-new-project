@@ -377,6 +377,18 @@ export default function VendorPage() {
                             <p className="text-xs text-zinc-500 font-medium">
                               Binding: <span className="capitalize">{order.binding}</span>
                             </p>
+                            <div className="flex items-center gap-2 mt-1">
+                              {order.file_name?.includes('GSM:') && (
+                                <>
+                                  <span className="inline-flex items-center rounded bg-indigo-50 px-1.5 py-0.5 text-[10px] font-bold text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400">
+                                    GSM {order.file_name.split(' | ').find((p: string) => p.startsWith('GSM:'))?.replace('GSM: ', '') || '75'}
+                                  </span>
+                                  <span className="inline-flex items-center rounded bg-violet-50 px-1.5 py-0.5 text-[10px] font-bold text-violet-600 dark:bg-violet-900/30 dark:text-violet-400">
+                                    {order.file_name.split(' | ').find((p: string) => p.startsWith('Sides:'))?.replace('Sides: ', '') || 'Single'}
+                                  </span>
+                                </>
+                              )}
+                            </div>
                           </div>
                         </td>
                         <td className="px-6 py-6">
@@ -396,7 +408,7 @@ export default function VendorPage() {
                                 <button 
                                   onClick={() => {
                                     setPreviewUrl(order.file_url);
-                                    setPreviewName(order.file_name || 'document.pdf');
+                                    setPreviewName((order.file_name || 'document.pdf').split(' | ')[0]);
                                   }}
                                   className="flex h-9 w-9 items-center justify-center rounded-xl bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700 transition-colors"
                                   title="Preview File"
@@ -407,7 +419,7 @@ export default function VendorPage() {
                                   onClick={() => {
                                     const a = document.createElement("a");
                                     a.href = order.file_url;
-                                    a.download = order.file_name || "document.pdf";
+                                    a.download = (order.file_name || "document.pdf").split(' | ')[0];
                                     document.body.appendChild(a);
                                     a.click();
                                     document.body.removeChild(a);

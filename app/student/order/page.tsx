@@ -22,6 +22,7 @@ export default function OrderPage() {
     binding: "none",
     pages: 1,
     gsm: "75",
+    sides: "single",
   });
 
   const resetForm = () => {
@@ -34,6 +35,7 @@ export default function OrderPage() {
       binding: "none",
       pages: 1,
       gsm: "75",
+      sides: "single",
     });
     setFile(null);
   };
@@ -139,7 +141,7 @@ export default function OrderPage() {
         ...formData,
         vendorName: formData.vendorId === "REVA UNIVERSITY" ? "REVA UNIVERSITY" : (selectedVendor ? selectedVendor.shop_name : "MIMO Print"),
         amount,
-        fileName: file.name,
+        fileName: `${file.name} | GSM: ${formData.gsm} | Sides: ${formData.sides === 'double' ? 'Front & Back' : 'Single Side'}`,
         fileUrl,
         orderId,
       };
@@ -226,6 +228,17 @@ export default function OrderPage() {
                     <option value="75">GSM(75)</option>
                     <option value="90">GSM(90)</option>
                     <option value="100">GSM(100)</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">Sides</label>
+                  <select
+                    className="flex h-11 w-full rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 dark:border-zinc-800 dark:bg-zinc-950"
+                    value={formData.sides}
+                    onChange={(e) => setFormData({ ...formData, sides: e.target.value })}
+                  >
+                    <option value="single">Single Side</option>
+                    <option value="double">Front & Back</option>
                   </select>
                 </div>
                 <div>

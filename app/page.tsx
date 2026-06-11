@@ -6,7 +6,7 @@ import { Printer, FileText, ArrowRight, Zap } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen bg-white dark:bg-zinc-950 transition-colors duration-300 relative overflow-x-hidden">
+    <div className="flex flex-col min-h-[calc(100vh-64px)] bg-white dark:bg-zinc-950 transition-colors duration-300 relative overflow-x-hidden">
       {/* Fixed background container to prevent image stretching over scroll height */}
       <div 
         style={{ backgroundImage: 'var(--bg-mockup)' }}
@@ -36,13 +36,13 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-200 bg-white/90 py-10 dark:border-zinc-800 dark:bg-zinc-950/90 backdrop-blur-sm">
+      <footer className="border-t border-zinc-200 bg-white/90 py-6 dark:border-zinc-800 dark:bg-zinc-950/90 backdrop-blur-sm">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
           <Link href="/vendor" className="inline-flex items-center justify-center transition-transform hover:scale-105 active:scale-95">
-            <img src="/mimo-x-light.png" alt="MIMO X Logo" className="h-6 object-contain block dark:hidden" />
-            <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="h-6 object-contain hidden dark:block" />
+            <img src="/mimo-x-light.png" alt="MIMO X Logo" className="h-5 object-contain block dark:hidden" />
+            <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="h-5 object-contain hidden dark:block" />
           </Link>
-          <div className="mt-6 flex flex-col items-center gap-1.5">
+          <div className="mt-3 flex flex-col items-center gap-1.5">
             <p className="text-sm font-semibold tracking-wide text-zinc-500 dark:text-zinc-400">
               Software Designed & Developed by{" "}
               <Link href="/admin" className="font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors">
