@@ -11,7 +11,8 @@ import {
   Printer, 
   Smartphone, 
   Calendar, 
-  DollarSign, 
+  IndianRupee, 
+  MapPin,
   FileText,
   ArrowRight,
   Sparkles
@@ -58,7 +59,7 @@ function SuccessContent() {
         // Since backend already inserted/updated the order, we fetch the order from the DB to display the receipt!
         const { data: dbOrder } = await supabase
           .from("orders")
-          .select("id, customer_name, amount, file_name, phone")
+          .select("id, customer_name, amount, file_name, phone, vendor_name")
           .or(`id.eq.${orderId},payment_order_id.eq.${orderId}`)
           .single();
 
@@ -73,14 +74,16 @@ function SuccessContent() {
             id: orderId,
             customer_name: orderData.name,
             amount: orderData.amount,
-            file_name: orderData.fileName
+            file_name: orderData.fileName,
+            vendor_name: orderData.vendorName || "REVA UNIVERSITY"
           });
         } else {
           setOrderInfo({
             id: orderId,
             customer_name: "Student",
             amount: cashfreeData.order_amount,
-            file_name: "Document"
+            file_name: "Document",
+            vendor_name: "REVA UNIVERSITY"
           });
         }
 
@@ -176,7 +179,7 @@ function SuccessContent() {
         <div className="px-8 py-6 bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-100 dark:border-zinc-800 flex justify-between items-center">
           <div>
             <p className="text-xs text-zinc-400 dark:text-zinc-500 uppercase font-bold tracking-wider">Order ID</p>
-            <p className="text-sm font-black text-indigo-600 dark:text-indigo-400 mt-0.5 select-all">{orderId?.slice(0, 18)}...</p>
+            <p className="text-sm font-black text-indigo-600 dark:text-indigo-400 mt-0.5 select-all">{orderId}</p>
           </div>
           <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-400 text-xs font-bold">
             Paid Successfully
@@ -212,7 +215,15 @@ function SuccessContent() {
             </div>
 
             <div className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400">
-              <DollarSign size={16} />
+              <MapPin size={16} />
+              <span>Location</span>
+            </div>
+            <div className="font-semibold text-zinc-800 dark:text-zinc-200 text-right truncate pl-4">
+              {orderInfo?.vendor_name || "REVA UNIVERSITY"}
+            </div>
+
+            <div className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400">
+              <IndianRupee size={16} />
               <span>Amount Paid</span>
             </div>
             <div className="font-black text-emerald-600 dark:text-emerald-400 text-right text-base">

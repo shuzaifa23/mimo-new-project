@@ -223,7 +223,7 @@ export default function OrdersPage() {
                 filteredOrders.map((order) => (
                   <tr key={order.id} className="group hover:bg-violet-50/40 dark:hover:bg-violet-900/10 transition-colors">
                     <td className="px-6 py-4">
-                      <span className="text-xs font-bold text-violet-600 dark:text-violet-400 font-mono">{order.id.slice(0, 8)}...</span>
+                      <span className="text-xs font-bold text-violet-600 dark:text-violet-400 font-mono">{order.id}</span>
                       <div className="text-[10px] text-zinc-400 mt-0.5">{new Date(order.created_at).toLocaleDateString()}</div>
                     </td>
                     <td className="px-6 py-4">

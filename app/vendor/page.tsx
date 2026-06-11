@@ -232,23 +232,9 @@ export default function VendorPage() {
           </div>
           
           <div className="flex flex-wrap items-center gap-3">
-            <select
-              className="rounded-xl border border-zinc-200 bg-white px-4 h-10 text-sm font-bold outline-none cursor-pointer dark:border-zinc-800 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 focus:ring-2 focus:ring-indigo-500/20 shadow-sm"
-              value={selectedVendorId ?? ""}
-              onChange={(e) => {
-                const newId = e.target.value;
-                setSelectedVendorId(newId);
-                fetchOrders(newId);
-              }}
-            >
-              {vendors.length === 0 ? (
-                <option value="">{shopName}</option>
-              ) : (
-                vendors.map((v) => (
-                  <option key={v.id} value={v.id}>{v.shop_name}</option>
-                ))
-              )}
-            </select>
+            <div className="flex items-center rounded-xl border border-zinc-200 bg-white px-4 h-10 text-sm font-bold dark:border-zinc-800 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 shadow-sm">
+              {shopName}
+            </div>
 
             <Button 
               variant="outline" 

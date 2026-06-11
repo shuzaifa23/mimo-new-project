@@ -182,7 +182,7 @@ function PaymentContent() {
           <div className="mt-4 space-y-3">
             <div className="flex justify-between text-sm">
               <span className="text-zinc-500">Order ID</span>
-              <span className="font-mono font-bold text-zinc-900 dark:text-white">#{orderId?.slice(-6)?.toUpperCase() || "PENDING"}</span>
+              <span className="font-mono font-bold text-zinc-900 dark:text-white">#{orderId?.toUpperCase() || "PENDING"}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-zinc-500">Customer</span>
