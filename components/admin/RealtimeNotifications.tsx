@@ -17,6 +17,11 @@ export function RealtimeNotifications() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
 
+  const addNotification = (notif: Notification) => {
+    setNotifications(prev => [notif, ...prev].slice(0, 5));
+    // Optional: play a sound or show a toast
+  };
+
   useEffect(() => {
     // Subscribe to new orders
     const orderSubscription = supabase
@@ -61,11 +66,6 @@ export function RealtimeNotifications() {
       supabase.removeChannel(vendorSubscription);
     };
   }, []);
-
-  const addNotification = (notif: Notification) => {
-    setNotifications(prev => [notif, ...prev].slice(0, 5));
-    // Optional: play a sound or show a toast
-  };
 
   const removeNotification = (id: string) => {
     setNotifications(prev => prev.filter(n => n.id !== id));

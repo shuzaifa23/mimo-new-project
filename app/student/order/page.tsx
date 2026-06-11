@@ -16,22 +16,24 @@ export default function OrderPage() {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
-    vendorId: "",
+    vendorId: "REVA UNIVERSITY",
     printType: "bw",
     copies: 1,
     binding: "none",
     pages: 1,
+    gsm: "75",
   });
 
   const resetForm = () => {
     setFormData({
       name: "",
       phone: "",
-      vendorId: vendors.length > 0 ? vendors[0].id : "",
+      vendorId: "REVA UNIVERSITY",
       printType: "bw",
       copies: 1,
       binding: "none",
       pages: 1,
+      gsm: "75",
     });
     setFile(null);
   };
@@ -45,14 +47,7 @@ export default function OrderPage() {
 
   // Load vendors on mount
   useState(() => {
-    const fetchVendors = async () => {
-      const { data } = await supabase.from("vendors").select("id, shop_name").order("shop_name");
-      if (data && data.length > 0) {
-        setVendors(data);
-        setFormData(prev => ({ ...prev, vendorId: data[0].id }));
-      }
-    };
-    fetchVendors();
+    // Only REVA UNIVERSITY is available as per request
   });
 
   const processFile = async (selectedFile: File) => {
@@ -106,7 +101,7 @@ export default function OrderPage() {
     if (!file) return setMessage({ type: 'error', text: "Please upload your documents" });
     if (!formData.name.trim()) return setMessage({ type: 'error', text: "Name is required" });
     if (!formData.phone.trim()) return setMessage({ type: 'error', text: "Phone number is required" });
-    if (!formData.vendorId) return setMessage({ type: 'error', text: "Please select a print shop" });
+    if (!formData.vendorId) return setMessage({ type: 'error', text: "Please select your location" });
     
     // Validate phone number format for Cashfree (10 digits)
     const phoneRegex = /^[6-9]\d{9}$/;
@@ -140,7 +135,7 @@ export default function OrderPage() {
       // 2. Store metadata in localStorage (to be inserted after payment success)
       const orderData = {
         ...formData,
-        vendorName: selectedVendor ? selectedVendor.shop_name : "MIMO Print",
+        vendorName: formData.vendorId === "REVA UNIVERSITY" ? "REVA UNIVERSITY" : (selectedVendor ? selectedVendor.shop_name : "MIMO Print"),
         amount,
         fileName: file.name,
         fileUrl,
@@ -220,13 +215,16 @@ export default function OrderPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">Number of Pages</label>
-                  <Input
-                    type="number"
-                    min="1"
-                    value={formData.pages}
-                    onChange={(e) => setFormData({ ...formData, pages: parseInt(e.target.value) || 1 })}
-                  />
+                  <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">GSM</label>
+                  <select
+                    className="flex h-11 w-full rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 dark:border-zinc-800 dark:bg-zinc-950"
+                    value={formData.gsm}
+                    onChange={(e) => setFormData({ ...formData, gsm: e.target.value })}
+                  >
+                    <option value="75">GSM(75)</option>
+                    <option value="90">GSM(90)</option>
+                    <option value="100">GSM(100)</option>
+                  </select>
                 </div>
                 <div>
                   <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">Number of Copies</label>
@@ -271,17 +269,14 @@ export default function OrderPage() {
                   required
                 />
                 <div className="pt-2">
-                  <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">Select Print Shop</label>
+                  <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">Select Your Location</label>
                   <select
                     className="flex h-11 w-full rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-bold focus:ring-2 focus:ring-indigo-500 dark:border-zinc-800 dark:bg-zinc-950"
                     value={formData.vendorId}
                     onChange={(e) => setFormData({ ...formData, vendorId: e.target.value })}
                     required
                   >
-                    <option value="" disabled>Choose a shop</option>
-                    {vendors.map(v => (
-                      <option key={v.id} value={v.id}>{v.shop_name}</option>
-                    ))}
+                    <option value="REVA UNIVERSITY">REVA UNIVERSITY</option>
                   </select>
                 </div>
               </div>

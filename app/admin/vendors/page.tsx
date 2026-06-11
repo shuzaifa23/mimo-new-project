@@ -25,10 +25,6 @@ export default function VendorsPage() {
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchVendors();
-  }, []);
-
   const fetchVendors = async () => {
     setLoading(true);
     const { data, error } = await supabase
@@ -42,6 +38,12 @@ export default function VendorsPage() {
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      fetchVendors();
+    }, 0);
+  }, []);
 
   const activeVendors = vendors.filter(v => v.status?.toLowerCase() === "active").length;
   const pendingVendors = vendors.filter(v => v.status?.toLowerCase() === "pending").length;

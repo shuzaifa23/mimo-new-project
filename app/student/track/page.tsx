@@ -88,12 +88,28 @@ export default function StudentPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [phone, setPhone] = useState("");
 
+  const fetchOrders = async (phoneNumber: string) => {
+    const { data, error } = await supabase
+      .from("orders")
+      .select("*")
+      .eq("phone", phoneNumber)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error(error);
+    } else {
+      setOrders(data || []);
+    }
+  };
+
   useEffect(() => {
     const savedPhone = localStorage.getItem("student_phone");
 
     if (savedPhone) {
-      setPhone(savedPhone);
-      fetchOrders(savedPhone);
+      setTimeout(() => {
+        setPhone(savedPhone);
+        fetchOrders(savedPhone);
+      }, 0);
 
       // Subscribe to real-time order updates
       const channel = supabase
@@ -117,20 +133,6 @@ export default function StudentPage() {
       };
     }
   }, []);
-
-  const fetchOrders = async (phoneNumber: string) => {
-    const { data, error } = await supabase
-      .from("orders")
-      .select("*")
-      .eq("phone", phoneNumber)
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error(error);
-    } else {
-      setOrders(data || []);
-    }
-  };
 
   const handleDeleteOrder = async (orderId: string) => {
     if (!confirm("Are you sure you want to delete this order? This action cannot be undone.")) {

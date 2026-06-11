@@ -36,16 +36,7 @@ export default function StudentLayout({
             >
               Track Order
             </Link>
-            <Link 
-              href="/student/research" 
-              className={`text-sm font-bold transition-colors ${
-                pathname === "/student/research" 
-                  ? "text-indigo-600 border-b-2 border-indigo-600 pb-3 -mb-[14px]" 
-                  : "text-zinc-500 hover:text-indigo-600 dark:text-zinc-400 dark:hover:text-indigo-400"
-              }`}
-            >
-              Research Paper
-            </Link>
+
           </div>
         </div>
       )}

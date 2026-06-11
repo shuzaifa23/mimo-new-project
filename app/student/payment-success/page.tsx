@@ -26,16 +26,6 @@ function SuccessContent() {
 
   const orderId = searchParams.get("order_id") || searchParams.get("orderId");
 
-  useEffect(() => {
-    if (!orderId) {
-      setStatus("failed");
-      setErrorMessage("No Order ID provided in the URL.");
-      return;
-    }
-
-    verifyAndInsert();
-  }, [orderId]);
-
   const verifyAndInsert = async () => {
     try {
       // 1. Fetch order metadata from localStorage
@@ -107,6 +97,20 @@ function SuccessContent() {
       setErrorMessage(err.message || "An unexpected error occurred during verification.");
     }
   };
+
+  useEffect(() => {
+    if (!orderId) {
+      setTimeout(() => {
+        setStatus("failed");
+        setErrorMessage("No Order ID provided in the URL.");
+      }, 0);
+      return;
+    }
+
+    setTimeout(() => {
+      verifyAndInsert();
+    }, 0);
+  }, [orderId]);
 
   if (status === "verifying") {
     return (

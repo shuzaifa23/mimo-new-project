@@ -153,7 +153,7 @@ export default function VendorLoginPage() {
 
           <div className="mt-8 pt-6 border-t border-zinc-100 dark:border-zinc-800 text-center">
             <p className="text-sm text-zinc-500">
-              Don't have an account? <span className="text-indigo-600 font-bold cursor-pointer hover:underline">Contact Admin</span>
+              Don&apos;t have an account? <span className="text-indigo-600 font-bold cursor-pointer hover:underline">Contact Admin</span>
             </p>
           </div>
         </div>

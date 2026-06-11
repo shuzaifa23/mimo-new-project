@@ -370,7 +370,7 @@ export async function generateResearchPaperFrontPages(data: ResearchPaperData) {
     page5.drawText(item.title, { x: xPos, y: tocY, size: 10, font: itemFont });
 
     // Draw Dots helper
-    let dotStart = xPos + titleWidth + 10;
+    const dotStart = xPos + titleWidth + 10;
     const dotEnd = width - 110;
     let dotStr = "";
     const singleDotWidth = font.widthOfTextAtSize(".", 9);
@@ -437,7 +437,7 @@ export async function generateResearchPaperFrontPages(data: ResearchPaperData) {
         if (lineIdx === lines.length - 1) {
           // Draw dots and page no on the last line
           const lastLineWidth = itemFont.widthOfTextAtSize(line, 9.5);
-          let dotStart = xPos + lastLineWidth + 10;
+          const dotStart = xPos + lastLineWidth + 10;
           const dotEnd = width - 110;
           let dotStr = "";
           const count = Math.floor((dotEnd - dotStart) / 8);
@@ -452,7 +452,7 @@ export async function generateResearchPaperFrontPages(data: ResearchPaperData) {
       page6.drawText(item.title, { x: xPos, y: tocY2, size: 9.5, font: itemFont });
 
       // Draw Dots
-      let dotStart = xPos + titleWidth + 10;
+      const dotStart = xPos + titleWidth + 10;
       const dotEnd = width - 110;
       let dotStr = "";
       const count = Math.floor((dotEnd - dotStart) / 8);

@@ -18,20 +18,24 @@ export function AdminDashboardWrapper({
   const pathname = usePathname();
 
   useEffect(() => {
-    // Skip auth check on the login page itself
-    if (pathname === "/admin/login") {
-      setAuthChecked(true);
-      setIsAuthed(true);
-      return;
-    }
+    const timer = setTimeout(() => {
+      // Skip auth check on the login page itself
+      if (pathname === "/admin/login") {
+        setAuthChecked(true);
+        setIsAuthed(true);
+        return;
+      }
 
-    const admin = sessionStorage.getItem("admin-auth");
-    if (!admin) {
-      router.replace("/admin/login");
-    } else {
-      setIsAuthed(true);
-    }
-    setAuthChecked(true);
+      const admin = sessionStorage.getItem("admin-auth");
+      if (!admin) {
+        router.replace("/admin/login");
+      } else {
+        setIsAuthed(true);
+      }
+      setAuthChecked(true);
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, [pathname, router]);
 
   // Show nothing until the auth check completes (prevents content flash)

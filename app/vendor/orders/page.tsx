@@ -105,7 +105,9 @@ export default function VendorOrdersPage() {
       return;
     }
 
-    fetchOrders();
+    setTimeout(() => {
+      fetchOrders();
+    }, 0);
 
     // Real-time listener for orders assigned to this vendor
     const channel = supabase

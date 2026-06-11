@@ -33,7 +33,9 @@ export default function UsersManagementPage() {
   };
 
   useEffect(() => {
-    loadUsers();
+    setTimeout(() => {
+      loadUsers();
+    }, 0);
   }, []);
 
   const handleToggleBlock = async (userId: string, isBlocked: boolean) => {
