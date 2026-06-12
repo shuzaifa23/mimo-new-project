@@ -13,6 +13,9 @@ const isValidUrl = (url: string) => {
   }
 };
 
+console.log("DEBUG: supabaseUrl='", supabaseUrl, "'");
+console.log("DEBUG: anonKey exists=", !!supabaseAnonKey);
+
 if (!supabaseUrl || !supabaseAnonKey || !isValidUrl(supabaseUrl)) {
   console.warn(
     'CRITICAL: Supabase credentials are missing or invalid in .env.local. ' +

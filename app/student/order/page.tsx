@@ -125,9 +125,10 @@ export default function OrderPage() {
     setLoading(true);
 
     try {
-      // Generate MIMO + 4 random digits
+      // Generate a valid UUID for Supabase
+      const orderId = crypto.randomUUID();
       const uniqueDigits = Math.floor(1000 + Math.random() * 9000);
-      const orderId = `MIMO${uniqueDigits}`;
+      const shortMimoId = `MIMO${uniqueDigits}`;
       const fileName = `${Date.now()}_${file.name}`;
       
       // 1. Upload to Supabase Storage

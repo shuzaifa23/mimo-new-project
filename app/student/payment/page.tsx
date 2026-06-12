@@ -147,11 +147,51 @@ function PaymentContent() {
     } catch (err) {
       const error = err as Error;
       console.error("Cashfree Integration Error:", error);
-      // Fallback for demo
-      alert("Payment Error: " + error.message);
+      
+      // Fallback for demo testing (when Cashfree keys are missing)
+      const isDemo = confirm("Cashfree is not configured. Do you want to use Demo Mode to simulate a successful payment and save the order?");
+      if (isDemo) {
+        try {
+          const orderDataStr = localStorage.getItem('mimo_order_data');
+          const orderData = orderDataStr ? JSON.parse(orderDataStr) : null;
+          
+          if (orderData) {
+            const { error: dbError } = await supabase.from('orders').insert({
+              id: orderId,
+              customer_name: name,
+              phone: phone,
+              amount: Number(amount),
+              payment_status: "PAID",
+              status: "Pending",
+              vendor_id: orderData.vendorId || "mimo-vendor",
+              vendor_name: orderData.vendorName || "MIMO print",
+              payment_method: "demo",
+              payment_order_id: orderId,
+              cashfree_order_id: "demo_" + Date.now(),
+              paid_at: new Date().toISOString(),
+              file_url: orderData.fileUrl || '',
+              file_name: orderData.fileName || '',
+              print_type: orderData.printType || 'bw',
+              copies: Number(orderData.copies) || 1,
+              binding: orderData.binding || 'none',
+              pages: Number(orderData.pages) || 1,
+            });
+
+            if (dbError) throw dbError;
+            
+            localStorage.setItem("student_phone", phone);
+            setPaymentStatus("Paid");
+            localStorage.removeItem('mimo_order_data');
+          } else {
+            alert("No order data found to save. Try creating the order again.");
+          }
+        } catch (demoErr) {
+          console.error("Demo insert failed:", demoErr);
+          alert("Demo save failed: " + (demoErr as any).message);
+        }
+      }
+      setLoading(false);
     }
-    setLoading(false);
-  };
 
   if (paymentStatus === "Paid" || paymentStatus === "Completed") {
     return (
