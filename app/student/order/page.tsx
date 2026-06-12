@@ -1,13 +1,15 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Input } from "@/components/ui/core";
-import { Upload, CheckCircle2, Loader2, CreditCard } from "lucide-react";
+import { Upload, CheckCircle2, Loader2, CreditCard, FileText } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { PDFDocument } from "pdf-lib";
+import { useGlobalFile } from "@/components/FileContext";
 
 export default function OrderPage() {
   const router = useRouter();
+  const { file: contextFile, setFile: setContextFile } = useGlobalFile();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   const [dragActive, setDragActive] = useState(false);
@@ -70,6 +72,13 @@ export default function OrderPage() {
       setFormData(prev => ({ ...prev, pages: 1 }));
     }
   };
+
+  useEffect(() => {
+    if (contextFile) {
+      processFile(contextFile);
+      setContextFile(null); // Clear it so it doesn't re-process on unmount/remount
+    }
+  }, [contextFile, setContextFile]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -170,39 +179,38 @@ export default function OrderPage() {
       <form onSubmit={handleSubmit} className="space-y-8">
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
-            <div
-              onDragEnter={handleDrag}
-              onDragLeave={handleDrag}
-              onDragOver={handleDrag}
-              onDrop={handleDrop}
-              className={`relative rounded-2xl border-2 border-dashed p-12 text-center transition-all ${dragActive
-                  ? "border-blue-500 bg-blue-50 dark:bg-blue-900/10 scale-[1.02]"
-                  : "border-zinc-200 bg-white hover:border-indigo-400 dark:border-zinc-800 dark:bg-zinc-950"
-                }`}
-            >
-              <input
-                type="file"
-                id="file-upload"
-                className="hidden"
-                accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-                onChange={handleFileChange}
-              />
-              <label htmlFor="file-upload" className="cursor-pointer">
+            {file ? (
+              <div className="relative rounded-2xl border border-zinc-200 bg-white p-8 text-center shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20">
-                  <Upload size={32} />
+                  <FileText size={32} />
                 </div>
-                <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
-                  {file ? file.name : "Drag & drop or click to upload"}
+                <h3 className="text-xl font-bold text-zinc-900 dark:text-white">
+                  {file.name}
                 </h3>
-                {file && (
-                  <div className="mt-2 inline-flex items-center gap-2 rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-700 dark:bg-green-900/30 dark:text-green-400">
-                    <CheckCircle2 size={12} />
+                <div className="mt-4 flex items-center justify-center gap-2">
+                  <div className="inline-flex items-center gap-2 rounded-full bg-green-100 px-3 py-1.5 text-sm font-bold text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                    <CheckCircle2 size={16} />
                     Smart Detect: {formData.pages} Pages
                   </div>
-                )}
-                <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">PDF, DOC, or Images up to 20MB</p>
-              </label>
-            </div>
+                </div>
+              </div>
+            ) : (
+              <div className="relative rounded-2xl border-2 border-dashed border-zinc-200 bg-zinc-50 p-12 text-center dark:border-zinc-800 dark:bg-zinc-900/50">
+                <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
+                  No file selected
+                </h3>
+                <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+                  Please go back to the home page to upload your documents.
+                </p>
+                <Button
+                  onClick={() => router.push("/")}
+                  variant="outline"
+                  className="mt-6 font-bold"
+                >
+                  Go to Home Page
+                </Button>
+              </div>
+            )}
 
             <div className="rounded-2xl border border-zinc-200 bg-white p-8 dark:border-zinc-800 dark:bg-zinc-950">
               <h3 className="mb-6 text-lg font-bold text-zinc-900 dark:text-white">Print Settings</h3>

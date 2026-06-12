@@ -19,6 +19,7 @@ export const metadata: Metadata = {
 
 import Navbar from "@/components/Navbar";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { FileProvider } from "@/components/FileContext";
 
 export default function RootLayout({
   children,
@@ -33,10 +34,12 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-white transition-colors duration-300 dark:bg-zinc-950">
         <ThemeProvider>
-          <Navbar />
-          <main className="flex-1">
-            {children}
-          </main>
+          <FileProvider>
+            <Navbar />
+            <main className="flex-1">
+              {children}
+            </main>
+          </FileProvider>
         </ThemeProvider>
       </body>
     </html>
