@@ -1,23 +1,48 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Upload } from "lucide-react";
+import { Upload, ArrowRight, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/core";
 import { useGlobalFile } from "@/components/FileContext";
 
 export default function Home() {
   const router = useRouter();
   const { setFile } = useGlobalFile();
   const [dragActive, setDragActive] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [loadingText, setLoadingText] = useState("");
+  const [progress, setProgress] = useState(0);
 
   const processFileAndRedirect = (selectedFile: File) => {
     setFile(selectedFile);
-    router.push("/student/order");
+    setIsUploading(true);
+    setProgress(0);
+    setLoadingText("Uploading document...");
+
+    // Simulate an attractive loading sequence
+    let currentProgress = 0;
+    const interval = setInterval(() => {
+      currentProgress += Math.random() * 15;
+      if (currentProgress > 90) currentProgress = 90;
+      setProgress(currentProgress);
+    }, 300);
+
+    setTimeout(() => setLoadingText("Analyzing pages..."), 1000);
+    setTimeout(() => setLoadingText("Preparing print options..."), 2000);
+
+    setTimeout(() => {
+      clearInterval(interval);
+      setProgress(100);
+      setTimeout(() => {
+        router.push("/student/order");
+      }, 300);
+    }, 2800);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
+    if (e.target.files && e.target.files[0] && !isUploading) {
       processFileAndRedirect(e.target.files[0]);
     }
   };
@@ -25,6 +50,7 @@ export default function Home() {
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (isUploading) return;
     if (e.type === "dragenter" || e.type === "dragover") {
       setDragActive(true);
     } else if (e.type === "dragleave") {
@@ -35,6 +61,7 @@ export default function Home() {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (isUploading) return;
     setDragActive(false);
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       processFileAndRedirect(e.dataTransfer.files[0]);
@@ -66,7 +93,9 @@ export default function Home() {
               onDragLeave={handleDrag}
               onDragOver={handleDrag}
               onDrop={handleDrop}
-              className={`w-full relative rounded-3xl border-2 border-dashed p-10 sm:p-14 text-center transition-all cursor-pointer ${
+              className={`w-full relative rounded-3xl border-2 border-dashed p-10 sm:p-14 text-center transition-all ${
+                isUploading ? "cursor-wait opacity-80" : "cursor-pointer"
+              } ${
                 dragActive
                   ? "border-indigo-500 bg-indigo-50/50 dark:bg-indigo-900/10 scale-[1.02]"
                   : "border-zinc-300 bg-white/80 hover:border-indigo-400 dark:border-zinc-700 dark:bg-zinc-900/80 backdrop-blur-sm"
@@ -78,19 +107,45 @@ export default function Home() {
                 className="hidden"
                 accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
                 onChange={handleFileChange}
+                disabled={isUploading}
               />
-              <label htmlFor="home-file-upload" className="cursor-pointer block w-full h-full">
+              <label htmlFor="home-file-upload" className={`block w-full h-full ${isUploading ? 'cursor-wait pointer-events-none' : 'cursor-pointer'}`}>
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20">
-                  <Upload size={32} />
+                  {isUploading ? (
+                    <Loader2 size={32} className="animate-spin text-indigo-600" />
+                  ) : (
+                    <Upload size={32} />
+                  )}
                 </div>
                 <h3 className="text-xl font-bold text-zinc-900 dark:text-white">
-                  Drag & drop or click to upload
+                  {isUploading ? "Processing..." : "Drag & drop or click to upload"}
                 </h3>
                 <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400 font-medium">
-                  PDF, DOC, or Images up to 20MB
+                  {isUploading ? "Please wait while we prepare your file" : "PDF, DOC, or Images up to 20MB"}
                 </p>
               </label>
             </div>
+
+            {/* Loading Status Indicator beneath upload box */}
+            <div className={`w-full transition-all duration-500 ease-out overflow-hidden ${isUploading ? 'max-h-24 opacity-100 mt-6' : 'max-h-0 opacity-0 mt-0'}`}>
+              <div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 shadow-lg">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400 animate-pulse">
+                    {loadingText}
+                  </span>
+                  <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400">
+                    {Math.round(progress)}%
+                  </span>
+                </div>
+                <div className="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-2 overflow-hidden">
+                  <div 
+                    className="bg-gradient-to-r from-indigo-500 to-purple-500 h-2 rounded-full transition-all duration-300 ease-out" 
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+
           </div>
         </section>
       </main>
