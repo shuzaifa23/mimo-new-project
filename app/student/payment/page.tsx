@@ -192,6 +192,7 @@ function PaymentContent() {
       }
       setLoading(false);
     }
+  };
 
   if (paymentStatus === "Paid" || paymentStatus === "Completed") {
     return (
