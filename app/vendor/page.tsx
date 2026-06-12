@@ -141,19 +141,24 @@ export default function VendorPage() {
       fetchVendors();
       fetchOrders();
     }, 0);
+  }, []);
 
-    // Real-time listener for orders assigned to this vendor
+  useEffect(() => {
+    if (!selectedVendorId) return;
+
+    // Real-time listener specifically for this vendor's orders
     const channel = supabase
-      .channel('vendor-orders')
+      .channel(`vendor-orders-${selectedVendorId}`)
       .on(
         'postgres_changes',
         {
           event: '*',
           schema: 'public',
           table: 'orders',
+          filter: `vendor_id=eq.${selectedVendorId}`
         },
         () => {
-          fetchOrders();
+          fetchOrders(selectedVendorId);
         }
       )
       .subscribe();
@@ -161,7 +166,7 @@ export default function VendorPage() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [selectedVendorId]);
 
   const updateOrderStatus = async (orderId: string, newStatus: string) => {
     setUpdatingId(orderId);
