@@ -252,12 +252,29 @@ export default function OrderPage() {
                 </div>
                 <div>
                   <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">Number of Copies</label>
-                  <Input
-                    type="number"
-                    min="1"
-                    value={formData.copies}
-                    onChange={(e) => setFormData({ ...formData, copies: parseInt(e.target.value) || 1 })}
-                  />
+                  <div className="flex items-center h-11 w-full rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950 overflow-hidden transition-all focus-within:ring-2 focus-within:ring-indigo-500">
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, copies: Math.max(1, formData.copies - 1) })}
+                      className="flex h-full w-12 items-center justify-center border-r border-zinc-200 text-zinc-500 hover:bg-zinc-50 active:bg-zinc-100 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:active:bg-zinc-800/80 transition-colors text-lg font-bold select-none cursor-pointer"
+                    >
+                      −
+                    </button>
+                    <input
+                      type="number"
+                      min="1"
+                      className="h-full flex-1 bg-transparent text-center text-sm font-bold text-zinc-900 focus:outline-none dark:text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      value={formData.copies}
+                      onChange={(e) => setFormData({ ...formData, copies: Math.max(1, parseInt(e.target.value) || 1) })}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, copies: formData.copies + 1 })}
+                      className="flex h-full w-12 items-center justify-center border-l border-zinc-200 text-zinc-500 hover:bg-zinc-50 active:bg-zinc-100 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:active:bg-zinc-800/80 transition-colors text-lg font-bold select-none cursor-pointer"
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">Binding</label>
