@@ -168,17 +168,32 @@ function StudentLoginForm() {
 
       <div className="w-full max-w-md overflow-hidden rounded-[2.5rem] border border-zinc-200/60 bg-white/70 p-8 shadow-2xl backdrop-blur-xl dark:border-zinc-800/60 dark:bg-zinc-900/70 dark:shadow-none sm:p-10">
         <div className="mb-8 text-center">
-          <div className="flex items-end justify-center select-none mb-4 mx-auto w-fit">
-            <img src="/mimo-x-light.png" alt="MIMO X Logo" className="h-10 object-contain block dark:hidden mix-blend-multiply" />
-            <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="h-10 object-contain hidden dark:block" />
-            <span className="relative z-10 text-xs font-black tracking-widest text-zinc-900 dark:text-white -ml-5 mb-1.5 italic uppercase">
-              PRESS
-            </span>
-          </div>
-          <h2 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-white">
-            {isSignUp ? "Create Account" : "Welcome to MIMO X press"}
-          </h2>
-          <p className="mt-2 text-sm font-medium text-zinc-500 dark:text-zinc-400">
+          {isSignUp ? (
+            <div className="flex flex-col items-center gap-3">
+              <div className="flex items-end justify-center select-none w-fit mb-1">
+                <img src="/mimo-x-light.png" alt="MIMO X Logo" className="h-8 object-contain block dark:hidden mix-blend-multiply" />
+                <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="h-8 object-contain hidden dark:block" />
+                <span className="relative z-10 text-[10px] font-black tracking-widest text-zinc-900 dark:text-white -ml-4 mb-1 italic uppercase">
+                  PRESS
+                </span>
+              </div>
+              <h2 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-white">
+                Create Account
+              </h2>
+            </div>
+          ) : (
+            <h2 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-white flex flex-wrap items-end justify-center gap-x-2 gap-y-1">
+              <span>Welcome to</span>
+              <span className="flex items-end select-none w-fit inline-flex">
+                <img src="/mimo-x-light.png" alt="MIMO X Logo" className="h-8 object-contain block dark:hidden mix-blend-multiply" />
+                <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="h-8 object-contain hidden dark:block" />
+                <span className="relative z-10 text-[10px] font-black tracking-widest text-zinc-900 dark:text-white -ml-4 mb-1 italic uppercase">
+                  PRESS
+                </span>
+              </span>
+            </h2>
+          )}
+          <p className="mt-3 text-sm font-medium text-zinc-500 dark:text-zinc-400">
             {isSignUp 
               ? "Sign up to track and place your print orders" 
               : "Sign in to access your student portal"}
