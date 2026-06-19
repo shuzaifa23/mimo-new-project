@@ -171,9 +171,9 @@ function StudentLoginForm() {
           {isSignUp ? (
             <div className="flex flex-col items-center gap-3">
               <div className="flex items-end justify-center select-none w-fit mb-1">
-                <img src="/mimo-x-light.png" alt="MIMO X Logo" className="h-8 object-contain block dark:hidden mix-blend-multiply" />
-                <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="h-8 object-contain hidden dark:block" />
-                <span className="relative z-10 text-[10px] font-black tracking-widest text-zinc-900 dark:text-white -ml-4 mb-1 italic uppercase">
+                <img src="/mimo-x-light.png" alt="MIMO X Logo" className="h-10 object-contain block dark:hidden mix-blend-multiply" />
+                <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="h-10 object-contain hidden dark:block" />
+                <span className="relative z-10 text-[11px] font-black tracking-widest text-zinc-900 dark:text-white -ml-5 mb-1.5 italic uppercase">
                   PRESS
                 </span>
               </div>
@@ -182,12 +182,12 @@ function StudentLoginForm() {
               </h2>
             </div>
           ) : (
-            <h2 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-white flex flex-wrap items-end justify-center gap-x-2 gap-y-1">
+            <h2 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-white flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
               <span>Welcome to</span>
               <span className="flex items-end select-none w-fit inline-flex">
-                <img src="/mimo-x-light.png" alt="MIMO X Logo" className="h-8 object-contain block dark:hidden mix-blend-multiply" />
-                <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="h-8 object-contain hidden dark:block" />
-                <span className="relative z-10 text-[10px] font-black tracking-widest text-zinc-900 dark:text-white -ml-4 mb-1 italic uppercase">
+                <img src="/mimo-x-light.png" alt="MIMO X Logo" className="h-[2.5rem] object-contain block dark:hidden mix-blend-multiply" />
+                <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="h-[2.5rem] object-contain hidden dark:block" />
+                <span className="relative z-10 text-[11px] font-black tracking-widest text-zinc-900 dark:text-white -ml-5 mb-1.5 italic uppercase">
                   PRESS
                 </span>
               </span>
