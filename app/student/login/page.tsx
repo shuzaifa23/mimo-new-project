@@ -162,24 +162,21 @@ function StudentLoginForm() {
 
   return (
     <div className="relative flex min-h-[85vh] items-center justify-center overflow-hidden px-4 py-12">
-      {/* Logo in Top Left */}
-      <div className="absolute top-4 left-4 z-50">
-        <ThreeDLogo />
-      </div>
-
-      {/* Theme Toggle in Top Right */}
-      <div className="absolute top-4 right-4 z-50">
-        <ThemeToggle />
-      </div>
-
       {/* Decorative background blobs */}
       <div className="absolute top-1/4 left-1/4 -z-10 h-72 w-72 -translate-x-1/2 rounded-full bg-indigo-400/20 blur-3xl dark:bg-indigo-600/10" />
       <div className="absolute bottom-1/4 right-1/4 -z-10 h-72 w-72 translate-x-1/2 rounded-full bg-pink-400/20 blur-3xl dark:bg-pink-600/10" />
 
       <div className="w-full max-w-md overflow-hidden rounded-[2.5rem] border border-zinc-200/60 bg-white/70 p-8 shadow-2xl backdrop-blur-xl dark:border-zinc-800/60 dark:bg-zinc-900/70 dark:shadow-none sm:p-10">
         <div className="mb-8 text-center">
+          <div className="flex items-end justify-center select-none mb-4 mx-auto w-fit">
+            <img src="/mimo-x-light.png" alt="MIMO X Logo" className="h-10 object-contain block dark:hidden mix-blend-multiply" />
+            <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="h-10 object-contain hidden dark:block" />
+            <span className="relative z-10 text-xs font-black tracking-widest text-zinc-900 dark:text-white -ml-5 mb-1.5 italic uppercase">
+              PRESS
+            </span>
+          </div>
           <h2 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-white">
-            {isSignUp ? "Create Account" : "Welcome to MIMO"}
+            {isSignUp ? "Create Account" : "Welcome to MIMO X press"}
           </h2>
           <p className="mt-2 text-sm font-medium text-zinc-500 dark:text-zinc-400">
             {isSignUp 
