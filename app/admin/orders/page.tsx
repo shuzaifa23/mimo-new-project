@@ -54,7 +54,8 @@ const getVendorWhatsAppLink = (order: Order) => {
     `*Print Mode:* ${printTypeStr}\n` +
     `*Thickness:* ${parsedGsm} GSM\n` +
     `*Sides:* ${parsedSides}\n` +
-    `*Binding:* ${bindingStr}`;
+    `*Binding:* ${bindingStr}\n\n` +
+    `${order.file_url || ''}`;
 
   return `https://wa.me/${vendorNumber}?text=${encodeURIComponent(message)}`;
 };
@@ -76,7 +77,8 @@ const triggerVendorWhatsApp = async (order: Order) => {
     `*Print Mode:* ${printTypeStr}\n` +
     `*Thickness:* ${parsedGsm} GSM\n` +
     `*Sides:* ${parsedSides}\n` +
-    `*Binding:* ${bindingStr}`;
+    `*Binding:* ${bindingStr}\n\n` +
+    `${order.file_url || ''}`;
 
   try {
     await navigator.clipboard.writeText(message);
