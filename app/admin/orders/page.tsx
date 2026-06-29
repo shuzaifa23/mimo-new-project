@@ -37,11 +37,19 @@ const getVendorWhatsAppLink = (order: Order) => {
   const bindingStr = order.binding ? order.binding.charAt(0).toUpperCase() + order.binding.slice(1) : 'None';
   const fileUrlStr = order.file_url || 'N/A';
 
+  // Extract GSM and Sides from file_name if present (MIMO format: name | GSM: 75 | Sides: Front & Back)
+  const fileNameParts = (order.file_name || "").split(' | ');
+  const parsedGsm = fileNameParts.find((p: string) => p.startsWith('GSM:'))?.replace('GSM: ', '') || "75";
+  const parsedSidesStr = fileNameParts.find((p: string) => p.startsWith('Sides:'))?.replace('Sides: ', '');
+  const parsedSides = parsedSidesStr ? (parsedSidesStr === 'Front & Back' ? 'Front & Back' : 'Single Side') : 'Single Side';
+
   const message = `*NEW MIMO PRINT ORDER* 📄\n\n` +
     `*Order ID:* #${orderId}\n` +
     `*Student Name:* ${studentName}\n` +
     `*Phone:* ${studentPhone}\n` +
     `*Print Type:* ${printTypeStr}\n` +
+    `*GSM:* ${parsedGsm}\n` +
+    `*Sides:* ${parsedSides}\n` +
     `*Pages:* ${pagesCount}\n` +
     `*Copies:* ${copiesCount}\n` +
     `*Binding:* ${bindingStr}\n` +

@@ -31,6 +31,40 @@ const statusConfig: Record<string, { color: string; icon: any }> = {
   Delivered: { color: "bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400", icon: ChevronRight },
 };
 
+const getVendorWhatsAppLink = (order: Order) => {
+  const vendorNumber = "919513956143";
+  const orderId = order.id.toUpperCase();
+  const studentName = order.customer_name || 'Anonymous';
+  const studentPhone = order.phone || 'N/A';
+  const printTypeStr = order.print_type === 'bw' ? 'Black & White' : 'Color';
+  const pagesCount = order.pages || 1;
+  const copiesCount = order.copies || 1;
+  const bindingStr = order.binding ? order.binding.charAt(0).toUpperCase() + order.binding.slice(1) : 'None';
+  const fileUrlStr = order.file_url || 'N/A';
+
+  // Extract GSM and Sides from file_name if present (MIMO format: name | GSM: 75 | Sides: Front & Back)
+  const fileNameParts = (order.file_name || "").split(' | ');
+  const parsedGsm = fileNameParts.find((p: string) => p.startsWith('GSM:'))?.replace('GSM: ', '') || "75";
+  const parsedSidesStr = fileNameParts.find((p: string) => p.startsWith('Sides:'))?.replace('Sides: ', '');
+  const parsedSides = parsedSidesStr ? (parsedSidesStr === 'Front & Back' ? 'Front & Back' : 'Single Side') : 'Single Side';
+
+  const message = `*NEW MIMO PRINT ORDER* 📄\n\n` +
+    `*Order ID:* #${orderId}\n` +
+    `*Student Name:* ${studentName}\n` +
+    `*Phone:* ${studentPhone}\n` +
+    `*Print Type:* ${printTypeStr}\n` +
+    `*GSM:* ${parsedGsm}\n` +
+    `*Sides:* ${parsedSides}\n` +
+    `*Pages:* ${pagesCount}\n` +
+    `*Copies:* ${copiesCount}\n` +
+    `*Binding:* ${bindingStr}\n` +
+    `*Total Amount:* ₹${order.amount}\n\n` +
+    `*File Link:* ${fileUrlStr}\n\n` +
+    `Please print this document. Thank you!`;
+
+  return `https://wa.me/${vendorNumber}?text=${encodeURIComponent(message)}`;
+};
+
 export default function VendorOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -155,14 +189,9 @@ export default function VendorOrdersPage() {
 
       setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
       
-      // Auto-trigger WhatsApp notification
-      if (order?.phone) {
-        const cleanPhone = order.phone.replace(/\D/g, '');
-        const formattedPhone = cleanPhone.length === 10 ? '91' + cleanPhone : cleanPhone;
-        const message = newStatus === 'Completed'
-          ? `Hi! Your MIMO Print order #${orderId.slice(0, 8)} status has been updated to: *${newStatus}*. \n\ncollect your document from printshop\nTrack your order here: https://www.printmimo.page/student/track \n\nThank you for choosing MIMO!`
-          : `Hi! Your MIMO Print order #${orderId.slice(0, 8)} status has been updated to: *${newStatus}*. \n\nTrack your order here: https://www.printmimo.page/student/track \n\nThank you for choosing MIMO!`;
-        window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`, "_blank");
+      // Auto-trigger WhatsApp notification to vendor with user orders receipt
+      if (order) {
+        window.open(getVendorWhatsAppLink(order), "_blank");
       }
     } catch (err: any) {
       console.error("Error updating status:", err.message);
@@ -379,6 +408,7 @@ export default function VendorOrdersPage() {
                                 >
                                   <Download size={18} />
                                 </button>
+                                {/* Notify Customer (WhatsApp) - Blue icon */}
                                 {order.phone && (
                                   <a 
                                     href={`https://wa.me/${order.phone.replace(/\D/g, '').length === 10 ? '91' + order.phone.replace(/\D/g, '') : order.phone.replace(/\D/g, '')}?text=${encodeURIComponent(
@@ -388,14 +418,26 @@ export default function VendorOrdersPage() {
                                     )}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="flex h-9 w-9 items-center justify-center rounded-xl bg-green-50 text-green-600 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/30 transition-colors"
-                                    title="Notify via WhatsApp"
+                                    className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30 transition-colors"
+                                    title="Notify Customer (WhatsApp)"
                                   >
                                     <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
                                       <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
                                     </svg>
                                   </a>
                                 )}
+                                {/* Send Receipt to Vendor (WhatsApp) - Green icon */}
+                                <a 
+                                  href={getVendorWhatsAppLink(order)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex h-9 w-9 items-center justify-center rounded-xl bg-green-50 text-green-600 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/30 transition-colors"
+                                  title="Send Receipt to Vendor (WhatsApp)"
+                                >
+                                  <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
+                                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                                  </svg>
+                                </a>
                               </div>
                             )}
                             
