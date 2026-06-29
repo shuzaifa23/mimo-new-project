@@ -109,16 +109,10 @@ export default function OrdersPage() {
         alert('Failed to update status: ' + (result.error || 'Server error'));
         loadData(); // Revert on error
       } else {
-        // Auto-trigger WhatsApp notification
+        // Auto-trigger WhatsApp notification to vendor with user orders receipt
         const order = orders.find(o => o.id === orderId);
-        const rawPhone = order?.phone || order?.profiles?.phone || "";
-        if (rawPhone) {
-          const cleanPhone = rawPhone.replace(/\D/g, '');
-          const formattedPhone = cleanPhone.length === 10 ? '91' + cleanPhone : cleanPhone;
-          const message = newStatus === 'Completed'
-            ? `Hi! Your MIMO Print order #${orderId.slice(0, 8)} status has been updated to: *${newStatus}*. \n\ncollect your document from printshop\nTrack your order here: https://www.printmimo.page/student/track \n\nThank you for choosing MIMO!`
-            : `Hi! Your MIMO Print order #${orderId.slice(0, 8)} status has been updated to: *${newStatus}*. \n\nTrack your order here: https://www.printmimo.page/student/track \n\nThank you for choosing MIMO!`;
-          window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`, "_blank");
+        if (order) {
+          window.open(getVendorWhatsAppLink(order), "_blank");
         }
       }
     } catch (err: any) {
