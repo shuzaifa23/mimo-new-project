@@ -32,32 +32,41 @@ const statusConfig: Record<string, { color: string; icon: any }> = {
 
 const getVendorWhatsAppLink = (order: Order) => {
   const vendorNumber = "919513956143";
-  const orderId = order.id.toUpperCase();
+  const orderId = order.id;
   const studentName = order.customer_name || 'Anonymous';
-  const studentPhone = order.phone || 'N/A';
-  const printTypeStr = order.print_type === 'bw' ? 'Black & White' : 'Color';
-  const pagesCount = order.pages || 1;
+  const printTypeStr = order.print_type === 'bw' ? 'Black & White' : (order.print_type === 'color' ? 'Color' : order.print_type);
   const copiesCount = order.copies || 1;
   const bindingStr = order.binding ? order.binding.charAt(0).toUpperCase() + order.binding.slice(1) : 'None';
   const fileUrlStr = order.file_url || 'N/A';
 
   // Extract GSM and Sides from file_name if present (MIMO format: name | GSM: 75 | Sides: Front & Back)
   const fileNameParts = (order.file_name || "").split(' | ');
+  const parsedFileName = fileNameParts[0] || 'Document';
   const parsedGsm = fileNameParts.find((p: string) => p.startsWith('GSM:'))?.replace('GSM: ', '') || "75";
   const parsedSidesStr = fileNameParts.find((p: string) => p.startsWith('Sides:'))?.replace('Sides: ', '');
   const parsedSides = parsedSidesStr ? (parsedSidesStr === 'Front & Back' ? 'Front & Back' : 'Single Side') : 'Single Side';
 
-  const message = `*NEW MIMO PRINT ORDER* 📄\n\n` +
-    `*Order ID:* #${orderId}\n` +
-    `*Student Name:* ${studentName}\n` +
-    `*Phone:* ${studentPhone}\n` +
-    `*Print Type:* ${printTypeStr}\n` +
-    `*GSM:* ${parsedGsm}\n` +
-    `*Sides:* ${parsedSides}\n` +
-    `*Pages:* ${pagesCount}\n` +
-    `*Copies:* ${copiesCount}\n` +
-    `*Binding:* ${bindingStr}\n` +
-    `*Total Amount:* ₹${order.amount}\n\n` +
+  const orderDate = new Date(order.created_at).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });
+  
+  const locationStr = order.vendor_name || 'REVA UNIVERSITY';
+
+  const message = `*MIMO PRINT RECEIPT* 📄\n\n` +
+    `*ORDER ID:* ${orderId}\n\n` +
+    `*Receipt Summary*\n\n` +
+    `• *Customer Name:* ${studentName}\n` +
+    `• *File Details:* ${parsedFileName}\n` +
+    `• *Print Type:* ${printTypeStr}\n` +
+    `• *GSM:* ${parsedGsm} GSM\n` +
+    `• *Sides:* ${parsedSides}\n` +
+    `• *Copies:* ${copiesCount}\n` +
+    `• *Binding:* ${bindingStr}\n` +
+    `• *Date:* ${orderDate}\n` +
+    `• *Location:* ${locationStr}\n` +
+    `• *Amount Paid:* ₹${order.amount}\n\n` +
     `*File Link:* ${fileUrlStr}\n\n` +
     `Please print this document. Thank you!`;
 
