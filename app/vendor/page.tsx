@@ -59,14 +59,13 @@ const getVendorWhatsAppLink = (order: Order) => {
   const message = `*Order ID:* #${orderId}\n` +
     `*Student Name:* ${studentName}\n` +
     `*Phone:* ${studentPhone}\n` +
-    `*Print Type:* ${printTypeStr}\n` +
-    `*GSM:* ${parsedGsm}\n` +
-    `*Sides:* ${parsedSides}\n` +
     `*Pages:* ${pagesCount}\n` +
+    `*Print Mode:* ${printTypeStr}\n` +
+    `*Thickness:* ${parsedGsm} GSM\n` +
+    `*Sides:* ${parsedSides}\n` +
     `*Copies:* ${copiesCount}\n` +
     `*Binding:* ${bindingStr}\n` +
-    `*Total Amount:* ₹${order.amount}\n` +
-    `*File Link:* ${order.file_url || 'N/A'}`;
+    `*Price:* ₹${order.amount}`;
 
   return `https://wa.me/${vendorNumber}?text=${encodeURIComponent(message)}`;
 };
