@@ -59,8 +59,7 @@ const getVendorWhatsAppLink = (order: Order) => {
     `*Print Mode:* ${printTypeStr}\n` +
     `*Thickness:* ${parsedGsm} GSM\n` +
     `*Sides:* ${parsedSides}\n` +
-    `*Binding:* ${bindingStr}\n\n` +
-    `${order.file_url || ''}`;
+    `*Binding:* ${bindingStr}`;
 
   return `https://wa.me/${vendorNumber}?text=${encodeURIComponent(message)}`;
 };
