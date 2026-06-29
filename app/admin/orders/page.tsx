@@ -60,6 +60,30 @@ const getVendorWhatsAppLink = (order: Order) => {
 };
 
 const triggerVendorWhatsApp = async (order: Order) => {
+  // Construct and copy caption to clipboard for easy pasting when sending as attachment caption
+  const studentName = order.profiles?.name || order.customer_name || 'Anonymous';
+  const studentPhone = order.profiles?.phone || order.phone || 'N/A';
+  const printTypeStr = order.print_type === 'bw' ? 'Black & White' : (order.print_type === 'color' ? 'Color' : order.print_type);
+  const bindingStr = order.binding ? order.binding.charAt(0).toUpperCase() + order.binding.slice(1) : 'None';
+
+  const fileNameParts = (order.file_name || "").split(' | ');
+  const parsedGsm = fileNameParts.find((p: string) => p.startsWith('GSM:'))?.replace('GSM: ', '') || "75";
+  const parsedSidesStr = fileNameParts.find((p: string) => p.startsWith('Sides:'))?.replace('Sides: ', '');
+  const parsedSides = parsedSidesStr ? (parsedSidesStr === 'Front & Back' ? 'Front & Back' : 'Single Side') : 'Single Side';
+
+  const message = `*Student Name:* ${studentName}\n` +
+    `*Phone:* ${studentPhone}\n` +
+    `*Print Mode:* ${printTypeStr}\n` +
+    `*Thickness:* ${parsedGsm} GSM\n` +
+    `*Sides:* ${parsedSides}\n` +
+    `*Binding:* ${bindingStr}`;
+
+  try {
+    await navigator.clipboard.writeText(message);
+  } catch (err) {
+    console.error("Clipboard copy failed:", err);
+  }
+
   if (order.file_url) {
     try {
       const response = await fetch(order.file_url);
