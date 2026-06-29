@@ -66,7 +66,6 @@ const getVendorWhatsAppLink = (order: Order) => {
 };
 
 const triggerVendorWhatsApp = async (order: Order) => {
-  // Construct and copy caption to clipboard for easy pasting when sending as attachment caption
   const studentName = order.customer_name || 'Anonymous';
   const studentPhone = order.phone || 'N/A';
   const printTypeStr = order.print_type === 'bw' ? 'Black & White' : (order.print_type === 'color' ? 'Color' : order.print_type);
@@ -82,9 +81,38 @@ const triggerVendorWhatsApp = async (order: Order) => {
     `*Print Mode:* ${printTypeStr}\n` +
     `*Thickness:* ${parsedGsm} GSM\n` +
     `*Sides:* ${parsedSides}\n` +
-    `*Binding:* ${bindingStr}\n\n` +
-    `${order.file_url || ''}`;
+    `*Binding:* ${bindingStr}`;
 
+  if (order.file_url) {
+    try {
+      const response = await fetch(order.file_url);
+      const blob = await response.blob();
+      
+      let mimeType = 'application/pdf';
+      const fileLower = (order.file_name || '').toLowerCase();
+      if (fileLower.endsWith('.jpg') || fileLower.endsWith('.jpeg')) {
+        mimeType = 'image/jpeg';
+      } else if (fileLower.endsWith('.png')) {
+        mimeType = 'image/png';
+      }
+
+      const file = new File([blob], order.file_name || "document.pdf", { type: mimeType });
+
+      // Try Web Share API for native file sharing (attaching document)
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: order.file_name || 'Print Document',
+          text: message
+        });
+        return;
+      }
+    } catch (err) {
+      console.error("Web Share failed, using fallback:", err);
+    }
+  }
+
+  // Fallback if browser/context does not support Web Share API (copies and downloads)
   try {
     await navigator.clipboard.writeText(message);
   } catch (err) {
@@ -106,7 +134,10 @@ const triggerVendorWhatsApp = async (order: Order) => {
       console.error("Failed to download file automatically:", err);
     }
   }
-  window.open(getVendorWhatsAppLink(order), "_blank");
+
+  const vendorNumber = "919513956143";
+  const fallbackMessage = message + `\n\n${order.file_url || ''}`;
+  window.open(`https://wa.me/${vendorNumber}?text=${encodeURIComponent(fallbackMessage)}`, "_blank");
 };
 
 export default function VendorOrdersPage() {
