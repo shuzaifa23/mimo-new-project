@@ -31,9 +31,19 @@ const statusConfig: Record<string, { color: string; icon: any }> = {
   Delivered: { color: "bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400", icon: ChevronRight },
 };
 
+const getShortOrderId = (uuid: string) => {
+  if (!uuid) return "MIMO0000";
+  let hash = 0;
+  for (let i = 0; i < uuid.length; i++) {
+    hash = uuid.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const code = Math.abs(hash % 9000) + 1000; // 1000 to 9999
+  return `MIMO${code}`;
+};
+
 const getVendorWhatsAppLink = (order: Order) => {
   const vendorNumber = "919513956143";
-  const orderId = order.id.toUpperCase();
+  const orderId = getShortOrderId(order.id);
   const studentName = order.customer_name || 'Anonymous';
   const studentPhone = order.phone || 'N/A';
   const printTypeStr = order.print_type === 'bw' ? 'Black & White' : (order.print_type === 'color' ? 'Color' : order.print_type);
@@ -201,7 +211,9 @@ export default function VendorOrdersPage() {
     const matchesFilter = filter === "All" || order.status === filter;
     const matchesSearch = 
       (order.customer_name?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
-      (order.phone || "").includes(searchQuery);
+      (order.phone || "").includes(searchQuery) ||
+      getShortOrderId(order.id).toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.id.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesFilter && matchesSearch;
   });
 
@@ -409,8 +421,8 @@ export default function VendorOrdersPage() {
                                   <a 
                                     href={`https://wa.me/${order.phone.replace(/\D/g, '').length === 10 ? '91' + order.phone.replace(/\D/g, '') : order.phone.replace(/\D/g, '')}?text=${encodeURIComponent(
                                       order.status === 'Completed'
-                                        ? `Hi! Your MIMO Print order #${order.id.slice(0, 8)} status has been updated to: *${order.status}*. \n\ncollect your document from printshop\nTrack your order here: https://www.printmimo.page/student/track \n\nThank you for choosing MIMO!`
-                                        : `Hi! Your MIMO Print order #${order.id.slice(0, 8)} status has been updated to: *${order.status}*. \n\nTrack your order here: https://www.printmimo.page/student/track \n\nThank you for choosing MIMO!`
+                                        ? `Hi! Your MIMO Print order ${getShortOrderId(order.id)} status has been updated to: *${order.status}*. \n\ncollect your document from printshop\nTrack your order here: https://www.printmimo.page/student/track \n\nThank you for choosing MIMO!`
+                                        : `Hi! Your MIMO Print order ${getShortOrderId(order.id)} status has been updated to: *${order.status}*. \n\nTrack your order here: https://www.printmimo.page/student/track \n\nThank you for choosing MIMO!`
                                     )}`}
                                     target="_blank"
                                     rel="noopener noreferrer"

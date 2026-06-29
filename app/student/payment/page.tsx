@@ -17,6 +17,16 @@ import { supabase } from "@/lib/supabase";
 
 // Firebase imports removed
 
+const getShortOrderId = (uuid: string) => {
+  if (!uuid) return "MIMO0000";
+  let hash = 0;
+  for (let i = 0; i < uuid.length; i++) {
+    hash = uuid.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const code = Math.abs(hash % 9000) + 1000; // 1000 to 9999
+  return `MIMO${code}`;
+};
+
 function PaymentContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -223,7 +233,7 @@ function PaymentContent() {
           <div className="mt-4 space-y-3">
             <div className="flex justify-between text-sm">
               <span className="text-zinc-500">Order ID</span>
-              <span className="font-mono font-bold text-zinc-900 dark:text-white">#{orderId?.toUpperCase() || "PENDING"}</span>
+              <span className="font-mono font-bold text-zinc-900 dark:text-white">#{orderId ? getShortOrderId(orderId) : "PENDING"}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-zinc-500">Customer</span>

@@ -18,6 +18,16 @@ import {
   Sparkles
 } from "lucide-react";
 
+const getShortOrderId = (uuid: string) => {
+  if (!uuid) return "MIMO0000";
+  let hash = 0;
+  for (let i = 0; i < uuid.length; i++) {
+    hash = uuid.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const code = Math.abs(hash % 9000) + 1000; // 1000 to 9999
+  return `MIMO${code}`;
+};
+
 function SuccessContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -204,7 +214,7 @@ function SuccessContent() {
         <div className="px-8 py-6 bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-100 dark:border-zinc-800 flex justify-between items-center">
           <div>
             <p className="text-xs text-zinc-400 dark:text-zinc-500 uppercase font-bold tracking-wider">Order ID</p>
-            <p className="text-sm font-black text-indigo-600 dark:text-indigo-400 mt-0.5 select-all">{orderId}</p>
+            <p className="text-sm font-black text-indigo-600 dark:text-indigo-400 mt-0.5 select-all">{getShortOrderId(orderId || "")}</p>
           </div>
           <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-400 text-xs font-bold">
             Paid Successfully

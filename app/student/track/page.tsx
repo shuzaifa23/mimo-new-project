@@ -23,6 +23,16 @@ interface Order {
 
 const ALL_STATUSES = ['Pending', 'Accepted', 'Printing', 'Completed', 'Delivered'];
 
+const getShortOrderId = (uuid: string) => {
+  if (!uuid) return "MIMO0000";
+  let hash = 0;
+  for (let i = 0; i < uuid.length; i++) {
+    hash = uuid.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const code = Math.abs(hash % 9000) + 1000; // 1000 to 9999
+  return `MIMO${code}`;
+};
+
 function StatusTimeline({ currentStatus }: { currentStatus: string }) {
   const currentIndex = ALL_STATUSES.indexOf(currentStatus);
   const isCancelled = currentStatus === 'Cancelled';
@@ -272,7 +282,7 @@ export default function StudentPage() {
                         </span>
                       </div>
                       <p className="mt-2 text-sm font-medium text-zinc-500">
-                        {order.phone} • {new Date(order.created_at).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}
+                        #{getShortOrderId(order.id)} • {order.phone} • {new Date(order.created_at).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}
                       </p>
                     </div>
                     

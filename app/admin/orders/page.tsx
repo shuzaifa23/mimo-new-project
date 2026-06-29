@@ -26,9 +26,19 @@ import type { Order, Vendor, OrderStatus } from '@/types/supabase';
 
 const STATUS_OPTIONS: OrderStatus[] = ['Pending', 'Accepted', 'Printing', 'Completed', 'Delivered', 'Cancelled'];
 
+const getShortOrderId = (uuid: string) => {
+  if (!uuid) return "MIMO0000";
+  let hash = 0;
+  for (let i = 0; i < uuid.length; i++) {
+    hash = uuid.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const code = Math.abs(hash % 9000) + 1000; // 1000 to 9999
+  return `MIMO${code}`;
+};
+
 const getVendorWhatsAppLink = (order: Order) => {
   const vendorNumber = "919513956143";
-  const orderId = order.id.toUpperCase();
+  const orderId = getShortOrderId(order.id);
   const studentName = order.profiles?.name || order.customer_name || 'Anonymous';
   const studentPhone = order.profiles?.phone || order.phone || 'N/A';
   const printTypeStr = order.print_type === 'bw' ? 'Black & White' : (order.print_type === 'color' ? 'Color' : order.print_type);
@@ -151,6 +161,7 @@ export default function OrdersPage() {
   const filteredOrders = orders.filter(order => {
     const matchesSearch = 
       order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      getShortOrderId(order.id).toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.profiles?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.file_name.toLowerCase().includes(searchTerm.toLowerCase());
     
@@ -247,7 +258,7 @@ export default function OrdersPage() {
                 filteredOrders.map((order) => (
                   <tr key={order.id} className="group hover:bg-violet-50/40 dark:hover:bg-violet-900/10 transition-colors">
                     <td className="px-6 py-4">
-                      <span className="text-xs font-bold text-violet-600 dark:text-violet-400 font-mono">{order.id}</span>
+                      <span className="text-xs font-bold text-violet-600 dark:text-violet-400 font-mono" title={order.id}>{getShortOrderId(order.id)}</span>
                       <div className="text-[10px] text-zinc-400 mt-0.5">{new Date(order.created_at).toLocaleDateString()}</div>
                     </td>
                     <td className="px-6 py-4">
@@ -331,8 +342,8 @@ export default function OrdersPage() {
                           <a 
                             href={`https://wa.me/${(order.phone || order.profiles?.phone || "").replace(/\D/g, '').length === 10 ? '91' + (order.phone || order.profiles?.phone || "").replace(/\D/g, '') : (order.phone || order.profiles?.phone || "").replace(/\D/g, '')}?text=${encodeURIComponent(
                               order.status === 'Completed'
-                                ? `Hi! Your MIMO Print order #${order.id.slice(0, 8)} status has been updated to: *${order.status}*. \n\ncollect your document from printshop\nTrack your order here: https://www.printmimo.page/student/track \n\nThank you for choosing MIMO!`
-                                : `Hi! Your MIMO Print order #${order.id.slice(0, 8)} status has been updated to: *${order.status}*. \n\nTrack your order here: https://www.printmimo.page/student/track \n\nThank you for choosing MIMO!`
+                                ? `Hi! Your MIMO Print order ${getShortOrderId(order.id)} status has been updated to: *${order.status}*. \n\ncollect your document from printshop\nTrack your order here: https://www.printmimo.page/student/track \n\nThank you for choosing MIMO!`
+                                : `Hi! Your MIMO Print order ${getShortOrderId(order.id)} status has been updated to: *${order.status}*. \n\nTrack your order here: https://www.printmimo.page/student/track \n\nThank you for choosing MIMO!`
                             )}`}
                             target="_blank" 
                             rel="noopener noreferrer" 
