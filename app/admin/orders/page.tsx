@@ -36,6 +36,18 @@ const getShortOrderId = (uuid: string) => {
   return `MIMO${code}`;
 };
 
+const getCustomerWhatsAppLink = (order: Order, newStatus: string) => {
+  const phone = order.profiles?.phone || order.phone || '';
+  if (!phone) return null;
+  const cleanPhone = phone.replace(/\D/g, '');
+  const finalPhone = cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone;
+  const shortId = getShortOrderId(order.id);
+  const message = newStatus === 'Completed'
+    ? `Hi! Your MIMO Print order #${shortId} status has been updated to: *${newStatus}*.\n\nCollect your document from printshop\nTrack your order here: https://www.printmimo.page/student/track \n\nThank you for choosing MIMO!`
+    : `Hi! Your MIMO Print order #${shortId} status has been updated to: *${newStatus}*.\n\nTrack your order here: https://www.printmimo.page/student/track \n\nThank you for choosing MIMO!`;
+  return `https://wa.me/${finalPhone}?text=${encodeURIComponent(message)}`;
+};
+
 const getVendorWhatsAppLink = (order: Order) => {
   const vendorNumber = "919513956143";
   const studentName = order.profiles?.name || order.customer_name || 'Anonymous';
@@ -104,8 +116,11 @@ export default function OrdersPage() {
   }, []);
 
   const handleStatusChange = async (orderId: string, newStatus: string) => {
-    // Optimistic update
+    // Optimistic update so the dropdown reflects new status immediately
     setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus as OrderStatus } : o));
+    
+    // Find the order BEFORE the state update (still has the old data we need)
+    const order = orders.find(o => o.id === orderId);
     
     try {
       const res = await fetch('/api/admin/update-order-status', {
@@ -118,10 +133,12 @@ export default function OrdersPage() {
         alert('Failed to update status: ' + (result.error || 'Server error'));
         loadData(); // Revert on error
       } else {
-        // Auto-trigger WhatsApp notification to vendor with user orders receipt
-        const order = orders.find(o => o.id === orderId);
+        // Auto-open CUSTOMER's WhatsApp with the status update notification
         if (order) {
-          window.open(getVendorWhatsAppLink(order), "_blank");
+          const customerLink = getCustomerWhatsAppLink(order, newStatus);
+          if (customerLink) {
+            window.open(customerLink, '_blank');
+          }
         }
       }
     } catch (err: any) {

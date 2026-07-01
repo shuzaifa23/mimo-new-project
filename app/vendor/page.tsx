@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { 
@@ -40,6 +40,20 @@ const getShortOrderId = (uuid: string) => {
   return `MIMO${code}`;
 };
 
+// Opens CUSTOMER's WhatsApp with order status update message
+const getCustomerWhatsAppLink = (order: Order, newStatus: string) => {
+  const phone = order.phone || '';
+  if (!phone) return null;
+  const cleanPhone = phone.replace(/\D/g, '');
+  const finalPhone = cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone;
+  const shortId = getShortOrderId(order.id);
+  const message = newStatus === 'Completed'
+    ? `Hi! Your MIMO Print order #${shortId} status has been updated to: *${newStatus}*.\n\nCollect your document from printshop\nTrack your order here: https://www.printmimo.page/student/track \n\nThank you for choosing MIMO!`
+    : `Hi! Your MIMO Print order #${shortId} status has been updated to: *${newStatus}*.\n\nTrack your order here: https://www.printmimo.page/student/track \n\nThank you for choosing MIMO!`;
+  return `https://wa.me/${finalPhone}?text=${encodeURIComponent(message)}`;
+};
+
+// Opens VENDOR's WhatsApp with order receipt details
 const getVendorWhatsAppLink = (order: Order) => {
   const vendorNumber = "919513956143";
   const studentName = order.customer_name || 'Anonymous';
@@ -76,6 +90,8 @@ export default function VendorPage() {
   const [shopName, setShopName] = useState("MIMO Print (Default)");
   const [vendors, setVendors] = useState<{ id: string; shop_name: string }[]>([]);
   const [selectedVendorId, setSelectedVendorId] = useState<string | null>(null);
+  // Ref to track resolved vendor ID for use inside callbacks
+  const vendorIdRef = useRef<string | null>(null);
 
   // Load all vendors from Supabase for the switcher dropdown
   const fetchVendors = async () => {
@@ -140,11 +156,13 @@ export default function VendorPage() {
 
       resolvedVendorId = vendorData.id;
       setSelectedVendorId(vendorData.id);
+      vendorIdRef.current = vendorData.id;
       if (vendorData.shop_name) setShopName(vendorData.shop_name);
     } else {
       // Update shopName to match selected vendor
       const found = vendors.find(v => v.id === resolvedVendorId);
       if (found) setShopName(found.shop_name);
+      vendorIdRef.current = resolvedVendorId;
     }
 
     const { data, error } = await supabase
@@ -226,11 +244,15 @@ export default function VendorPage() {
         throw new Error("Update failed. The server might be missing the Service Role Key to bypass database security.");
       }
 
+      // Optimistically update local state so the dropdown reflects the new status immediately
       setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
       
-      // Auto-trigger WhatsApp notification to vendor with user orders receipt
+      // Auto-open CUSTOMER's WhatsApp with status update notification
       if (order) {
-        window.open(getVendorWhatsAppLink(order), "_blank");
+        const customerLink = getCustomerWhatsAppLink(order, newStatus);
+        if (customerLink) {
+          window.open(customerLink, "_blank");
+        }
       }
     } catch (err: any) {
       console.error("Error updating status:", err.message);
