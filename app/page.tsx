@@ -1,175 +1,129 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Upload, ArrowRight, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/core";
-import { useGlobalFile } from "@/components/FileContext";
+import { Sparkles, Truck, FileStack } from "lucide-react";
+import Image from "next/image";
 
 export default function Home() {
-  const router = useRouter();
-  const { setFile } = useGlobalFile();
-  const [dragActive, setDragActive] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-  const [loadingText, setLoadingText] = useState("");
-  const [progress, setProgress] = useState(0);
-
-  const processFileAndRedirect = (selectedFile: File) => {
-    setFile(selectedFile);
-    setIsUploading(true);
-    setProgress(0);
-    setLoadingText("Uploading document...");
-
-    // Simulate an attractive loading sequence
-    let currentProgress = 0;
-    const interval = setInterval(() => {
-      currentProgress += Math.random() * 15;
-      if (currentProgress > 90) currentProgress = 90;
-      setProgress(currentProgress);
-    }, 300);
-
-    setTimeout(() => setLoadingText("Analyzing pages..."), 1000);
-    setTimeout(() => setLoadingText("Preparing print options..."), 2000);
-
-    setTimeout(() => {
-      clearInterval(interval);
-      setProgress(100);
-      setTimeout(() => {
-        router.push("/student/order");
-      }, 300);
-    }, 2800);
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0] && !isUploading) {
-      processFileAndRedirect(e.target.files[0]);
-    }
-  };
-
-  const handleDrag = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (isUploading) return;
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true);
-    } else if (e.type === "dragleave") {
-      setDragActive(false);
-    }
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (isUploading) return;
-    setDragActive(false);
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      processFileAndRedirect(e.dataTransfer.files[0]);
-    }
-  };
-
   return (
-    <div className="flex flex-col min-h-[calc(100vh-64px)] bg-white dark:bg-zinc-950 transition-colors duration-300 relative overflow-x-hidden">
-      {/* Fixed background container to prevent image stretching over scroll height */}
-      <div 
-        style={{ backgroundImage: 'var(--bg-mockup)' }}
-        className="fixed inset-0 -z-10 bg-white dark:bg-zinc-950 bg-[length:125%_auto] xs:bg-[length:115%_auto] sm:bg-cover md:bg-[length:100%_100%] bg-center bg-no-repeat transition-colors duration-300" 
-      />
+    <div className="flex flex-col min-h-[calc(100vh-64px)] bg-white dark:bg-zinc-950 transition-colors duration-300 relative">
 
-      <main className="flex-1 flex flex-col justify-center items-center px-4 pt-20 sm:pt-28 md:pt-32 pb-12 sm:pb-16 md:pb-20">
+      <main className="flex-1 flex flex-col items-center">
         {/* Hero Section */}
-        <section className="relative w-full max-w-4xl text-center">
-
-          <h1 className="mt-6 text-4xl xs:text-5xl sm:text-6xl md:text-7xl font-black tracking-tight text-zinc-900 dark:text-white leading-none">
-            From Screen, <br />
-            <span className="bg-gradient-to-r from-indigo-600 to-violet-500 bg-clip-text text-transparent">To Sheets.</span>
-          </h1>
-          <p className="mt-6 text-base sm:text-lg md:text-xl text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto font-medium">
-            Upload documents, enter your specifications, and get them delivered to YOU. <span className="italic font-bold">No more Waiting</span> for 200 pages to print !
-          </p>
-          <div className="mt-10 flex flex-col items-center justify-center w-full max-w-xl mx-auto px-4">
-            <div
-              onDragEnter={handleDrag}
-              onDragLeave={handleDrag}
-              onDragOver={handleDrag}
-              onDrop={handleDrop}
-              className={`w-full relative rounded-3xl border-2 border-dashed p-10 sm:p-14 text-center transition-all ${
-                isUploading ? "cursor-wait opacity-80" : "cursor-pointer"
-              } ${
-                dragActive
-                  ? "border-indigo-500 bg-indigo-50/50 dark:bg-indigo-900/10 scale-[1.02]"
-                  : "border-zinc-300 bg-white/80 hover:border-indigo-400 dark:border-zinc-700 dark:bg-zinc-900/80 backdrop-blur-sm"
-              }`}
-            >
-              <input
-                type="file"
-                id="home-file-upload"
-                className="hidden"
-                accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-                onChange={handleFileChange}
-                disabled={isUploading}
-              />
-              <label htmlFor="home-file-upload" className={`block w-full h-full ${isUploading ? 'cursor-wait pointer-events-none' : 'cursor-pointer'}`}>
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20">
-                  {isUploading ? (
-                    <Loader2 size={32} className="animate-spin text-indigo-600" />
-                  ) : (
-                    <Upload size={32} />
-                  )}
-                </div>
-                <h3 className="text-xl font-bold text-zinc-900 dark:text-white">
-                  {isUploading ? "Processing..." : "Drag & drop or click to upload"}
-                </h3>
-                <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400 font-medium">
-                  {isUploading ? "Please wait while we prepare your file" : "PDF, DOC, or Images up to 20MB"}
-                </p>
-              </label>
-            </div>
-
-            {/* Loading Status Indicator beneath upload box */}
-            <div className={`w-full transition-all duration-500 ease-out overflow-hidden ${isUploading ? 'max-h-24 opacity-100 mt-6' : 'max-h-0 opacity-0 mt-0'}`}>
-              <div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 shadow-lg">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400 animate-pulse">
-                    {loadingText}
-                  </span>
-                  <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                    {Math.round(progress)}%
-                  </span>
-                </div>
-                <div className="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-2 overflow-hidden">
-                  <div 
-                    className="bg-gradient-to-r from-indigo-500 to-purple-500 h-2 rounded-full transition-all duration-300 ease-out" 
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
+        <section className="relative w-full max-w-6xl mx-auto px-4 pt-16 sm:pt-24 pb-16 flex flex-col md:flex-row items-center gap-12">
+          <div className="flex-1 text-center md:text-left">
+            <h1 className="text-5xl sm:text-7xl md:text-8xl font-bold tracking-tight text-zinc-900 dark:text-white leading-[1.1]">
+              You Focus on <br className="hidden md:block" />
+              <span className="bg-gradient-to-r from-[#66DFC0] via-[#2DBDD5] to-[#2553B5] bg-clip-text text-transparent pb-2 block md:inline">Your Research.</span>
+            </h1>
+          </div>
+          <div className="flex-1 w-full flex justify-center md:justify-end relative">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-[400px] bg-gradient-to-tr from-[#66DFC0]/40 to-[#2553B5]/40 blur-[80px] -z-10 rounded-full"></div>
+            <div className="relative w-full max-w-[400px] group mix-blend-multiply dark:mix-blend-normal">
+              {/* Fallback styling in case image is missing */}
+              <div className="absolute inset-0 bg-zinc-100 dark:bg-zinc-900 flex flex-col items-center justify-center text-center p-6 text-zinc-400 -z-10">
+                <FileStack size={48} className="mb-4 opacity-50" />
+                <p>Please save the student image as <br /> <code className="text-xs bg-zinc-200 dark:bg-zinc-800 p-1 rounded">public/images/student-stressed.png</code></p>
               </div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/student-stressed.png"
+                alt="Student stressed with papers"
+                className="w-full h-full object-cover relative z-10 transform transition-transform duration-700 group-hover:scale-105"
+                onError={(e) => e.currentTarget.style.display = 'none'}
+              />
             </div>
-
           </div>
         </section>
+
+        {/* Feature Section 1 */}
+        <section className="w-full bg-white dark:bg-zinc-950 py-20">
+          <div className="max-w-6xl mx-auto px-4 flex flex-col-reverse md:flex-row items-center gap-12">
+            <div className="flex-1 w-full relative flex justify-center md:justify-start">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-[500px] bg-gradient-to-tr from-[#2DBDD5]/30 to-[#66DFC0]/30 blur-[80px] -z-10 rounded-full"></div>
+              <div className="relative w-full max-w-[500px] group mix-blend-multiply dark:mix-blend-normal">
+                <div className="absolute inset-0 bg-zinc-200 dark:bg-zinc-800 flex flex-col items-center justify-center text-center p-6 text-zinc-500 -z-10">
+                  <p>Please save the bear image as <br /> <code className="text-xs bg-zinc-300 dark:bg-zinc-700 p-1 rounded">public/images/bear-notebooks.png</code></p>
+                </div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/bear-notebooks.png"
+                  alt="AI Assistant Bear"
+                  className="w-full h-full object-cover relative z-10 transform transition-transform duration-700 group-hover:scale-105"
+                  onError={(e) => e.currentTarget.style.display = 'none'}
+                />
+              </div>
+            </div>
+            <div className="flex-1 text-center md:text-left">
+              <h2 className="text-5xl sm:text-7xl md:text-8xl font-bold tracking-tight text-zinc-900 dark:text-white mb-6 leading-[1.1]">
+                We Print, Bind, <br className="hidden md:block" />
+                <span className="bg-gradient-to-r from-[#66DFC0] via-[#2DBDD5] to-[#2553B5] bg-clip-text text-transparent pb-2 block md:inline">and Prepare.</span>
+              </h2>
+            </div>
+          </div>
+        </section>
+
+        {/* Feature Section 2 */}
+        <section className="relative w-full min-h-[80vh] sm:min-h-[90vh] md:min-h-screen flex items-center overflow-hidden">
+          <div className="absolute inset-0 z-0" style={{ WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%)', maskImage: 'linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%)' }}>
+            {/* Fallback styling in case image is missing */}
+            <div className="absolute inset-0 bg-zinc-100 dark:bg-zinc-900 flex flex-col items-center justify-center text-center p-6 text-zinc-400">
+              <p>Please save the handoff image as <br /> <code className="text-xs bg-zinc-200 dark:bg-zinc-800 p-1 rounded">public/images/bear-handoff.png</code></p>
+            </div>
+            <img
+              src="/images/bear-handoff.png"
+              alt="Bear handing project to student"
+              className="w-full h-full object-cover object-[70%_center] sm:object-center relative z-10"
+              onError={(e) => e.currentTarget.style.display = 'none'}
+            />
+            <div className="absolute inset-0 z-20 bg-gradient-to-r from-zinc-950/80 via-zinc-950/20 to-transparent pointer-events-none"></div>
+          </div>
+
+          <div className="relative z-30 w-full max-w-6xl mx-auto px-4 py-24 flex flex-col md:flex-row items-center gap-12">
+            <div className="flex-1 text-left w-full max-w-2xl pt-20 sm:pt-0">
+              <h2 className="text-6xl sm:text-8xl md:text-9xl font-black tracking-tighter text-white mb-6 leading-[1.0] drop-shadow-lg">
+                We Deliver <br className="hidden md:block" />
+                <span className="bg-gradient-to-r from-[#66DFC0] via-[#2DBDD5] to-[#2553B5] bg-clip-text text-transparent pb-4 block sm:inline">Your Relief.</span>
+              </h2>
+              <div className="mt-10 flex flex-col sm:flex-row items-center justify-start gap-4">
+                <Link
+                  href="/upload"
+                  className="w-full sm:w-auto px-10 py-5 bg-gradient-to-r from-[#28AEDC] to-[#2553B5] hover:from-[#3ACFC6] hover:to-[#2568C2] text-white rounded-2xl font-black text-xl transition-all shadow-xl shadow-[#28AEDC]/30 hover:shadow-[#2DBDD5]/50 hover:-translate-y-1 inline-flex items-center justify-center"
+                >
+                  Start Printing
+                </Link>
+              </div>
+            </div>
+            <div className="flex-1 w-full hidden md:flex justify-end">
+              {/* Keeping the right side empty so the background image is fully visible on this side */}
+            </div>
+          </div>
+        </section>
+
+
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-200 bg-white/90 py-6 dark:border-zinc-800 dark:bg-zinc-950/90 backdrop-blur-sm">
-        <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-          <Link href="/vendor" className="inline-flex items-center justify-center transition-transform hover:scale-105 active:scale-95">
-            <img src="/mimo-x-light.png" alt="MIMO X Logo" className="h-5 object-contain block dark:hidden" />
-            <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="h-5 object-contain hidden dark:block" />
+      <footer className="bg-white py-8 dark:bg-zinc-950">
+        <div className="mx-auto max-w-6xl px-4 text-center flex flex-col items-center">
+          <Link href="/vendor" className="inline-flex items-center justify-center transition-transform hover:scale-105 active:scale-95 mb-6">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/mimo-x-light.png" alt="MIMO X Logo" className="w-40 md:w-56 h-12 md:h-14 object-cover object-center block dark:hidden mix-blend-multiply" />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="w-40 md:w-56 h-12 md:h-14 object-cover object-center hidden dark:block mix-blend-screen" />
           </Link>
-          <div className="mt-3 flex flex-col items-center gap-1.5">
-            <p className="text-sm font-semibold tracking-wide text-zinc-500 dark:text-zinc-400">
-              Software Designed & Developed by{" "}
-              <Link href="/admin" className="font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors">
-                S Huzaifa
-              </Link>
-            </p>
-            <p className="text-xs font-medium text-zinc-400 dark:text-zinc-500">
-              © 2026 Vision Printt Technologies. All Rights Reserved.
-            </p>
-          </div>
+          <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+            Software Designed & Developed by{" "}
+            <Link href="/admin" className="font-bold text-indigo-600 hover:text-indigo-500 transition-colors">
+              S Md Huzaifa
+            </Link>
+          </p>
+          <p className="mt-2 text-xs text-zinc-400 dark:text-zinc-500">
+            © {new Date().getFullYear()} Vision Printt Technologies. All Rights Reserved.
+          </p>
         </div>
       </footer>
     </div>
   );
 }
+
