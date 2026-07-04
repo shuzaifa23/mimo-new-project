@@ -46,8 +46,8 @@ export default function Navbar() {
     <nav className="fixed top-0 z-50 w-full border-b border-zinc-200 bg-white/80 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/80">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center transition-transform hover:scale-105 active:scale-95">
-          <img src="/mimo-x-light.png" alt="MIMO X Logo" className="w-40 md:w-56 h-12 md:h-14 object-cover object-center block dark:hidden mix-blend-multiply" />
-          <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="w-40 md:w-56 h-12 md:h-14 object-cover object-center hidden dark:block mix-blend-screen" />
+          <img src="/mimo-x-light.png" alt="MIMO X Logo" className="w-40 md:w-56 h-12 md:h-14 object-cover object-center block dark:hidden" />
+          <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="w-40 md:w-56 h-12 md:h-14 object-cover object-center hidden dark:block" />
         </Link>
 
         {/* Desktop Links */}

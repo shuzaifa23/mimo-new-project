@@ -10,9 +10,9 @@ export default function Home() {
 
       <main className="flex-1 flex flex-col items-center">
         {/* Hero Section */}
-        <section className="relative w-full max-w-6xl mx-auto px-4 pt-16 sm:pt-24 pb-16 flex flex-col md:flex-row items-center gap-12">
+        <section className="relative w-full max-w-6xl mx-auto px-4 pt-28 sm:pt-36 md:pt-40 pb-16 flex flex-col md:flex-row items-center gap-12">
           <div className="flex-1 text-center md:text-left">
-            <h1 className="text-5xl sm:text-7xl md:text-8xl font-bold tracking-tight text-zinc-900 dark:text-white leading-[1.1]">
+            <h1 className="text-5xl sm:text-7xl md:text-8xl font-outfit font-bold tracking-tight text-zinc-900 dark:text-white leading-[1.1]">
               You Focus on <br className="hidden md:block" />
               <span className="bg-gradient-to-r from-[#66DFC0] via-[#2DBDD5] to-[#2553B5] bg-clip-text text-transparent pb-2 block md:inline">Your Research.</span>
             </h1>
@@ -55,7 +55,7 @@ export default function Home() {
               </div>
             </div>
             <div className="flex-1 text-center md:text-left">
-              <h2 className="text-5xl sm:text-7xl md:text-8xl font-bold tracking-tight text-zinc-900 dark:text-white mb-6 leading-[1.1]">
+              <h2 className="text-5xl sm:text-7xl md:text-8xl font-outfit font-bold tracking-tight text-zinc-900 dark:text-white mb-6 leading-[1.1]">
                 We Print, Bind, <br className="hidden md:block" />
                 <span className="bg-gradient-to-r from-[#66DFC0] via-[#2DBDD5] to-[#2553B5] bg-clip-text text-transparent pb-2 block md:inline">and Prepare.</span>
               </h2>
@@ -81,7 +81,7 @@ export default function Home() {
 
           <div className="relative z-30 w-full max-w-6xl mx-auto px-4 py-24 flex flex-col md:flex-row items-center gap-12">
             <div className="flex-1 text-left w-full max-w-2xl pt-20 sm:pt-0">
-              <h2 className="text-6xl sm:text-8xl md:text-9xl font-black tracking-tighter text-white mb-6 leading-[1.0] drop-shadow-lg">
+              <h2 className="text-6xl sm:text-8xl md:text-9xl font-outfit font-black tracking-tighter text-white mb-6 leading-[1.0] drop-shadow-lg">
                 We Deliver <br className="hidden md:block" />
                 <span className="bg-gradient-to-r from-[#66DFC0] via-[#2DBDD5] to-[#2553B5] bg-clip-text text-transparent pb-4 block sm:inline">Your Relief.</span>
               </h2>
@@ -108,17 +108,17 @@ export default function Home() {
         <div className="mx-auto max-w-6xl px-4 text-center flex flex-col items-center">
           <Link href="/vendor" className="inline-flex items-center justify-center transition-transform hover:scale-105 active:scale-95 mb-6">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/mimo-x-light.png" alt="MIMO X Logo" className="w-40 md:w-56 h-12 md:h-14 object-cover object-center block dark:hidden mix-blend-multiply" />
+            <img src="/mimo-x-light.png" alt="MIMO X Logo" className="w-28 md:w-36 h-8 md:h-10 object-cover object-center block dark:hidden" />
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="w-40 md:w-56 h-12 md:h-14 object-cover object-center hidden dark:block mix-blend-screen" />
+            <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="w-28 md:w-36 h-8 md:h-10 object-cover object-center hidden dark:block" />
           </Link>
-          <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+          <p className="text-sm font-medium text-zinc-900 dark:text-zinc-200">
             Software Designed & Developed by{" "}
-            <Link href="/admin" className="font-bold text-indigo-600 hover:text-indigo-500 transition-colors">
+            <Link href="/admin" className="font-bold bg-gradient-to-r from-cyan-500 to-blue-500 bg-clip-text text-transparent hover:from-cyan-400 hover:to-blue-400 transition-colors">
               S Md Huzaifa
             </Link>
           </p>
-          <p className="mt-2 text-xs text-zinc-400 dark:text-zinc-500">
+          <p className="mt-2 text-xs font-medium text-zinc-800 dark:text-zinc-400">
             © {new Date().getFullYear()} Vision Printt Technologies. All Rights Reserved.
           </p>
         </div>
