@@ -55,21 +55,21 @@ export default function Navbar() {
           <div className="hidden items-center gap-8 md:flex">
             <Link 
               href="/" 
-              className={`flex items-center gap-2 text-sm font-bold transition-colors ${pathname === '/' ? 'text-indigo-600' : 'text-zinc-500 hover:text-indigo-600'}`}
+              className={`flex items-center gap-2 text-sm font-bold transition-colors ${pathname === '/' ? 'text-[#2DBDD5]' : 'text-zinc-500 hover:text-[#2DBDD5]'}`}
             >
               <Home size={16} />
               <span>Home</span>
             </Link>
             <Link 
               href="/student/order" 
-              className={`flex items-center gap-2 text-sm font-bold transition-colors ${pathname.startsWith('/student/order') ? 'text-indigo-600' : 'text-zinc-500 hover:text-indigo-600'}`}
+              className={`flex items-center gap-2 text-sm font-bold transition-colors ${pathname.startsWith('/student/order') ? 'text-[#2DBDD5]' : 'text-zinc-500 hover:text-[#2DBDD5]'}`}
             >
               <PlusCircle size={16} />
               <span>New Order</span>
             </Link>
             <Link 
               href="/student/track" 
-              className={`flex items-center gap-2 text-sm font-bold transition-colors ${pathname === '/student/track' ? 'text-indigo-600' : 'text-zinc-500 hover:text-indigo-600'}`}
+              className={`flex items-center gap-2 text-sm font-bold transition-colors ${pathname === '/student/track' ? 'text-[#2DBDD5]' : 'text-zinc-500 hover:text-[#2DBDD5]'}`}
             >
               <LayoutDashboard size={16} />
               <span>Track Order</span>
@@ -83,11 +83,13 @@ export default function Navbar() {
           
           {pathname !== '/' && (
             <>
-              <Link href="/student/order" className="hidden sm:block">
-                <Button size="sm" className="h-9 px-4 rounded-full font-bold shadow-md shadow-indigo-500/20">
-                  Print Now
-                </Button>
-              </Link>
+              {pathname !== '/upload' && pathname !== '/student/order' && pathname !== '/student/track' && (
+                <Link href="/student/order" className="hidden sm:block">
+                  <Button size="sm" className="h-9 px-4 rounded-full font-bold shadow-md shadow-[#2DBDD5]/20 bg-gradient-to-r from-[#2DBDD5] to-[#2553B5] hover:from-[#66DFC0] hover:to-[#2DBDD5] border-0 text-white">
+                    Print Now
+                  </Button>
+                </Link>
+              )}
 
               {user && (
                 <Button
@@ -119,7 +121,7 @@ export default function Navbar() {
             <Link 
               href="/" 
               onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-3 rounded-2xl p-4 text-sm font-bold ${pathname === '/' ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20' : 'text-zinc-600 dark:text-zinc-400'}`}
+              className={`flex items-center gap-3 rounded-2xl p-4 text-sm font-bold ${pathname === '/' ? 'bg-[#2DBDD5]/10 text-[#2DBDD5] dark:bg-[#2DBDD5]/20' : 'text-zinc-600 dark:text-zinc-400'}`}
             >
               <Home size={20} />
               <span>Home</span>
@@ -127,7 +129,7 @@ export default function Navbar() {
             <Link 
               href="/student/order" 
               onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-3 rounded-2xl p-4 text-sm font-bold ${pathname.startsWith('/student/order') ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20' : 'text-zinc-600 dark:text-zinc-400'}`}
+              className={`flex items-center gap-3 rounded-2xl p-4 text-sm font-bold ${pathname.startsWith('/student/order') ? 'bg-[#2DBDD5]/10 text-[#2DBDD5] dark:bg-[#2DBDD5]/20' : 'text-zinc-600 dark:text-zinc-400'}`}
             >
               <PlusCircle size={20} />
               <span>New Order</span>
@@ -135,7 +137,7 @@ export default function Navbar() {
             <Link 
               href="/student/track" 
               onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-3 rounded-2xl p-4 text-sm font-bold ${pathname === '/student/track' ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20' : 'text-zinc-600 dark:text-zinc-400'}`}
+              className={`flex items-center gap-3 rounded-2xl p-4 text-sm font-bold ${pathname === '/student/track' ? 'bg-[#2DBDD5]/10 text-[#2DBDD5] dark:bg-[#2DBDD5]/20' : 'text-zinc-600 dark:text-zinc-400'}`}
             >
               <LayoutDashboard size={20} />
               <span>Track Order</span>

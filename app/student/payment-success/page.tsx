@@ -154,10 +154,10 @@ function SuccessContent() {
     return (
       <div className="flex min-h-[70vh] flex-col items-center justify-center text-center px-4">
         <div className="relative mb-6">
-          <div className="h-20 w-20 rounded-full border-4 border-indigo-100 dark:border-indigo-950 flex items-center justify-center">
-            <Loader2 className="h-10 w-10 text-indigo-600 dark:text-indigo-400 animate-spin" />
+          <div className="h-20 w-20 rounded-full border-4 border-[#2DBDD5]/20 dark:border-[#2DBDD5]/20 flex items-center justify-center">
+            <Loader2 className="h-10 w-10 text-[#2DBDD5] dark:text-[#66DFC0] animate-spin" />
           </div>
-          <div className="absolute -bottom-1 -right-1 bg-indigo-500 rounded-full p-1.5 text-white animate-pulse">
+          <div className="absolute -bottom-1 -right-1 bg-gradient-to-r from-[#2DBDD5] to-[#2553B5] rounded-full p-1.5 text-white animate-pulse">
             <Sparkles size={12} />
           </div>
         </div>
@@ -214,7 +214,7 @@ function SuccessContent() {
         <div className="px-8 py-6 bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-100 dark:border-zinc-800 flex justify-between items-center">
           <div>
             <p className="text-xs text-zinc-400 dark:text-zinc-500 uppercase font-bold tracking-wider">Order ID</p>
-            <p className="text-sm font-black text-indigo-600 dark:text-indigo-400 mt-0.5 select-all">{getShortOrderId(orderId || "")}</p>
+            <p className="text-sm font-black text-[#2DBDD5] mt-0.5 select-all">{getShortOrderId(orderId || "")}</p>
           </div>
           <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-400 text-xs font-bold">
             Paid Successfully
@@ -310,7 +310,7 @@ function SuccessContent() {
 
       <div className="flex flex-col sm:flex-row gap-4">
         <Button 
-          className="flex-1 h-12 bg-indigo-600 text-white hover:bg-indigo-700 font-bold rounded-2xl shadow-lg shadow-indigo-600/10 flex items-center justify-center gap-2"
+          className="flex-1 h-12 bg-gradient-to-r from-[#2DBDD5] to-[#2553B5] hover:from-[#66DFC0] hover:to-[#2DBDD5] border-0 text-white font-bold rounded-2xl shadow-lg shadow-[#2DBDD5]/20 flex items-center justify-center gap-2"
           onClick={() => router.push("/student/track")}
         >
           Track My Orders
@@ -333,7 +333,7 @@ export default function PaymentSuccessPage() {
   return (
     <Suspense fallback={
       <div className="flex min-h-[70vh] flex-col items-center justify-center text-center px-4">
-        <Loader2 className="h-10 w-10 text-indigo-600 dark:text-indigo-400 animate-spin" />
+        <Loader2 className="h-10 w-10 text-[#2DBDD5] animate-spin" />
       </div>
     }>
       <SuccessContent />

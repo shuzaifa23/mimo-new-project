@@ -6,6 +6,7 @@ import { Upload, CheckCircle2, Loader2, CreditCard, FileText } from "lucide-reac
 import { supabase } from "@/lib/supabase";
 import { PDFDocument } from "pdf-lib";
 import { useGlobalFile } from "@/components/FileContext";
+import { load } from "@cashfreepayments/cashfree-js";
 
 export default function OrderPage() {
   const router = useRouter();
@@ -159,8 +160,73 @@ export default function OrderPage() {
       localStorage.setItem('mimo_order_data', JSON.stringify(orderData));
       localStorage.setItem('student_phone', formData.phone);
 
-      setMessage({ type: 'success', text: "Redirecting to payment..." });
-      router.push(`/student/payment?orderId=${orderId}&amount=${amount}&name=${encodeURIComponent(formData.name)}&phone=${encodeURIComponent(formData.phone)}`);
+      setMessage({ type: 'success', text: "Initializing payment..." });
+
+      // Start Cashfree Payment directly
+      try {
+        const response = await fetch("/api/payment/create-order", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            amount: amount,
+            orderId: orderId,
+            customerName: formData.name,
+            customerPhone: formData.phone,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!data.payment_session_id) {
+          throw new Error(data.error || "Failed to create payment session");
+        }
+
+        const cashfree = await load({
+          mode: "production",
+        });
+
+        const result = await cashfree.checkout({
+          paymentSessionId: data.payment_session_id,
+          returnUrl: `${window.location.origin}/student/payment-success?order_id=${orderId}`,
+          redirectTarget: "_self",
+        });
+
+        if (result.error) {
+          console.error("Cashfree Error:", result.error);
+          setMessage({ type: 'error', text: result.error.message || "Payment failed" });
+        }
+      } catch (err) {
+        console.error("Payment error:", err);
+        const isDemo = confirm("Cashfree is not configured. Do you want to use Demo Mode to simulate a successful payment and save the order?");
+        if (isDemo) {
+            const { error: dbError } = await supabase.from('orders').insert({
+              id: orderId,
+              customer_name: formData.name,
+              phone: formData.phone,
+              amount: Number(amount),
+              payment_status: "PAID",
+              status: "Pending",
+              vendor_id: formData.vendorId || "mimo-vendor",
+              vendor_name: orderData.vendorName || "MIMO print",
+              payment_method: "demo",
+              payment_order_id: orderId,
+              cashfree_order_id: "demo_" + Date.now(),
+              paid_at: new Date().toISOString(),
+              file_url: orderData.fileUrl || '',
+              file_name: orderData.fileName || '',
+              print_type: orderData.printType || 'bw',
+              copies: Number(orderData.copies) || 1,
+              binding: orderData.binding || 'none',
+              pages: Number(orderData.pages) || 1,
+            });
+
+            if (dbError) throw dbError;
+            
+            router.push(`/student/payment-success?order_id=${orderId}`);
+        }
+      }
 
     } catch (error: any) {
       console.error("Submission Error:", error);
@@ -182,7 +248,7 @@ export default function OrderPage() {
           <div className="lg:col-span-2 space-y-6">
             {file ? (
               <div className="relative rounded-2xl border border-zinc-200 bg-white p-8 text-center shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#2DBDD5]/10 text-[#2DBDD5] dark:bg-[#2DBDD5]/20">
                   <FileText size={32} />
                 </div>
                 <h3 className="text-xl font-bold text-zinc-900 dark:text-white">
@@ -219,7 +285,7 @@ export default function OrderPage() {
                 <div>
                   <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">Print Type</label>
                   <select
-                    className="flex h-11 w-full rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 dark:border-zinc-800 dark:bg-zinc-950"
+                    className="flex h-11 w-full rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm focus:ring-2 focus:ring-[#2DBDD5] dark:border-zinc-800 dark:bg-zinc-950"
                     value={formData.printType}
                     onChange={(e) => setFormData({ ...formData, printType: e.target.value })}
                   >
@@ -230,7 +296,7 @@ export default function OrderPage() {
                 <div>
                   <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">GSM</label>
                   <select
-                    className="flex h-11 w-full rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 dark:border-zinc-800 dark:bg-zinc-950"
+                    className="flex h-11 w-full rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm focus:ring-2 focus:ring-[#2DBDD5] dark:border-zinc-800 dark:bg-zinc-950"
                     value={formData.gsm}
                     onChange={(e) => setFormData({ ...formData, gsm: e.target.value })}
                   >
@@ -242,7 +308,7 @@ export default function OrderPage() {
                 <div>
                   <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">Sides</label>
                   <select
-                    className="flex h-11 w-full rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 dark:border-zinc-800 dark:bg-zinc-950"
+                    className="flex h-11 w-full rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm focus:ring-2 focus:ring-[#2DBDD5] dark:border-zinc-800 dark:bg-zinc-950"
                     value={formData.sides}
                     onChange={(e) => setFormData({ ...formData, sides: e.target.value })}
                   >
@@ -252,7 +318,7 @@ export default function OrderPage() {
                 </div>
                 <div>
                   <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">Number of Copies</label>
-                  <div className="flex items-center h-11 w-full rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950 overflow-hidden transition-all focus-within:ring-2 focus-within:ring-indigo-500">
+                  <div className="flex items-center h-11 w-full rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950 overflow-hidden transition-all focus-within:ring-2 focus-within:ring-[#2DBDD5]">
                     <button
                       type="button"
                       onClick={() => setFormData({ ...formData, copies: Math.max(1, formData.copies - 1) })}
@@ -279,7 +345,7 @@ export default function OrderPage() {
                 <div>
                   <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">Binding</label>
                   <select
-                    className="flex h-11 w-full rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 dark:border-zinc-800 dark:bg-zinc-950"
+                    className="flex h-11 w-full rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm focus:ring-2 focus:ring-[#2DBDD5] dark:border-zinc-800 dark:bg-zinc-950"
                     value={formData.binding}
                     onChange={(e) => setFormData({ ...formData, binding: e.target.value })}
                   >
@@ -312,7 +378,7 @@ export default function OrderPage() {
                 <div className="pt-2">
                   <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">Select Your Location</label>
                   <select
-                    className="flex h-11 w-full rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-bold focus:ring-2 focus:ring-indigo-500 dark:border-zinc-800 dark:bg-zinc-950"
+                    className="flex h-11 w-full rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-bold focus:ring-2 focus:ring-[#2DBDD5] dark:border-zinc-800 dark:bg-zinc-950"
                     value={formData.vendorId}
                     onChange={(e) => setFormData({ ...formData, vendorId: e.target.value })}
                     required
@@ -323,9 +389,9 @@ export default function OrderPage() {
               </div>
             </div>
 
-            <div className="rounded-2xl bg-indigo-600 p-8 text-white shadow-xl shadow-indigo-500/20">
+            <div className="rounded-2xl bg-gradient-to-br from-[#2DBDD5] to-[#2553B5] p-8 text-white shadow-xl shadow-[#2DBDD5]/20">
               <h3 className="text-lg font-bold opacity-90">Order Summary</h3>
-              <div className="mt-4 space-y-2 border-b border-indigo-500/50 pb-4 text-sm">
+              <div className="mt-4 space-y-2 border-b border-white/20 pb-4 text-sm">
                 <div className="flex justify-between">
                   <span>Print Cost</span>
                   <span>₹{formData.printType === "bw" ? 1 : 5} × {formData.pages} × {formData.copies}</span>
@@ -351,7 +417,7 @@ export default function OrderPage() {
             <Button
               type="submit"
               size="lg"
-              className="h-16 w-full text-lg shadow-xl shadow-indigo-500/20"
+              className="h-16 w-full text-lg shadow-xl shadow-[#2DBDD5]/20 bg-gradient-to-r from-[#2DBDD5] to-[#2553B5] hover:from-[#66DFC0] hover:to-[#2DBDD5] border-0 text-white"
               disabled={loading}
             >
               {loading ? (

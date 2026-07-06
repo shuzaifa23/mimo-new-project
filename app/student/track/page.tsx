@@ -53,7 +53,7 @@ function StatusTimeline({ currentStatus }: { currentStatus: string }) {
       
       {/* Progress Line */}
       <div 
-        className="absolute top-[2.4rem] left-[10%] h-0.5 bg-indigo-600 transition-all duration-500 ease-in-out"
+        className="absolute top-[2.4rem] left-[10%] h-0.5 bg-[#2DBDD5] transition-all duration-500 ease-in-out"
         style={{ width: currentIndex === -1 ? '0%' : `${(currentIndex / (ALL_STATUSES.length - 1)) * 80}%` }}
       />
 
@@ -74,14 +74,14 @@ function StatusTimeline({ currentStatus }: { currentStatus: string }) {
         return (
           <div key={status} className="relative z-10 flex flex-col items-center gap-2 flex-1">
             <div className={`flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all duration-300 ${
-              isCompleted ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-500/30' :
-              isCurrent ? 'bg-white border-indigo-600 text-indigo-600 shadow-xl ring-4 ring-indigo-50 dark:bg-zinc-950 dark:ring-indigo-900/20' :
+              isCompleted ? 'bg-[#2DBDD5] border-[#2DBDD5] text-white shadow-lg shadow-[#2DBDD5]/30' :
+              isCurrent ? 'bg-white border-[#2DBDD5] text-[#2DBDD5] shadow-xl ring-4 ring-[#2DBDD5]/10 dark:bg-zinc-950 dark:ring-[#2DBDD5]/20' :
               'bg-white border-zinc-200 text-zinc-400 dark:bg-zinc-950 dark:border-zinc-800'
             }`}>
               {isCompleted ? <Check size={18} strokeWidth={3} /> : <Icon size={18} />}
             </div>
             <span className={`text-[10px] font-bold uppercase tracking-wider transition-colors duration-300 ${
-              isCurrent ? 'text-indigo-600' : 
+              isCurrent ? 'text-[#2DBDD5]' : 
               isCompleted ? 'text-zinc-900 dark:text-zinc-100' : 
               'text-zinc-400'
             }`}>
@@ -189,7 +189,7 @@ export default function StudentPage() {
           </div>
 
           <Link href="/student/order">
-            <Button size="lg" className="h-16 rounded-3xl px-10 text-lg font-bold shadow-2xl shadow-indigo-500/20">
+            <Button size="lg" className="h-16 rounded-3xl px-10 text-lg font-bold shadow-2xl shadow-[#2DBDD5]/20 bg-gradient-to-r from-[#2DBDD5] to-[#2553B5] hover:from-[#66DFC0] hover:to-[#2DBDD5] border-0 text-white">
               Place New Order
             </Button>
           </Link>
@@ -200,7 +200,7 @@ export default function StudentPage() {
             <div className="flex flex-col items-center justify-center py-20 text-center bg-white dark:bg-zinc-900 rounded-[3rem] border border-zinc-200 dark:border-zinc-800 shadow-xl shadow-zinc-200/50 dark:shadow-none">
               {!phone ? (
                 <div className="w-full max-w-sm space-y-6 px-8">
-                  <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20">
+                  <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-[#2DBDD5]/10 text-[#2DBDD5] dark:bg-[#2DBDD5]/20">
                     <Package size={40} />
                   </div>
                   <div>
@@ -216,7 +216,7 @@ export default function StudentPage() {
                     />
                     <Button 
                       size="lg"
-                      className="w-full h-14 rounded-2xl font-bold"
+                      className="w-full h-14 rounded-2xl font-bold shadow-md shadow-[#2DBDD5]/20 bg-gradient-to-r from-[#2DBDD5] to-[#2553B5] hover:from-[#66DFC0] hover:to-[#2DBDD5] border-0 text-white"
                       onClick={() => {
                         const input = document.getElementById('track-phone') as HTMLInputElement;
                         if (input && input.value) {
@@ -241,7 +241,7 @@ export default function StudentPage() {
 
                   <div className="flex flex-col sm:flex-row gap-4">
                     <Link href="/student/order">
-                      <Button size="lg" className="h-14 px-8 rounded-2xl">
+                      <Button size="lg" className="h-14 px-8 rounded-2xl shadow-md shadow-[#2DBDD5]/20 bg-gradient-to-r from-[#2DBDD5] to-[#2553B5] hover:from-[#66DFC0] hover:to-[#2DBDD5] border-0 text-white">
                         Place your first order
                       </Button>
                     </Link>
@@ -288,7 +288,7 @@ export default function StudentPage() {
                     
                     <div className="text-right">
                       <p className="text-xs font-bold uppercase tracking-widest text-zinc-400">Total Amount</p>
-                      <p className="mt-1 text-3xl font-black text-indigo-600 dark:text-indigo-400">₹{order.amount}</p>
+                      <p className="mt-1 text-3xl font-black text-[#2DBDD5] dark:text-[#66DFC0]">₹{order.amount}</p>
                     </div>
                   </div>
 

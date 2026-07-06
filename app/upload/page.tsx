@@ -78,7 +78,7 @@ export default function UploadPage() {
         <section className="relative w-full max-w-4xl text-center">
           <h1 className="mt-6 text-4xl xs:text-5xl sm:text-6xl md:text-7xl font-black tracking-tight text-zinc-900 dark:text-white leading-none">
             From Screen, <br />
-            <span className="bg-gradient-to-r from-indigo-600 to-violet-500 bg-clip-text text-transparent">To Sheets.</span>
+            <span className="bg-gradient-to-r from-[#66DFC0] via-[#2DBDD5] to-[#2553B5] bg-clip-text text-transparent">To Sheets.</span>
           </h1>
           <p className="mt-6 text-base sm:text-lg md:text-xl text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto font-medium">
             Upload documents, enter your specifications, and get them delivered to YOU. <span className="italic font-bold">No more Waiting</span> for 200 pages to print!
@@ -93,8 +93,8 @@ export default function UploadPage() {
                 isUploading ? "cursor-wait opacity-80" : "cursor-pointer"
               } ${
                 dragActive
-                  ? "border-indigo-500 bg-indigo-50/50 dark:bg-indigo-900/10 scale-[1.02]"
-                  : "border-zinc-300 bg-white/80 hover:border-indigo-400 dark:border-zinc-700 dark:bg-zinc-900/80 backdrop-blur-sm"
+                  ? "border-[#2DBDD5] bg-[#2DBDD5]/10 dark:bg-[#2DBDD5]/10 scale-[1.02]"
+                  : "border-zinc-300 bg-white/80 hover:border-[#2DBDD5] dark:border-zinc-700 dark:bg-zinc-900/80 backdrop-blur-sm"
               }`}
             >
               <input
@@ -106,9 +106,9 @@ export default function UploadPage() {
                 disabled={isUploading}
               />
               <label htmlFor="home-file-upload" className={`block w-full h-full ${isUploading ? 'cursor-wait pointer-events-none' : 'cursor-pointer'}`}>
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#2DBDD5]/10 text-[#2DBDD5] dark:bg-[#2DBDD5]/20">
                   {isUploading ? (
-                    <Loader2 size={32} className="animate-spin text-indigo-600" />
+                    <Loader2 size={32} className="animate-spin text-[#2DBDD5]" />
                   ) : (
                     <Upload size={32} />
                   )}
@@ -126,7 +126,7 @@ export default function UploadPage() {
             <div className={`w-full transition-all duration-500 ease-out overflow-hidden ${isUploading ? 'max-h-24 opacity-100 mt-6' : 'max-h-0 opacity-0 mt-0'}`}>
               <div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 shadow-lg">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400 animate-pulse">
+                  <span className="text-sm font-bold text-[#2DBDD5] dark:text-[#66DFC0] animate-pulse">
                     {loadingText}
                   </span>
                   <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400">
@@ -135,7 +135,7 @@ export default function UploadPage() {
                 </div>
                 <div className="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-2 overflow-hidden">
                   <div 
-                    className="bg-gradient-to-r from-indigo-500 to-purple-500 h-2 rounded-full transition-all duration-300 ease-out" 
+                    className="bg-gradient-to-r from-[#66DFC0] via-[#2DBDD5] to-[#2553B5] h-2 rounded-full transition-all duration-300 ease-out" 
                     style={{ width: `${progress}%` }}
                   />
                 </div>
