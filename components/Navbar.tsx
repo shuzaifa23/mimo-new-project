@@ -51,63 +51,69 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Links */}
-        <div className="hidden items-center gap-8 md:flex">
-          <Link 
-            href="/" 
-            className={`flex items-center gap-2 text-sm font-bold transition-colors ${pathname === '/' ? 'text-indigo-600' : 'text-zinc-500 hover:text-indigo-600'}`}
-          >
-            <Home size={16} />
-            <span>Home</span>
-          </Link>
-          <Link 
-            href="/student/order" 
-            className={`flex items-center gap-2 text-sm font-bold transition-colors ${pathname.startsWith('/student/order') ? 'text-indigo-600' : 'text-zinc-500 hover:text-indigo-600'}`}
-          >
-            <PlusCircle size={16} />
-            <span>New Order</span>
-          </Link>
-          <Link 
-            href="/student/track" 
-            className={`flex items-center gap-2 text-sm font-bold transition-colors ${pathname === '/student/track' ? 'text-indigo-600' : 'text-zinc-500 hover:text-indigo-600'}`}
-          >
-            <LayoutDashboard size={16} />
-            <span>Track Order</span>
-          </Link>
-        </div>
+        {pathname !== '/' && (
+          <div className="hidden items-center gap-8 md:flex">
+            <Link 
+              href="/" 
+              className={`flex items-center gap-2 text-sm font-bold transition-colors ${pathname === '/' ? 'text-indigo-600' : 'text-zinc-500 hover:text-indigo-600'}`}
+            >
+              <Home size={16} />
+              <span>Home</span>
+            </Link>
+            <Link 
+              href="/student/order" 
+              className={`flex items-center gap-2 text-sm font-bold transition-colors ${pathname.startsWith('/student/order') ? 'text-indigo-600' : 'text-zinc-500 hover:text-indigo-600'}`}
+            >
+              <PlusCircle size={16} />
+              <span>New Order</span>
+            </Link>
+            <Link 
+              href="/student/track" 
+              className={`flex items-center gap-2 text-sm font-bold transition-colors ${pathname === '/student/track' ? 'text-indigo-600' : 'text-zinc-500 hover:text-indigo-600'}`}
+            >
+              <LayoutDashboard size={16} />
+              <span>Track Order</span>
+            </Link>
+          </div>
+        )}
 
         {/* Right Section */}
         <div className="flex items-center gap-4">
           <ThemeToggle />
           
-          <Link href="/student/order" className="hidden sm:block">
-            <Button size="sm" className="h-9 px-4 rounded-full font-bold shadow-md shadow-indigo-500/20">
-              Print Now
-            </Button>
-          </Link>
+          {pathname !== '/' && (
+            <>
+              <Link href="/student/order" className="hidden sm:block">
+                <Button size="sm" className="h-9 px-4 rounded-full font-bold shadow-md shadow-indigo-500/20">
+                  Print Now
+                </Button>
+              </Link>
 
-          {user && (
-            <Button
-              onClick={handleLogout}
-              variant="outline"
-              size="sm"
-              className="hidden sm:inline-flex h-9 px-4 rounded-full font-bold border-zinc-200 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
-            >
-              Log Out
-            </Button>
+              {user && (
+                <Button
+                  onClick={handleLogout}
+                  variant="outline"
+                  size="sm"
+                  className="hidden sm:inline-flex h-9 px-4 rounded-full font-bold border-zinc-200 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
+                >
+                  Log Out
+                </Button>
+              )}
+              
+              {/* Mobile Menu Toggle */}
+              <button 
+                className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-50 text-zinc-600 md:hidden dark:bg-zinc-900 dark:text-zinc-400"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              >
+                {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              </button>
+            </>
           )}
-          
-          {/* Mobile Menu Toggle */}
-          <button 
-            className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-50 text-zinc-600 md:hidden dark:bg-zinc-900 dark:text-zinc-400"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
         </div>
       </div>
 
       {/* Mobile Menu Overlay */}
-      {mobileMenuOpen && (
+      {mobileMenuOpen && pathname !== '/' && (
         <div className="border-t border-zinc-100 bg-white p-6 md:hidden dark:border-zinc-800 dark:bg-zinc-950 animate-in slide-in-from-top duration-300">
           <div className="flex flex-col gap-4">
             <Link 
