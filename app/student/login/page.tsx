@@ -164,23 +164,25 @@ function StudentLoginForm() {
       <div className="w-full max-w-md overflow-hidden rounded-[2.5rem] border border-zinc-200/60 bg-white/70 p-8 shadow-2xl backdrop-blur-xl dark:border-zinc-800/60 dark:bg-zinc-900/70 dark:shadow-none sm:p-10">
         <div className="mb-8 text-center">
           {isSignUp ? (
-            <div className="flex flex-col items-center gap-3">
-              <div className="flex items-center justify-center select-none w-fit mb-2">
+            <div className="flex flex-col items-center">
+              <div className="flex items-center justify-center select-none w-fit -my-2 md:-my-4">
                 <img src="/mimo-x-light.png" alt="MIMO X Logo" className="w-48 md:w-56 h-auto object-contain block dark:hidden mix-blend-multiply" />
                 <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="w-48 md:w-56 h-auto object-contain hidden dark:block" />
               </div>
-              <h2 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-white">
+              <h2 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-white mt-2">
                 Create Account
               </h2>
             </div>
           ) : (
-            <h2 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-white flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
-              <span>Welcome to</span>
-              <span className="flex items-center select-none w-fit inline-flex">
+            <div className="flex flex-col items-center">
+              <h2 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-white mb-0">
+                Welcome to
+              </h2>
+              <div className="flex items-center justify-center select-none w-fit -my-4 md:-my-6">
                 <img src="/mimo-x-light.png" alt="MIMO X Logo" className="w-48 md:w-56 h-auto object-contain block dark:hidden mix-blend-multiply" />
                 <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="w-48 md:w-56 h-auto object-contain hidden dark:block" />
-              </span>
-            </h2>
+              </div>
+            </div>
           )}
           <p className="mt-3 text-sm font-medium text-zinc-500 dark:text-zinc-400">
             {isSignUp 
