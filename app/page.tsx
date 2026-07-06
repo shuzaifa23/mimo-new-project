@@ -12,14 +12,14 @@ export default function Home() {
         {/* Hero Section */}
         <section className="relative w-full max-w-6xl mx-auto px-4 pt-28 sm:pt-36 md:pt-40 pb-16 flex flex-col md:flex-row items-center gap-12">
           <div className="flex-1 text-center md:text-left">
-            <h1 className="text-5xl sm:text-7xl md:text-8xl font-outfit font-bold tracking-tight text-zinc-900 dark:text-white leading-[1.1]">
+            <h1 className="text-5xl sm:text-7xl md:text-8xl font-outfit font-black tracking-tight text-zinc-900 dark:text-white leading-[1.1]">
               You Focus on <br className="hidden md:block" />
               <span className="bg-gradient-to-r from-[#66DFC0] via-[#2DBDD5] to-[#2553B5] bg-clip-text text-transparent pb-2 block md:inline">Your Research.</span>
             </h1>
           </div>
           <div className="flex-1 w-full flex justify-center md:justify-end relative">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-[400px] bg-gradient-to-tr from-[#66DFC0]/40 to-[#2553B5]/40 blur-[80px] -z-10 rounded-full"></div>
-            <div className="relative w-full max-w-[400px] group mix-blend-multiply dark:mix-blend-normal">
+            <div className="relative w-full max-w-[400px] group mix-blend-multiply dark:mix-blend-normal overflow-hidden rounded-[2rem] shadow-2xl">
               {/* Fallback styling in case image is missing */}
               <div className="absolute inset-0 bg-zinc-100 dark:bg-zinc-900 flex flex-col items-center justify-center text-center p-6 text-zinc-400 -z-10">
                 <FileStack size={48} className="mb-4 opacity-50" />
@@ -41,7 +41,7 @@ export default function Home() {
           <div className="max-w-6xl mx-auto px-4 flex flex-col-reverse md:flex-row items-center gap-12">
             <div className="flex-1 w-full relative flex justify-center md:justify-start">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-[500px] bg-gradient-to-tr from-[#2DBDD5]/30 to-[#66DFC0]/30 blur-[80px] -z-10 rounded-full"></div>
-              <div className="relative w-full max-w-[500px] group mix-blend-multiply dark:mix-blend-normal">
+              <div className="relative w-full max-w-[500px] group mix-blend-multiply dark:mix-blend-normal overflow-hidden rounded-[2rem] shadow-2xl">
                 <div className="absolute inset-0 bg-zinc-200 dark:bg-zinc-800 flex flex-col items-center justify-center text-center p-6 text-zinc-500 -z-10">
                   <p>Please save the bear image as <br /> <code className="text-xs bg-zinc-300 dark:bg-zinc-700 p-1 rounded">public/images/bear-notebooks.png</code></p>
                 </div>
@@ -55,7 +55,7 @@ export default function Home() {
               </div>
             </div>
             <div className="flex-1 text-center md:text-left">
-              <h2 className="text-5xl sm:text-7xl md:text-8xl font-outfit font-bold tracking-tight text-zinc-900 dark:text-white mb-6 leading-[1.1]">
+              <h2 className="text-5xl sm:text-7xl md:text-8xl font-outfit font-black tracking-tight text-zinc-900 dark:text-white mb-6 leading-[1.1]">
                 We Print, Bind, <br className="hidden md:block" />
                 <span className="bg-gradient-to-r from-[#66DFC0] via-[#2DBDD5] to-[#2553B5] bg-clip-text text-transparent pb-2 block md:inline">and Prepare.</span>
               </h2>
@@ -73,17 +73,17 @@ export default function Home() {
             <img
               src="/images/bear-handoff.png"
               alt="Bear handing project to student"
-              className="w-full h-full object-cover object-[70%_center] sm:object-center relative z-10"
+              className="w-full h-full object-cover object-[30%_center] sm:object-center relative z-10"
               onError={(e) => e.currentTarget.style.display = 'none'}
             />
-            <div className="absolute inset-0 z-20 bg-gradient-to-r from-zinc-950/80 via-zinc-950/20 to-transparent pointer-events-none"></div>
+            <div className="absolute inset-0 z-20 bg-gradient-to-b from-zinc-950/90 via-zinc-950/50 to-transparent md:bg-gradient-to-r md:from-zinc-950/80 md:via-zinc-950/20 md:to-transparent pointer-events-none"></div>
           </div>
 
           <div className="relative z-30 w-full max-w-6xl mx-auto px-4 py-8 sm:py-24 flex flex-col md:flex-row items-center gap-12">
             <div className="flex-1 text-left w-full max-w-2xl">
-              <h2 className="text-6xl sm:text-8xl md:text-9xl font-outfit font-black tracking-tighter text-white mb-6 leading-[1.0] drop-shadow-lg">
+              <h2 className="text-6xl sm:text-8xl md:text-9xl font-outfit font-black tracking-tighter text-white mb-6 leading-[1.0] drop-shadow-2xl">
                 We Deliver <br className="hidden md:block" />
-                <span className="bg-gradient-to-r from-[#66DFC0] via-[#2DBDD5] to-[#2553B5] bg-clip-text text-transparent pb-4 block sm:inline">Your Relief.</span>
+                <span className="bg-gradient-to-r from-[#66DFC0] via-[#2DBDD5] to-[#4AA5FF] bg-clip-text text-transparent pb-4 block sm:inline drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]">Your Relief.</span>
               </h2>
               <div className="mt-[35vh] sm:mt-10 flex flex-col sm:flex-row items-center justify-start gap-4 w-full pb-4 sm:pb-0">
                 <Link

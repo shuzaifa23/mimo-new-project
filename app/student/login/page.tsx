@@ -165,11 +165,11 @@ function StudentLoginForm() {
         <div className="mb-8 text-center">
           {isSignUp ? (
             <div className="flex flex-col items-center">
-              <div className="flex items-center justify-center select-none w-fit -my-2 md:-my-4">
+              <div className="flex items-center justify-center select-none w-fit -mt-6 -mb-4 md:-mt-8 md:-mb-6">
                 <img src="/mimo-x-light.png" alt="MIMO X Logo" className="w-48 md:w-56 h-auto object-contain block dark:hidden mix-blend-multiply" />
                 <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="w-48 md:w-56 h-auto object-contain hidden dark:block" />
               </div>
-              <h2 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-white mt-2">
+              <h2 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-white mt-0">
                 Create Account
               </h2>
             </div>
@@ -178,7 +178,7 @@ function StudentLoginForm() {
               <h2 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-white mb-0">
                 Welcome to
               </h2>
-              <div className="flex items-center justify-center select-none w-fit -my-4 md:-my-6">
+              <div className="flex items-center justify-center select-none w-fit -mt-10 -mb-6 md:-mt-12 md:-mb-8">
                 <img src="/mimo-x-light.png" alt="MIMO X Logo" className="w-48 md:w-56 h-auto object-contain block dark:hidden mix-blend-multiply" />
                 <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="w-48 md:w-56 h-auto object-contain hidden dark:block" />
               </div>
