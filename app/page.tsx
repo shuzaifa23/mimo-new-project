@@ -64,8 +64,8 @@ export default function Home() {
         </section>
 
         {/* Feature Section 2 */}
-        <section className="relative w-full min-h-[80vh] sm:min-h-[90vh] md:min-h-screen flex items-center overflow-hidden">
-          <div className="absolute inset-0 z-0" style={{ WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%)', maskImage: 'linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%)' }}>
+        <section className="relative w-full min-h-[80vh] sm:min-h-[90vh] md:min-h-screen flex items-start pt-24 sm:pt-0 sm:items-center overflow-hidden">
+          <div className="absolute inset-0 z-0 [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)] md:[mask-image:linear-gradient(to_bottom,transparent_0%,black_20%,black_80%,transparent_100%)] md:[-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_20%,black_80%,transparent_100%)]">
             {/* Fallback styling in case image is missing */}
             <div className="absolute inset-0 bg-zinc-100 dark:bg-zinc-900 flex flex-col items-center justify-center text-center p-6 text-zinc-400">
               <p>Please save the handoff image as <br /> <code className="text-xs bg-zinc-200 dark:bg-zinc-800 p-1 rounded">public/images/bear-handoff.png</code></p>
@@ -79,13 +79,13 @@ export default function Home() {
             <div className="absolute inset-0 z-20 bg-gradient-to-r from-zinc-950/80 via-zinc-950/20 to-transparent pointer-events-none"></div>
           </div>
 
-          <div className="relative z-30 w-full max-w-6xl mx-auto px-4 py-24 flex flex-col md:flex-row items-center gap-12">
-            <div className="flex-1 text-left w-full max-w-2xl pt-20 sm:pt-0">
+          <div className="relative z-30 w-full max-w-6xl mx-auto px-4 py-8 sm:py-24 flex flex-col md:flex-row items-center gap-12">
+            <div className="flex-1 text-left w-full max-w-2xl">
               <h2 className="text-6xl sm:text-8xl md:text-9xl font-outfit font-black tracking-tighter text-white mb-6 leading-[1.0] drop-shadow-lg">
                 We Deliver <br className="hidden md:block" />
                 <span className="bg-gradient-to-r from-[#66DFC0] via-[#2DBDD5] to-[#2553B5] bg-clip-text text-transparent pb-4 block sm:inline">Your Relief.</span>
               </h2>
-              <div className="mt-10 flex flex-col sm:flex-row items-center justify-start gap-4">
+              <div className="mt-[35vh] sm:mt-10 flex flex-col sm:flex-row items-center justify-start gap-4 w-full pb-4 sm:pb-0">
                 <Link
                   href="/upload"
                   className="w-full sm:w-auto px-10 py-5 bg-gradient-to-r from-[#28AEDC] to-[#2553B5] hover:from-[#3ACFC6] hover:to-[#2568C2] text-white rounded-2xl font-black text-xl transition-all shadow-xl shadow-[#28AEDC]/30 hover:shadow-[#2DBDD5]/50 hover:-translate-y-1 inline-flex items-center justify-center"

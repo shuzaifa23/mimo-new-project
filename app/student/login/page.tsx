@@ -50,15 +50,10 @@ function ThreeDLogo() {
         >
           <div 
             style={{ transform: "translateZ(15px)" }}
-            className="flex items-end"
+            className="flex items-center"
           >
-            <img src="/mimo-x-light.png" alt="MIMO X Logo" className="h-8 md:h-10 object-contain block dark:hidden mix-blend-multiply" />
-            <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="h-8 md:h-10 object-contain hidden dark:block" />
-            <span 
-              className="relative z-10 text-[10px] md:text-xs font-black tracking-widest text-zinc-900 dark:text-white -ml-4 md:-ml-5 mb-1 md:mb-1.5 italic uppercase"
-            >
-              PRESS
-            </span>
+            <img src="/mimo-x-light.png" alt="MIMO X Logo" className="w-32 md:w-40 h-auto object-contain block dark:hidden mix-blend-multiply" />
+            <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="w-32 md:w-40 h-auto object-contain hidden dark:block" />
           </div>
         </div>
       </div>
@@ -170,12 +165,9 @@ function StudentLoginForm() {
         <div className="mb-8 text-center">
           {isSignUp ? (
             <div className="flex flex-col items-center gap-3">
-              <div className="flex items-end justify-center select-none w-fit mb-1">
-                <img src="/mimo-x-light.png" alt="MIMO X Logo" className="h-10 object-contain block dark:hidden mix-blend-multiply" />
-                <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="h-10 object-contain hidden dark:block" />
-                <span className="relative z-10 text-[11px] font-black tracking-widest text-zinc-900 dark:text-white -ml-5 mb-1.5 italic uppercase">
-                  PRESS
-                </span>
+              <div className="flex items-center justify-center select-none w-fit mb-2">
+                <img src="/mimo-x-light.png" alt="MIMO X Logo" className="w-48 md:w-56 h-auto object-contain block dark:hidden mix-blend-multiply" />
+                <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="w-48 md:w-56 h-auto object-contain hidden dark:block" />
               </div>
               <h2 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-white">
                 Create Account
@@ -184,12 +176,9 @@ function StudentLoginForm() {
           ) : (
             <h2 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-white flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
               <span>Welcome to</span>
-              <span className="flex items-end select-none w-fit inline-flex">
-                <img src="/mimo-x-light.png" alt="MIMO X Logo" className="h-[2.5rem] object-contain block dark:hidden mix-blend-multiply" />
-                <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="h-[2.5rem] object-contain hidden dark:block" />
-                <span className="relative z-10 text-[11px] font-black tracking-widest text-zinc-900 dark:text-white -ml-5 mb-1.5 italic uppercase">
-                  PRESS
-                </span>
+              <span className="flex items-center select-none w-fit inline-flex">
+                <img src="/mimo-x-light.png" alt="MIMO X Logo" className="w-48 md:w-56 h-auto object-contain block dark:hidden mix-blend-multiply" />
+                <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="w-48 md:w-56 h-auto object-contain hidden dark:block" />
               </span>
             </h2>
           )}

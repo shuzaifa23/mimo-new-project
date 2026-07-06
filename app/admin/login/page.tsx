@@ -57,10 +57,9 @@ export default function AdminLoginPage() {
       <div className="relative w-full max-w-md">
         {/* Logo & Heading */}
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-16 items-end justify-center">
-            <img src="/mimo-x-light.png" alt="MIMO X Logo" className="h-10 md:h-12 object-contain block dark:hidden mix-blend-multiply" />
-            <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="h-10 md:h-12 object-contain hidden dark:block" />
-            <span className="relative z-10 text-xs md:text-sm font-black tracking-widest text-zinc-900 dark:text-white -ml-5 md:-ml-6 mb-1.5 md:mb-2 italic uppercase">PRESS</span>
+          <div className="mx-auto mb-6 flex items-center justify-center">
+            <img src="/mimo-x-light.png" alt="MIMO X Logo" className="w-48 md:w-56 h-auto object-contain block dark:hidden mix-blend-multiply" />
+            <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="w-48 md:w-56 h-auto object-contain hidden dark:block" />
           </div>
           <h1 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-white">Admin Console</h1>
           <p className="mt-2 text-sm text-zinc-500">Secure admin console — authorized users only</p>
