@@ -93,12 +93,13 @@ function StudentLoginForm() {
     setMessage(null);
 
     try {
+      const nextPath = searchParams.get("next") || "/";
       if (isSignUp) {
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/auth/callback?next=/`,
+            emailRedirectTo: `${window.location.origin}/auth/callback?next=${nextPath}`,
           },
         });
 
@@ -111,7 +112,7 @@ function StudentLoginForm() {
           });
         } else {
           setMessage({ type: "success", text: "Welcome! Redirecting..." });
-          router.push("/");
+          router.push(nextPath);
           router.refresh();
         }
       } else {
@@ -123,7 +124,7 @@ function StudentLoginForm() {
         if (error) throw error;
 
         setMessage({ type: "success", text: "Welcome back! Redirecting..." });
-        router.push("/");
+        router.push(nextPath);
         router.refresh();
       }
     } catch (err: any) {
@@ -137,11 +138,13 @@ function StudentLoginForm() {
     setGoogleLoading(true);
     setMessage(null);
 
+    const nextPath = searchParams.get("next") || "/";
+
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/auth/callback?next=/`,
+          redirectTo: `${window.location.origin}/auth/callback?next=${nextPath}`,
           queryParams: {
             prompt: 'select_account'
           }
