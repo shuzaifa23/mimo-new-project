@@ -113,7 +113,14 @@ export async function middleware(request: NextRequest) {
   }
   */
 
-  // 3. Student Protection
+  // 3. Landing Page Protection (Only for logged-out/new users)
+  if (path === '/') {
+    if (session) {
+      return NextResponse.redirect(new URL('/upload', request.url))
+    }
+  }
+
+  // 4. Student Protection
   if (path === '/upload') {
     if (!session) {
       return NextResponse.redirect(new URL(`/student/login?next=${encodeURIComponent(path)}`, request.url))
