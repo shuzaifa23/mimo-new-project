@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button, Input } from "@/components/ui/core";
 import { supabase } from "@/lib/supabase";
-import { Check, Clock, Package, Printer as PrinterIcon, CheckCircle2, ChevronRight, XCircle, Eye, Trash2 } from "lucide-react";
+import { Check, Clock, Package, Printer as PrinterIcon, ChevronRight, XCircle, Eye, Trash2 } from "lucide-react";
 
 interface Order {
   id: string;
@@ -21,7 +21,7 @@ interface Order {
   file_name?: string;
 }
 
-const ALL_STATUSES = ['Pending', 'Accepted', 'Printing', 'Completed', 'Delivered'];
+const ALL_STATUSES = ['Pending', 'Printing', 'Delivered'];
 
 const getShortOrderId = (uuid: string) => {
   if (!uuid) return "MIMO0000";
@@ -64,9 +64,7 @@ function StatusTimeline({ currentStatus }: { currentStatus: string }) {
 
         const icons = {
           Pending: Clock,
-          Accepted: Package,
           Printing: PrinterIcon,
-          Completed: CheckCircle2,
           Delivered: Check,
         };
         const Icon = icons[status as keyof typeof icons] || Clock;

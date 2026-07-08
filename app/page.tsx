@@ -3,8 +3,19 @@
 import Link from "next/link";
 import { Sparkles, Truck, FileStack } from "lucide-react";
 import Image from "next/image";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const isOldUser = localStorage.getItem("student_phone");
+    if (isOldUser) {
+      router.push("/upload");
+    }
+  }, [router]);
+
   return (
     <div className="flex flex-col min-h-[calc(100vh-64px)] bg-white dark:bg-zinc-950 transition-colors duration-300 relative">
 

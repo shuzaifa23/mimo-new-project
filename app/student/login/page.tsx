@@ -306,7 +306,7 @@ function StudentLoginForm() {
           {isSignUp ? "Already have an account?" : "Don't have an account yet?"}{" "}
           <button
             type="button"
-            className="font-bold text-indigo-600 hover:underline dark:text-indigo-400"
+            className="font-bold bg-gradient-to-r from-[#28AEDC] to-[#2553B5] bg-clip-text text-transparent hover:from-[#3ACFC6] hover:to-[#2568C2]"
             onClick={() => {
               setIsSignUp(!isSignUp);
               setMessage(null);
@@ -325,7 +325,7 @@ export default function StudentLoginPage() {
     <Suspense fallback={
       <div className="relative flex min-h-[85vh] items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+          <Loader2 className="h-8 w-8 animate-spin text-[#28AEDC]" />
           <p className="text-zinc-500 font-bold text-sm">Loading Student Portal...</p>
         </div>
       </div>

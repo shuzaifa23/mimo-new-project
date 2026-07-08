@@ -44,7 +44,9 @@ export default function OrderPage() {
   };
 
   const amount = useMemo(() => {
-    const pageRate = formData.printType === "bw" ? 1 : 5;
+    const basePageRate = formData.printType === "bw" ? 1 : 5;
+    const gsmExtra = { "75": 0, "90": 0.5, "95": 0.5, "100": 1 }[formData.gsm] || 0;
+    const pageRate = basePageRate + gsmExtra;
     const bindingPrice = { none: 0, spiral: 20, hard: 130, soft: 20 }[formData.binding] || 0;
     const basePrice = 0; 
     return (basePrice + (pageRate * formData.pages * formData.copies) + bindingPrice);
@@ -122,6 +124,7 @@ export default function OrderPage() {
     }
 
     if (formData.copies < 1) return setMessage({ type: 'error', text: "Number of copies must be at least 1" });
+    if (formData.pages < 25) return setMessage({ type: 'error', text: "Minimum 25 pages required" });
 
     setLoading(true);
 
@@ -300,9 +303,9 @@ export default function OrderPage() {
                     value={formData.gsm}
                     onChange={(e) => setFormData({ ...formData, gsm: e.target.value })}
                   >
-                    <option value="75">GSM(75)</option>
-                    <option value="90">GSM(90)</option>
-                    <option value="100">GSM(100)</option>
+                    <option value="75">75(GSM)</option>
+                    <option value="90">90(GSM) (+₹0.5/pg)</option>
+                    <option value="100">100(GSM) (+₹1/pg)</option>
                   </select>
                 </div>
                 <div>
@@ -351,8 +354,8 @@ export default function OrderPage() {
                   >
                     <option value="none">None</option>
                     <option value="spiral">Spiral Binding (+₹20)</option>
-                    <option value="hard">Hard Binding (+₹130)</option>
                     <option value="soft">Soft Binding (+₹20)</option>
+                    <option value="hard">Hard Binding (+₹130)</option>
                   </select>
                 </div>
               </div>
@@ -361,7 +364,7 @@ export default function OrderPage() {
 
           <div className="space-y-6">
             <div className="rounded-2xl border border-zinc-200 bg-white p-8 dark:border-zinc-800 dark:bg-zinc-950">
-              <h3 className="mb-6 text-lg font-bold text-zinc-900 dark:text-white">Contact Info & Shop Selection</h3>
+              <h3 className="mb-6 text-lg font-bold text-zinc-900 dark:text-white">Contact Info</h3>
               <div className="space-y-4">
                 <Input
                   placeholder="Your Name"
@@ -375,17 +378,6 @@ export default function OrderPage() {
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   required
                 />
-                <div className="pt-2">
-                  <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">Select Your Location</label>
-                  <select
-                    className="flex h-11 w-full rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-bold focus:ring-2 focus:ring-[#2DBDD5] dark:border-zinc-800 dark:bg-zinc-950"
-                    value={formData.vendorId}
-                    onChange={(e) => setFormData({ ...formData, vendorId: e.target.value })}
-                    required
-                  >
-                    <option value="REVA UNIVERSITY">REVA UNIVERSITY</option>
-                  </select>
-                </div>
               </div>
             </div>
 
@@ -394,7 +386,7 @@ export default function OrderPage() {
               <div className="mt-4 space-y-2 border-b border-white/20 pb-4 text-sm">
                 <div className="flex justify-between">
                   <span>Print Cost</span>
-                  <span>₹{formData.printType === "bw" ? 1 : 5} × {formData.pages} × {formData.copies}</span>
+                  <span>₹{(formData.printType === "bw" ? 1 : 5) + ({ "75": 0, "90": 0.5, "95": 0.5, "100": 1 }[formData.gsm] || 0)} × {formData.pages} × {formData.copies}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Binding</span>
