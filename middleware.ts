@@ -88,7 +88,7 @@ export async function middleware(request: NextRequest) {
   if (code && !path.startsWith('/auth/callback')) {
     const callbackUrl = new URL('/auth/callback', request.url)
     callbackUrl.searchParams.set('code', code)
-    callbackUrl.searchParams.set('next', '/')
+    callbackUrl.searchParams.set('next', '/upload')
     return NextResponse.redirect(callbackUrl)
   }
 

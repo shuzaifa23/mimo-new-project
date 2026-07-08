@@ -394,8 +394,8 @@ export default function OrderPage() {
                 </div>
               </div>
               <div className="mt-5 flex items-center justify-between">
-                <span className="text-xl font-extrabold tracking-tight">Total Amount</span>
-                <span className="text-5xl font-black tracking-tighter drop-shadow-md">₹{amount}</span>
+                <span className="text-2xl sm:text-3xl font-black tracking-tighter uppercase drop-shadow-sm">Total Amount</span>
+                <span className="text-5xl sm:text-6xl font-black tracking-tighter drop-shadow-md">₹{amount}</span>
               </div>
             </div>
 

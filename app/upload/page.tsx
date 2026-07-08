@@ -33,7 +33,7 @@ export default function UploadPage() {
         return;
       }
     } else {
-      setError("Please upload a PDF file to verify the 25-page minimum.");
+      setError("Please upload a document with minimum 25 pages.");
       return;
     }
 

@@ -98,7 +98,7 @@ export default function Home() {
               </h2>
               <div className="mt-[35vh] sm:mt-10 flex flex-col sm:flex-row items-center justify-start gap-4 w-full pb-4 sm:pb-0">
                 <Link
-                  href="/upload"
+                  href="/student/login?next=/upload"
                   className="w-full sm:w-auto px-10 py-5 bg-gradient-to-r from-[#28AEDC] to-[#2553B5] hover:from-[#3ACFC6] hover:to-[#2568C2] text-white rounded-2xl font-black text-xl transition-all shadow-xl shadow-[#28AEDC]/30 hover:shadow-[#2DBDD5]/50 hover:-translate-y-1 inline-flex items-center justify-center"
                 >
                   Start Printing
