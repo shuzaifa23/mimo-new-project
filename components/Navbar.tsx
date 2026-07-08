@@ -46,7 +46,7 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 z-50 w-full border-b border-zinc-200 bg-white/80 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/80">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center transition-transform hover:scale-105 active:scale-95">
+        <Link href="/upload" className="flex items-center gap-0 mr-4 md:mr-8 transition-transform hover:scale-105 active:scale-95">
           <img src="/mimo-x-light.png" alt="MIMO X Logo" className="w-40 md:w-56 h-12 md:h-14 object-cover object-center block dark:hidden" />
           <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="w-40 md:w-56 h-12 md:h-14 object-cover object-center hidden dark:block" />
         </Link>
@@ -55,8 +55,8 @@ export default function Navbar() {
         {pathname !== '/' && (
           <div className="hidden items-center gap-8 md:flex">
             <Link 
-              href="/" 
-              className={`flex items-center gap-2 text-sm font-bold transition-colors ${pathname === '/' ? 'text-[#2DBDD5]' : 'text-zinc-500 hover:text-[#2DBDD5]'}`}
+              href="/upload" 
+              className={`flex items-center gap-2 text-sm font-bold transition-colors ${pathname === '/upload' ? 'text-[#2DBDD5]' : 'text-zinc-500 hover:text-[#2DBDD5]'}`}
             >
               <Home size={16} />
               <span>Home</span>
@@ -120,9 +120,9 @@ export default function Navbar() {
         <div className="border-t border-zinc-100 bg-white p-6 md:hidden dark:border-zinc-800 dark:bg-zinc-950 animate-in slide-in-from-top duration-300">
           <div className="flex flex-col gap-4">
             <Link 
-              href="/" 
+              href="/upload" 
               onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-3 rounded-2xl p-4 text-sm font-bold ${pathname === '/' ? 'bg-[#2DBDD5]/10 text-[#2DBDD5] dark:bg-[#2DBDD5]/20' : 'text-zinc-600 dark:text-zinc-400'}`}
+              className={`flex items-center gap-3 rounded-2xl p-4 text-sm font-bold ${pathname === '/upload' ? 'bg-[#2DBDD5]/10 text-[#2DBDD5] dark:bg-[#2DBDD5]/20' : 'text-zinc-600 dark:text-zinc-400'}`}
             >
               <Home size={20} />
               <span>Home</span>
