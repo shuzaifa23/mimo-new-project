@@ -30,7 +30,8 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    router.push("/student/login");
+    localStorage.removeItem("student_phone");
+    router.push("/");
     router.refresh();
   };
   

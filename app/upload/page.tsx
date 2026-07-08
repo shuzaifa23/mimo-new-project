@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Upload, Loader2 } from "lucide-react";
 import { useGlobalFile } from "@/components/FileContext";
+import { PDFDocument } from "pdf-lib";
 
 export default function UploadPage() {
   const router = useRouter();
@@ -12,8 +13,30 @@ export default function UploadPage() {
   const [isUploading, setIsUploading] = useState(false);
   const [loadingText, setLoadingText] = useState("");
   const [progress, setProgress] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
-  const processFileAndRedirect = (selectedFile: File) => {
+  const processFileAndRedirect = async (selectedFile: File) => {
+    setError(null);
+    
+    if (selectedFile.type === "application/pdf") {
+      try {
+        const arrayBuffer = await selectedFile.arrayBuffer();
+        const pdfDoc = await PDFDocument.load(arrayBuffer);
+        const pageCount = pdfDoc.getPageCount();
+        if (pageCount < 25) {
+          setError(`Minimum 25 pages required. Your document has ${pageCount} page${pageCount === 1 ? '' : 's'}.`);
+          return;
+        }
+      } catch (err) {
+        console.error("Error reading PDF pages:", err);
+        setError("Could not read PDF. Please try a different file.");
+        return;
+      }
+    } else {
+      setError("Please upload a PDF file to verify the 25-page minimum.");
+      return;
+    }
+
     setFile(selectedFile);
     setIsUploading(true);
     setProgress(0);
@@ -121,6 +144,12 @@ export default function UploadPage() {
                 </p>
               </label>
             </div>
+
+            {error && (
+              <div className="mt-6 rounded-xl bg-red-50 border border-red-100 p-4 text-sm font-bold text-red-600 text-left">
+                {error}
+              </div>
+            )}
 
             {/* Loading Status Indicator beneath upload box */}
             <div className={`w-full transition-all duration-500 ease-out overflow-hidden ${isUploading ? 'max-h-24 opacity-100 mt-6' : 'max-h-0 opacity-0 mt-0'}`}>

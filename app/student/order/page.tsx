@@ -2,7 +2,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Input } from "@/components/ui/core";
-import { Upload, CheckCircle2, Loader2, CreditCard, FileText } from "lucide-react";
+import { Upload, CheckCircle2, Loader2, IndianRupee, FileText } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { PDFDocument } from "pdf-lib";
 import { useGlobalFile } from "@/components/FileContext";
@@ -303,9 +303,9 @@ export default function OrderPage() {
                     value={formData.gsm}
                     onChange={(e) => setFormData({ ...formData, gsm: e.target.value })}
                   >
-                    <option value="75">75(GSM)</option>
-                    <option value="90">90(GSM) (+₹0.5/pg)</option>
-                    <option value="100">100(GSM) (+₹1/pg)</option>
+                    <option value="75">75 GSM</option>
+                    <option value="90">90 GSM (+₹0.5/pg)</option>
+                    <option value="100">100 GSM (+₹1/pg)</option>
                   </select>
                 </div>
                 <div>
@@ -383,19 +383,19 @@ export default function OrderPage() {
 
             <div className="rounded-2xl bg-gradient-to-br from-[#2DBDD5] to-[#2553B5] p-8 text-white shadow-xl shadow-[#2DBDD5]/20">
               <h3 className="text-lg font-bold opacity-90">Order Summary</h3>
-              <div className="mt-4 space-y-2 border-b border-white/20 pb-4 text-sm">
-                <div className="flex justify-between">
+              <div className="mt-4 space-y-3 border-b border-white/20 pb-5 text-base font-semibold tracking-wide">
+                <div className="flex justify-between items-center">
                   <span>Print Cost</span>
-                  <span>₹{(formData.printType === "bw" ? 1 : 5) + ({ "75": 0, "90": 0.5, "95": 0.5, "100": 1 }[formData.gsm] || 0)} × {formData.pages} × {formData.copies}</span>
+                  <span className="text-lg font-bold">₹{(formData.printType === "bw" ? 1 : 5) + ({ "75": 0, "90": 0.5, "95": 0.5, "100": 1 }[formData.gsm] || 0)} × {formData.pages} × {formData.copies}</span>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center">
                   <span>Binding</span>
-                  <span>₹{{ none: 0, spiral: 20, hard: 130, soft: 20 }[formData.binding] || 0}</span>
+                  <span className="text-lg font-bold">₹{{ none: 0, spiral: 20, hard: 130, soft: 20 }[formData.binding] || 0}</span>
                 </div>
               </div>
-              <div className="mt-4 flex items-center justify-between">
-                <span className="text-lg font-bold">Total Amount</span>
-                <span className="text-3xl font-black">₹{amount}</span>
+              <div className="mt-5 flex items-center justify-between">
+                <span className="text-xl font-extrabold tracking-tight">Total Amount</span>
+                <span className="text-5xl font-black tracking-tighter drop-shadow-md">₹{amount}</span>
               </div>
             </div>
 
@@ -419,7 +419,9 @@ export default function OrderPage() {
                 </>
               ) : (
                 <>
-                  <CreditCard className="mr-2" size={20} />
+                  <div className="mr-2 flex h-6 w-6 items-center justify-center rounded-full border-[2.5px] border-white">
+                    <IndianRupee size={14} strokeWidth={3} />
+                  </div>
                   Confirm and Pay ₹{amount}
                 </>
               )}

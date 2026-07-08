@@ -173,21 +173,21 @@ export default function StudentPage() {
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       {/* Main */}
       <main className="mx-auto max-w-5xl px-6 py-12">
-        <div className="mb-12 flex items-center justify-between">
+        <div className="mb-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 sm:gap-0">
           <div>
-            <h2 className="text-6xl font-black tracking-tighter text-zinc-900 dark:text-white">
+            <h2 className="text-5xl sm:text-6xl font-black tracking-tighter text-zinc-900 dark:text-white">
               Your Orders
             </h2>
 
             {phone && (
-              <p className="mt-3 text-lg font-medium text-zinc-500">
+              <p className="mt-2 text-lg font-medium text-zinc-500">
                 Live updates for <span className="text-zinc-900 dark:text-white font-bold">{phone}</span>
               </p>
             )}
           </div>
 
-          <Link href="/student/order">
-            <Button size="lg" className="h-16 rounded-3xl px-10 text-lg font-bold shadow-2xl shadow-[#2DBDD5]/20 bg-gradient-to-r from-[#2DBDD5] to-[#2553B5] hover:from-[#66DFC0] hover:to-[#2DBDD5] border-0 text-white">
+          <Link href="/student/order" className="w-full sm:w-auto">
+            <Button size="lg" className="w-full sm:w-auto whitespace-nowrap h-14 sm:h-16 rounded-2xl sm:rounded-3xl px-8 sm:px-10 text-base sm:text-lg font-bold shadow-xl shadow-[#2DBDD5]/20 bg-gradient-to-r from-[#2DBDD5] to-[#2553B5] hover:from-[#66DFC0] hover:to-[#2DBDD5] border-0 text-white">
               Place New Order
             </Button>
           </Link>
