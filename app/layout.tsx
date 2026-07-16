@@ -27,6 +27,7 @@ export const metadata: Metadata = {
 import Navbar from "@/components/Navbar";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { FileProvider } from "@/components/FileContext";
+import Script from "next/script";
 
 export default function RootLayout({
   children,
@@ -39,6 +40,14 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${outfit.variable} h-full antialiased`}
       suppressHydrationWarning
     >
+      <head>
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6488030243565665"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+      </head>
       <body className="min-h-full flex flex-col bg-white transition-colors duration-300 dark:bg-zinc-950">
         <ThemeProvider>
           <FileProvider>
