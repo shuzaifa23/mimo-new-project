@@ -385,17 +385,15 @@ export default function OrderPage() {
               <h3 className="text-lg font-bold opacity-90">Order Summary</h3>
               <div className="mt-4 space-y-3 border-b border-white/20 pb-5 text-base font-semibold tracking-wide">
                 <div className="flex justify-between items-center">
-                  <span>Paper Cost (Base + GSM)</span>
-                  <span className="text-lg font-bold">₹{1 + ({ "75": 0, "90": 0.5, "95": 0.5, "100": 1 }[formData.gsm] || 0)} × {formData.pages} {formData.copies > 1 ? `× ${formData.copies}` : ''}</span>
+                  <span>Print Cost</span>
+                  <span className="text-lg font-bold">{1 + ({ "75": 0, "90": 0.5, "95": 0.5, "100": 1 }[formData.gsm] || 0)}+{formData.printType === "bw" ? 1 : 5}×{formData.pages}{formData.copies > 1 ? `×${formData.copies}` : ''}</span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span>Print Cost ({formData.printType === "bw" ? "B&W" : "Color"})</span>
-                  <span className="text-lg font-bold">₹{formData.printType === "bw" ? 1 : 5} × {formData.pages} {formData.copies > 1 ? `× ${formData.copies}` : ''}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span>Binding</span>
-                  <span className="text-lg font-bold">₹{{ none: 0, spiral: 20, hard: 130, soft: 40 }[formData.binding] || 0}</span>
-                </div>
+                {formData.binding !== "none" && (
+                  <div className="flex justify-between items-center">
+                    <span>Binding</span>
+                    <span className="text-lg font-bold">₹{{ none: 0, spiral: 20, hard: 130, soft: 40 }[formData.binding] || 0}</span>
+                  </div>
+                )}
               </div>
               <div className="mt-5 flex items-center justify-between">
                 <span className="text-2xl sm:text-3xl font-black tracking-tighter uppercase drop-shadow-sm">Total Amount</span>
