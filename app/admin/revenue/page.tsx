@@ -27,6 +27,8 @@ import {
   Cell
 } from 'recharts';
 import type { DashboardStats, Order } from '@/types/supabase';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 export default function RevenuePage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -44,25 +46,27 @@ export default function RevenuePage() {
     setExporting(true);
     try {
       const orders = await fetchAllOrders();
-      const headers = ['Order ID', 'Date', 'Customer Name', 'Amount (INR)', 'Status'];
-      const csvData = orders.map(o => [
+      
+      const doc = new jsPDF();
+      doc.text("Revenue Statement", 14, 15);
+      
+      const tableData = orders.map(o => [
         o.display_id || o.id,
         new Date(o.created_at).toLocaleDateString(),
-        `"${o.customer_name || 'Unknown'}"`,
-        o.amount || 0,
+        o.customer_name || 'Unknown',
+        o.amount?.toString() || '0',
         o.status || 'Unknown'
-      ].join(','));
-      
-      const csvString = [headers.join(','), ...csvData].join('\n');
-      const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Revenue_Statement_${new Date().toISOString().split('T')[0]}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
+      ]);
+
+      autoTable(doc, {
+        head: [['Order ID', 'Date', 'Customer Name', 'Amount (INR)', 'Status']],
+        body: tableData,
+        startY: 20,
+        styles: { fontSize: 8 },
+        headStyles: { fillColor: [37, 99, 235] }
+      });
+
+      doc.save(`Revenue_Statement_${new Date().toISOString().split('T')[0]}.pdf`);
     } catch (err) {
       console.error("Export failed:", err);
     } finally {
@@ -94,7 +98,7 @@ export default function RevenuePage() {
             className="gap-2 border-blue-200 text-blue-600 hover:bg-blue-50 dark:border-blue-800/40"
           >
             {exporting ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
-            {exporting ? 'Exporting...' : 'Export Statement'}
+            {exporting ? 'Exporting...' : 'Export PDF'}
           </Button>
         </div>
       </div>

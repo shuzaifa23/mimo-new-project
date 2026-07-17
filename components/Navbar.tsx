@@ -61,13 +61,7 @@ export default function Navbar() {
               <Home size={16} />
               <span>Home</span>
             </Link>
-            <Link 
-              href="/student/order" 
-              className={`flex items-center gap-2 text-sm font-bold transition-colors ${pathname.startsWith('/student/order') ? 'text-[#2DBDD5]' : 'text-zinc-500 hover:text-[#2DBDD5]'}`}
-            >
-              <PlusCircle size={16} />
-              <span>New Order</span>
-            </Link>
+
             <Link 
               href="/student/track" 
               className={`flex items-center gap-2 text-sm font-bold transition-colors ${pathname === '/student/track' ? 'text-[#2DBDD5]' : 'text-zinc-500 hover:text-[#2DBDD5]'}`}
@@ -127,14 +121,7 @@ export default function Navbar() {
               <Home size={20} />
               <span>Home</span>
             </Link>
-            <Link 
-              href="/student/order" 
-              onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-3 rounded-2xl p-4 text-sm font-bold ${pathname.startsWith('/student/order') ? 'bg-[#2DBDD5]/10 text-[#2DBDD5] dark:bg-[#2DBDD5]/20' : 'text-zinc-600 dark:text-zinc-400'}`}
-            >
-              <PlusCircle size={20} />
-              <span>New Order</span>
-            </Link>
+
             <Link 
               href="/student/track" 
               onClick={() => setMobileMenuOpen(false)}

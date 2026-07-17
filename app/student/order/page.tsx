@@ -44,12 +44,12 @@ export default function OrderPage() {
   };
 
   const amount = useMemo(() => {
-    const basePageRate = formData.printType === "bw" ? 1 : 5;
+    const basePaperPrice = 1;
+    const printCost = formData.printType === "bw" ? 1 : 5;
     const gsmExtra = { "75": 0, "90": 0.5, "95": 0.5, "100": 1 }[formData.gsm] || 0;
-    const pageRate = basePageRate + gsmExtra;
+    const pageRate = basePaperPrice + gsmExtra + printCost;
     const bindingPrice = { none: 0, spiral: 20, hard: 130, soft: 20 }[formData.binding] || 0;
-    const basePrice = 0; 
-    return (basePrice + (pageRate * formData.pages * formData.copies) + bindingPrice);
+    return ((pageRate * formData.pages * formData.copies) + bindingPrice);
   }, [formData]);
 
   // Load vendors on mount
@@ -386,7 +386,7 @@ export default function OrderPage() {
               <div className="mt-4 space-y-3 border-b border-white/20 pb-5 text-base font-semibold tracking-wide">
                 <div className="flex justify-between items-center">
                   <span>Print Cost</span>
-                  <span className="text-lg font-bold">₹{(formData.printType === "bw" ? 1 : 5) + ({ "75": 0, "90": 0.5, "95": 0.5, "100": 1 }[formData.gsm] || 0)} × {formData.pages} × {formData.copies}</span>
+                  <span className="text-lg font-bold">₹{1 + (formData.printType === "bw" ? 1 : 5) + ({ "75": 0, "90": 0.5, "95": 0.5, "100": 1 }[formData.gsm] || 0)} × {formData.pages} × {formData.copies}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span>Binding</span>

@@ -23,8 +23,10 @@ import { Button } from '@/components/ui/core';
 import { fetchAllOrders, fetchAllVendors, updateOrderStatus, assignVendorToOrder } from '@/lib/admin-api';
 import { supabase } from '@/lib/supabase';
 import type { Order, Vendor, OrderStatus } from '@/types/supabase';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
-const STATUS_OPTIONS: OrderStatus[] = ['Pending', 'Printing', 'Delivered', 'Cancelled'];
+const STATUS_OPTIONS: OrderStatus[] = ['Pending', 'Printing', 'Delivered'];
 
 const getShortOrderId = (order: Order) => {
   if (order.display_id) return order.display_id;
@@ -184,35 +186,35 @@ export default function OrdersPage() {
     return matchesSearch && matchesStatus;
   });
 
-  const handleExportCSV = () => {
+  const handleExportPDF = () => {
     setExporting(true);
     try {
-      const headers = ['Order ID', 'Date', 'Customer Name', 'Phone', 'Document', 'Vendor', 'Status', 'Amount (INR)', 'Payment Status'];
-      const csvData = filteredOrders.map(o => [
+      const doc = new jsPDF();
+      doc.text("Orders Export", 14, 15);
+      
+      const tableData = filteredOrders.map(o => [
         getShortOrderId(o),
         new Date(o.created_at).toLocaleDateString(),
-        `"${o.profiles?.name || o.customer_name || 'Anonymous'}"`,
-        `"${o.profiles?.phone || o.phone || 'N/A'}"`,
-        `"${o.file_name}"`,
-        `"${o.vendor_name || 'Unassigned'}"`,
+        o.profiles?.name || o.customer_name || 'Anonymous',
+        o.profiles?.phone || o.phone || 'N/A',
+        o.vendor_name || 'Unassigned',
         o.status,
-        o.amount || 0,
+        o.amount?.toString() || '0',
         o.payment_status || 'Unknown'
-      ].join(','));
-      
-      const csvString = [headers.join(','), ...csvData].join('\n');
-      const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Orders_Export_${new Date().toISOString().split('T')[0]}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
+      ]);
+
+      autoTable(doc, {
+        head: [['Order ID', 'Date', 'Customer Name', 'Phone', 'Vendor', 'Status', 'Amount', 'Payment']],
+        body: tableData,
+        startY: 20,
+        styles: { fontSize: 8 },
+        headStyles: { fillColor: [37, 99, 235] }
+      });
+
+      doc.save(`Orders_Export_${new Date().toISOString().split('T')[0]}.pdf`);
     } catch (err) {
       console.error("Export failed:", err);
-      alert("Failed to export CSV");
+      alert("Failed to export PDF");
     } finally {
       setExporting(false);
     }
@@ -244,11 +246,11 @@ export default function OrdersPage() {
           <Button 
             variant="outline" 
             className="gap-2 border-blue-200 text-blue-600 hover:bg-blue-50 dark:border-blue-800/40"
-            onClick={handleExportCSV}
+            onClick={handleExportPDF}
             disabled={exporting}
           >
             {exporting ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
-            {exporting ? 'Exporting...' : 'Export CSV'}
+            Export PDF
           </Button>
         </div>
       </div>
@@ -361,7 +363,7 @@ export default function OrdersPage() {
                       <div className="text-sm font-bold text-zinc-900 dark:text-white">₹{order.amount}</div>
                       <div className={cn(
                         "text-[9px] font-bold uppercase",
-                        order.payment_status === 'Paid' ? "text-emerald-600" : "text-rose-600"
+                        (order.payment_status || '').toLowerCase() === 'paid' ? "text-emerald-600" : "text-rose-600"
                       )}>{order.payment_status}</div>
                     </td>
                     <td className="px-6 py-4 text-right">
