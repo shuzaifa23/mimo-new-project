@@ -9,9 +9,7 @@ A modern online printing and Xerox partner platform designed for students and lo
   - Print configuration (Color/B&W, Copies, Binding).
   - Partner shop selection.
   - Real-time order tracking (via dashboard).
-- **Research Paper Generator**:
-  - Automatically generates the first 4 pages of a research paper (Title, Abstract, Keywords, etc.).
-  - Simplifies thesis and project submissions.
+
 - **Partner System**:
   - Onboarding for new Xerox/print shops.
 
