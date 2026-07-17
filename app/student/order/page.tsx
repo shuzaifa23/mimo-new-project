@@ -48,7 +48,7 @@ export default function OrderPage() {
     const printCost = formData.printType === "bw" ? 1 : 5;
     const gsmExtra = { "75": 0, "90": 0.5, "95": 0.5, "100": 1 }[formData.gsm] || 0;
     const pageRate = basePaperPrice + gsmExtra + printCost;
-    const bindingPrice = { none: 0, spiral: 20, hard: 130, soft: 40 }[formData.binding] || 0;
+    const bindingPrice = ({ none: 0, spiral: 20, hard: 130, soft: 40 }[formData.binding] || 0) * formData.copies;
     return ((pageRate * formData.pages * formData.copies) + bindingPrice);
   }, [formData]);
 
@@ -391,13 +391,13 @@ export default function OrderPage() {
                 {formData.binding !== "none" && (
                   <div className="flex justify-between items-center">
                     <span>Binding</span>
-                    <span className="text-lg font-bold">₹{{ none: 0, spiral: 20, hard: 130, soft: 40 }[formData.binding] || 0}</span>
+                    <span className="text-lg font-bold">₹{{ none: 0, spiral: 20, hard: 130, soft: 40 }[formData.binding] || 0}{formData.copies > 1 ? `×${formData.copies}` : ''}</span>
                   </div>
                 )}
               </div>
-              <div className="mt-5 flex items-center justify-between">
-                <span className="text-2xl sm:text-3xl font-black tracking-tighter uppercase drop-shadow-sm">Total Amount</span>
-                <span className="text-5xl sm:text-6xl font-black tracking-tighter drop-shadow-md">₹{amount}</span>
+              <div className="mt-5 flex flex-wrap items-end justify-between gap-2">
+                <span className="text-xl sm:text-2xl font-black tracking-tight uppercase drop-shadow-sm leading-none pb-1">Total</span>
+                <span className="text-4xl sm:text-5xl font-black tracking-tighter drop-shadow-md leading-none">₹{amount}</span>
               </div>
             </div>
 
