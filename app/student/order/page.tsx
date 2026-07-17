@@ -48,7 +48,7 @@ export default function OrderPage() {
     const printCost = formData.printType === "bw" ? 1 : 5;
     const gsmExtra = { "75": 0, "90": 0.5, "95": 0.5, "100": 1 }[formData.gsm] || 0;
     const pageRate = basePaperPrice + gsmExtra + printCost;
-    const bindingPrice = { none: 0, spiral: 20, hard: 130, soft: 20 }[formData.binding] || 0;
+    const bindingPrice = { none: 0, spiral: 20, hard: 130, soft: 40 }[formData.binding] || 0;
     return ((pageRate * formData.pages * formData.copies) + bindingPrice);
   }, [formData]);
 
@@ -354,7 +354,7 @@ export default function OrderPage() {
                   >
                     <option value="none">None</option>
                     <option value="spiral">Spiral Binding (+₹20)</option>
-                    <option value="soft">Soft Binding (+₹20)</option>
+                    <option value="soft">Soft Binding (+₹40)</option>
                     <option value="hard">Hard Binding (+₹130)</option>
                   </select>
                 </div>
@@ -385,12 +385,16 @@ export default function OrderPage() {
               <h3 className="text-lg font-bold opacity-90">Order Summary</h3>
               <div className="mt-4 space-y-3 border-b border-white/20 pb-5 text-base font-semibold tracking-wide">
                 <div className="flex justify-between items-center">
-                  <span>Print Cost</span>
-                  <span className="text-lg font-bold">₹{1 + (formData.printType === "bw" ? 1 : 5) + ({ "75": 0, "90": 0.5, "95": 0.5, "100": 1 }[formData.gsm] || 0)} × {formData.pages} × {formData.copies}</span>
+                  <span>Paper Cost (Base + GSM)</span>
+                  <span className="text-lg font-bold">₹{1 + ({ "75": 0, "90": 0.5, "95": 0.5, "100": 1 }[formData.gsm] || 0)} × {formData.pages} {formData.copies > 1 ? `× ${formData.copies}` : ''}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span>Print Cost ({formData.printType === "bw" ? "B&W" : "Color"})</span>
+                  <span className="text-lg font-bold">₹{formData.printType === "bw" ? 1 : 5} × {formData.pages} {formData.copies > 1 ? `× ${formData.copies}` : ''}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span>Binding</span>
-                  <span className="text-lg font-bold">₹{{ none: 0, spiral: 20, hard: 130, soft: 20 }[formData.binding] || 0}</span>
+                  <span className="text-lg font-bold">₹{{ none: 0, spiral: 20, hard: 130, soft: 40 }[formData.binding] || 0}</span>
                 </div>
               </div>
               <div className="mt-5 flex items-center justify-between">
