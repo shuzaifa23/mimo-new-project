@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Upload, Loader2 } from "lucide-react";
 import { useGlobalFile } from "@/components/FileContext";
 import { PDFDocument } from "pdf-lib";
@@ -174,6 +175,27 @@ export default function UploadPage() {
           </div>
         </section>
       </main>
+
+      {/* Footer */}
+      <footer className="bg-white py-8 dark:bg-zinc-950">
+        <div className="mx-auto max-w-6xl px-4 text-center flex flex-col items-center">
+          <Link href="/vendor" className="inline-flex items-center justify-center transition-transform hover:scale-105 active:scale-95 mb-6">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/mimo-x-light.png" alt="MIMO X Logo" className="w-28 md:w-36 h-8 md:h-10 object-cover object-center block dark:hidden" />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/mimo-x-dark.png" alt="MIMO X Logo" className="w-28 md:w-36 h-8 md:h-10 object-cover object-center hidden dark:block" />
+          </Link>
+          <p className="text-sm font-medium text-zinc-900 dark:text-zinc-200">
+            Software Designed & Developed by{" "}
+            <Link href="/admin" className="font-bold bg-gradient-to-r from-cyan-500 to-blue-500 bg-clip-text text-transparent hover:from-cyan-400 hover:to-blue-400 transition-colors">
+              S Md Huzaifa
+            </Link>
+          </p>
+          <p className="mt-2 text-xs font-medium text-zinc-800 dark:text-zinc-400">
+            © {new Date().getFullYear()} Vision Printt Technologies. All Rights Reserved.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
