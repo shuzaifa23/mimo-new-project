@@ -73,7 +73,7 @@ function StatusTimeline({ currentStatus }: { currentStatus: string }) {
           <div key={status} className="relative z-10 flex flex-col items-center gap-2 flex-1">
             <div className={`flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all duration-300 ${
               isCompleted ? 'bg-[#2DBDD5] border-[#2DBDD5] text-white shadow-lg shadow-[#2DBDD5]/30' :
-              isCurrent ? 'bg-white border-[#2DBDD5] text-[#2DBDD5] shadow-xl ring-4 ring-[#2DBDD5]/10 dark:bg-zinc-950 dark:ring-[#2DBDD5]/20' :
+              isCurrent ? 'bg-white border-[#2DBDD5] text-[#2DBDD5] animate-glow-pulse dark:bg-zinc-950' :
               'bg-white border-zinc-200 text-zinc-400 dark:bg-zinc-950 dark:border-zinc-800'
             }`}>
               {isCompleted ? <Check size={18} strokeWidth={3} /> : <Icon size={18} />}

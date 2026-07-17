@@ -1,4 +1,4 @@
-export type OrderStatus = 'Pending' | 'Accepted' | 'Printing' | 'Completed' | 'Delivered' | 'Cancelled';
+export type OrderStatus = 'Pending' | 'Printing' | 'Delivered' | 'Cancelled';
 
 export interface Order {
   id: string;
@@ -20,6 +20,7 @@ export interface Order {
   // Joined
   profiles?: { name: string; email: string; phone: string | null } | null;
   vendors?: { name?: string; shop_name?: string; owner_name: string } | null;
+  display_id?: string;
 }
 
 export interface Vendor {

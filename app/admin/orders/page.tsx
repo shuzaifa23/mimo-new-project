@@ -24,16 +24,17 @@ import { fetchAllOrders, fetchAllVendors, updateOrderStatus, assignVendorToOrder
 import { supabase } from '@/lib/supabase';
 import type { Order, Vendor, OrderStatus } from '@/types/supabase';
 
-const STATUS_OPTIONS: OrderStatus[] = ['Pending', 'Accepted', 'Printing', 'Completed', 'Delivered', 'Cancelled'];
+const STATUS_OPTIONS: OrderStatus[] = ['Pending', 'Printing', 'Delivered', 'Cancelled'];
 
-const getShortOrderId = (uuid: string) => {
-  if (!uuid) return "MIMO0000";
+const getShortOrderId = (order: Order) => {
+  if (order.display_id) return order.display_id;
+  if (!order.id) return "MIMO 0000";
   let hash = 0;
-  for (let i = 0; i < uuid.length; i++) {
-    hash = uuid.charCodeAt(i) + ((hash << 5) - hash);
+  for (let i = 0; i < order.id.length; i++) {
+    hash = order.id.charCodeAt(i) + ((hash << 5) - hash);
   }
   const code = Math.abs(hash % 9000) + 1000; // 1000 to 9999
-  return `MIMO${code}`;
+  return `MIMO ${code}`;
 };
 
 const getCustomerWhatsAppLink = (order: Order, newStatus: string) => {
@@ -41,8 +42,8 @@ const getCustomerWhatsAppLink = (order: Order, newStatus: string) => {
   if (!phone) return null;
   const cleanPhone = phone.replace(/\D/g, '');
   const finalPhone = cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone;
-  const shortId = getShortOrderId(order.id);
-  const message = newStatus === 'Completed'
+  const shortId = getShortOrderId(order);
+  const message = newStatus === 'Delivered'
     ? `Hi! Your MIMO Print order #${shortId} status has been updated to: *${newStatus}*.\n\nCollect your document from printshop\nTrack your order here: https://www.printmimo.page/student/track \n\nThank you for choosing MIMO!`
     : `Hi! Your MIMO Print order #${shortId} status has been updated to: *${newStatus}*.\n\nTrack your order here: https://www.printmimo.page/student/track \n\nThank you for choosing MIMO!`;
   return `https://wa.me/${finalPhone}?text=${encodeURIComponent(message)}`;
@@ -77,6 +78,7 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All Status');
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -156,7 +158,7 @@ export default function OrdersPage() {
           orderId, 
           vendor_id: "mimo-vendor", 
           vendor_name: vendorName,
-          status: "Accepted"
+          status: "Printing"
         }),
       });
       const result = await res.json();
@@ -173,7 +175,7 @@ export default function OrdersPage() {
   const filteredOrders = orders.filter(order => {
     const matchesSearch = 
       order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      getShortOrderId(order.id).toLowerCase().includes(searchTerm.toLowerCase()) ||
+      getShortOrderId(order).toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.profiles?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.file_name.toLowerCase().includes(searchTerm.toLowerCase());
     
@@ -182,15 +184,49 @@ export default function OrdersPage() {
     return matchesSearch && matchesStatus;
   });
 
+  const handleExportCSV = () => {
+    setExporting(true);
+    try {
+      const headers = ['Order ID', 'Date', 'Customer Name', 'Phone', 'Document', 'Vendor', 'Status', 'Amount (INR)', 'Payment Status'];
+      const csvData = filteredOrders.map(o => [
+        getShortOrderId(o),
+        new Date(o.created_at).toLocaleDateString(),
+        `"${o.profiles?.name || o.customer_name || 'Anonymous'}"`,
+        `"${o.profiles?.phone || o.phone || 'N/A'}"`,
+        `"${o.file_name}"`,
+        `"${o.vendor_name || 'Unassigned'}"`,
+        o.status,
+        o.amount || 0,
+        o.payment_status || 'Unknown'
+      ].join(','));
+      
+      const csvString = [headers.join(','), ...csvData].join('\n');
+      const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Orders_Export_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Export failed:", err);
+      alert("Failed to export CSV");
+    } finally {
+      setExporting(false);
+    }
+  };
+
   const getStatusStyle = (status: string) => {
     switch (status) {
-      case 'Pending': return 'bg-pink-50 text-pink-600 dark:bg-pink-900/20 dark:text-pink-400';
-      case 'Accepted': return 'bg-violet-50 text-violet-600 dark:bg-violet-900/20 dark:text-violet-400';
-      case 'Printing': return 'bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400';
+      case 'Pending': return 'bg-cyan-50 text-cyan-600 dark:bg-cyan-900/20 dark:text-cyan-400';
+      case 'Accepted': return 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400';
+      case 'Printing': return 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400';
       case 'Completed': return 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400';
       case 'Delivered': return 'bg-teal-50 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400';
       case 'Cancelled': return 'bg-rose-50 text-rose-600 dark:bg-rose-900/20 dark:text-rose-400';
-      default: return 'bg-violet-50 text-violet-600';
+      default: return 'bg-blue-50 text-blue-600';
     }
   };
 
@@ -202,49 +238,54 @@ export default function OrdersPage() {
           <p className="text-slate-400">Monitor and manage all print orders across the platform.</p>
         </div>
         <div className="flex items-center gap-3">
-          <button onClick={loadData} className="p-2 rounded-xl border border-violet-200 bg-white hover:bg-violet-50 text-violet-600 dark:border-violet-800/40 dark:hover:bg-violet-900/10">
+          <button onClick={loadData} className="p-2 rounded-xl border border-blue-200 bg-white hover:bg-blue-50 text-blue-600 dark:border-blue-800/40 dark:hover:bg-blue-900/10">
             <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
           </button>
-          <Button variant="outline" className="gap-2 border-violet-200 text-violet-600 hover:bg-violet-50 dark:border-violet-800/40">
-            <Download size={16} />
-            Export CSV
+          <Button 
+            variant="outline" 
+            className="gap-2 border-blue-200 text-blue-600 hover:bg-blue-50 dark:border-blue-800/40"
+            onClick={handleExportCSV}
+            disabled={exporting}
+          >
+            {exporting ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+            {exporting ? 'Exporting...' : 'Export CSV'}
           </Button>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col gap-4 rounded-2xl border border-violet-100/80 bg-white p-4 shadow-sm dark:border-violet-900/20 dark:bg-zinc-950 md:flex-row md:items-center">
+      <div className="flex flex-col gap-4 rounded-2xl border border-blue-100/80 bg-white p-4 shadow-sm dark:border-blue-900/20 dark:bg-zinc-950 md:flex-row md:items-center">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-violet-400" size={18} />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-400" size={18} />
           <input 
             type="text" 
             placeholder="Search by ID, customer or file..." 
-            className="w-full rounded-xl border border-violet-100 bg-violet-50/50 py-2 pl-10 pr-4 text-sm outline-none focus:ring-2 focus:ring-violet-500/20 dark:border-violet-900/20 dark:bg-violet-900/10"
+            className="w-full rounded-xl border border-blue-100 bg-blue-50/50 py-2 pl-10 pr-4 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-blue-900/20 dark:bg-blue-900/10"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         <div className="flex items-center gap-2">
           <select 
-            className="rounded-xl border border-violet-100 bg-violet-50/50 px-4 py-2 text-sm outline-none dark:border-violet-900/20 dark:bg-violet-900/10"
+            className="rounded-xl border border-blue-100 bg-blue-50/50 px-4 py-2 text-sm outline-none dark:border-blue-900/20 dark:bg-blue-900/10"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
             <option>All Status</option>
             {STATUS_OPTIONS.map(status => <option key={status} value={status}>{status}</option>)}
           </select>
-          <Button variant="outline" size="sm" className="h-10 px-3 border-violet-200 text-violet-600 hover:bg-violet-50">
+          <Button variant="outline" size="sm" className="h-10 px-3 border-blue-200 text-blue-600 hover:bg-blue-50">
             <Filter size={18} />
           </Button>
         </div>
       </div>
 
       {/* Table */}
-      <div className="overflow-hidden rounded-2xl border border-violet-100/80 bg-white shadow-sm dark:border-violet-900/20 dark:bg-zinc-950">
+      <div className="overflow-hidden rounded-2xl border border-blue-100/80 bg-white shadow-sm dark:border-blue-900/20 dark:bg-zinc-950">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-violet-100/80 bg-violet-50/40 text-xs font-bold uppercase tracking-wider text-violet-500 dark:border-violet-900/20 dark:bg-violet-900/10">
+              <tr className="border-b border-blue-100/80 bg-blue-50/40 text-xs font-bold uppercase tracking-wider text-blue-500 dark:border-blue-900/20 dark:bg-blue-900/10">
                 <th className="px-6 py-4">Order ID</th>
                 <th className="px-6 py-4">Customer</th>
                 <th className="px-6 py-4">Document</th>
@@ -254,7 +295,7 @@ export default function OrdersPage() {
                 <th className="px-6 py-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-violet-50 dark:divide-violet-900/10">
+            <tbody className="divide-y divide-blue-50 dark:divide-blue-900/10">
               {loading ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-10 text-center">
@@ -268,9 +309,9 @@ export default function OrdersPage() {
                 </tr>
               ) : (
                 filteredOrders.map((order) => (
-                  <tr key={order.id} className="group hover:bg-violet-50/40 dark:hover:bg-violet-900/10 transition-colors">
+                  <tr key={order.id} className="group hover:bg-blue-50/40 dark:hover:bg-blue-900/10 transition-colors">
                     <td className="px-6 py-4">
-                      <span className="text-xs font-bold text-violet-600 dark:text-violet-400 font-mono" title={order.id}>{getShortOrderId(order.id)}</span>
+                      <span className="text-xs font-bold text-blue-600 dark:text-blue-400 font-mono" title={order.id}>{getShortOrderId(order)}</span>
                       <div className="text-[10px] text-zinc-400 mt-0.5">{new Date(order.created_at).toLocaleDateString()}</div>
                     </td>
                     <td className="px-6 py-4">
@@ -300,8 +341,8 @@ export default function OrdersPage() {
                         <Button 
                           size="sm"
                           onClick={() => handleVendorAssign(order.id, "MIMO Print")}
-                          className="h-8 text-white text-[10px] uppercase font-bold shadow-sm shadow-violet-400/30"
-                          style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #9333EA 100%)' }}
+                          className="h-8 text-white text-[10px] uppercase font-bold shadow-sm shadow-blue-400/30"
+                          style={{ background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)' }}
                         >
                           Assign Vendor
                         </Button>
@@ -345,7 +386,7 @@ export default function OrdersPage() {
                             document.body.removeChild(a);
                           }}
                           title="Download File"                           
-                          className="rounded-lg p-2 text-violet-500 hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-colors"
+                          className="rounded-lg p-2 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
                         >
                           <Download size={16} />
                         </button>
@@ -353,9 +394,9 @@ export default function OrdersPage() {
                         {(order.phone || order.profiles?.phone) && (
                           <a 
                             href={`https://wa.me/${(order.phone || order.profiles?.phone || "").replace(/\D/g, '').length === 10 ? '91' + (order.phone || order.profiles?.phone || "").replace(/\D/g, '') : (order.phone || order.profiles?.phone || "").replace(/\D/g, '')}?text=${encodeURIComponent(
-                              order.status === 'Completed'
-                                ? `Hi! Your MIMO Print order ${getShortOrderId(order.id)} status has been updated to: *${order.status}*. \n\ncollect your document from printshop\nTrack your order here: https://www.printmimo.page/student/track \n\nThank you for choosing MIMO!`
-                                : `Hi! Your MIMO Print order ${getShortOrderId(order.id)} status has been updated to: *${order.status}*. \n\nTrack your order here: https://www.printmimo.page/student/track \n\nThank you for choosing MIMO!`
+                              order.status === 'Delivered'
+                                ? `Hi! Your MIMO Print order ${getShortOrderId(order)} status has been updated to: *${order.status}*. \n\ncollect your document from printshop\nTrack your order here: https://www.printmimo.page/student/track \n\nThank you for choosing MIMO!`
+                                : `Hi! Your MIMO Print order ${getShortOrderId(order)} status has been updated to: *${order.status}*. \n\nTrack your order here: https://www.printmimo.page/student/track \n\nThank you for choosing MIMO!`
                             )}`}
                             target="_blank" 
                             rel="noopener noreferrer" 
@@ -373,7 +414,7 @@ export default function OrdersPage() {
                           target="_blank" 
                           rel="noopener noreferrer" 
                           title="Send Receipt to Vendor (WhatsApp)"
-                          className="rounded-lg p-2 text-green-500 hover:bg-green-50 dark:hover:bg-violet-900/20 transition-colors"
+                          className="rounded-lg p-2 text-green-500 hover:bg-green-50 dark:hover:bg-blue-900/20 transition-colors"
                         >
                           <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
                             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>

@@ -26,7 +26,7 @@ import type { Order, OrderStatus } from "@/types/supabase";
 const statusConfig: Record<string, { color: string; icon: any }> = {
   Pending:   { color: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400", icon: Clock },
   Accepted:  { color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400", icon: Package },
-  Printing:  { color: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400", icon: Printer },
+  Printing:  { color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400", icon: Printer },
   Completed: { color: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400", icon: CheckCircle2 },
   Delivered: { color: "bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400", icon: ChevronRight },
 };
@@ -273,7 +273,7 @@ export default function VendorOrdersPage() {
           {[
                       { label: "Total Orders", value: stats.total, color: "bg-zinc-900 text-white" },
             { label: "Pending", value: stats.pending, color: "bg-orange-500 text-white" },
-            { label: "In Print", value: stats.printing, color: "bg-purple-500 text-white" },
+            { label: "In Print", value: stats.printing, color: "bg-blue-500 text-white" },
             { label: "Delivered", value: stats.delivered, color: "bg-teal-500 text-white" }
           ].map((stat, i) => (
             <div key={i} className={`rounded-2xl p-6 shadow-sm ${stat.color}`}>

@@ -16,25 +16,25 @@ interface StatCardProps {
 export function StatCard({ label, value, icon: Icon, trend, color = "violet" }: StatCardProps) {
   const colorClasses: Record<string, { card: string; icon: string; iconBg: string; label: string; value: string; trendPos: string; trendNeg: string }> = {
     violet: {
-      card: 'border border-violet-100/80 bg-white shadow-sm hover:shadow-md hover:shadow-violet-200/40 dark:border-violet-900/20 dark:bg-zinc-950',
-      icon: 'text-violet-600 dark:text-violet-400',
-      iconBg: 'bg-violet-100 dark:bg-violet-900/30',
+      card: 'border border-blue-100/80 bg-white shadow-sm hover:shadow-md hover:shadow-blue-200/40 dark:border-blue-900/20 dark:bg-zinc-950',
+      icon: 'text-blue-600 dark:text-blue-400',
+      iconBg: 'bg-blue-100 dark:bg-blue-900/30',
       label: 'text-slate-500 dark:text-zinc-400',
       value: 'text-zinc-900 dark:text-white',
       trendPos: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400',
       trendNeg: 'bg-rose-50 text-rose-600 dark:bg-rose-900/20 dark:text-rose-400'
     },
     pink: {
-      card: 'border border-violet-100/80 bg-white shadow-sm hover:shadow-md hover:shadow-violet-200/40 dark:border-violet-900/20 dark:bg-zinc-950',
-      icon: 'text-pink-600 dark:text-pink-400',
-      iconBg: 'bg-pink-100 dark:bg-pink-900/30',
+      card: 'border border-blue-100/80 bg-white shadow-sm hover:shadow-md hover:shadow-blue-200/40 dark:border-blue-900/20 dark:bg-zinc-950',
+      icon: 'text-cyan-600 dark:text-cyan-400',
+      iconBg: 'bg-cyan-100 dark:bg-cyan-900/30',
       label: 'text-slate-500 dark:text-zinc-400',
       value: 'text-zinc-900 dark:text-white',
       trendPos: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400',
       trendNeg: 'bg-rose-50 text-rose-600 dark:bg-rose-900/20 dark:text-rose-400'
     },
     green: {
-      card: 'border border-violet-100/80 bg-white shadow-sm hover:shadow-md hover:shadow-violet-200/40 dark:border-violet-900/20 dark:bg-zinc-950',
+      card: 'border border-blue-100/80 bg-white shadow-sm hover:shadow-md hover:shadow-blue-200/40 dark:border-blue-900/20 dark:bg-zinc-950',
       icon: 'text-emerald-600 dark:text-emerald-400',
       iconBg: 'bg-emerald-100 dark:bg-emerald-900/30',
       label: 'text-slate-500 dark:text-zinc-400',
@@ -43,19 +43,19 @@ export function StatCard({ label, value, icon: Icon, trend, color = "violet" }: 
       trendNeg: 'bg-rose-50 text-rose-600 dark:bg-rose-900/20 dark:text-rose-400'
     },
     "solid-purple": {
-      card: 'bg-[#5f4bb6] text-white shadow-lg shadow-purple-900/20 border-none hover:shadow-xl hover:shadow-purple-900/30',
+      card: 'bg-[#1e3a8a] text-white shadow-lg shadow-blue-900/20 border-none hover:shadow-xl hover:shadow-blue-900/30',
       icon: 'text-white',
       iconBg: 'bg-white/20',
-      label: 'text-purple-200',
+      label: 'text-blue-200',
       value: 'text-white',
       trendPos: 'bg-white/20 text-white',
       trendNeg: 'bg-white/10 text-white/80'
     },
     "solid-pink": {
-      card: 'bg-[#ff7eb3] text-white shadow-lg shadow-pink-900/20 border-none hover:shadow-xl hover:shadow-pink-900/30',
+      card: 'bg-[#06b6d4] text-white shadow-lg shadow-cyan-900/20 border-none hover:shadow-xl hover:shadow-cyan-900/30',
       icon: 'text-white',
       iconBg: 'bg-white/20',
-      label: 'text-pink-100',
+      label: 'text-cyan-100',
       value: 'text-white',
       trendPos: 'bg-white/20 text-white',
       trendNeg: 'bg-white/10 text-white/80'

@@ -110,8 +110,8 @@ export default function AdminLoginPage() {
             <Button
               id="admin-login-btn"
               type="submit"
-              className="w-full h-12 gap-2 text-base font-bold shadow-lg shadow-violet-500/20 disabled:opacity-60"
-              style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)', color: '#fff' }}
+              className="w-full h-12 gap-2 text-base font-bold shadow-lg shadow-blue-500/20 disabled:opacity-60"
+              style={{ background: 'linear-gradient(135deg, #2563eb 0%, #06b6d4 100%)', color: '#fff' }}
               disabled={loading}
             >
               {loading ? (

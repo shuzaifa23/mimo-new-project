@@ -42,24 +42,23 @@ export function AdminSidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: 
       {/* Backdrop */}
       {isOpen && (
         <div 
-          className="fixed inset-0 z-30 bg-violet-900/30 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-30 bg-blue-900/30 backdrop-blur-sm lg:hidden"
           onClick={onClose}
         />
       )}
 
       <aside className={cn(
-        "fixed left-0 top-0 z-40 flex h-screen w-64 flex-col border-r border-violet-100 bg-white transition-transform duration-300 dark:border-violet-900/30 dark:bg-zinc-950",
+        "fixed left-0 top-0 z-40 flex h-screen w-64 flex-col border-r border-blue-100 bg-white transition-transform duration-300 dark:border-blue-900/30 dark:bg-zinc-950",
         isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
       {/* Logo */}
-      <Link href="/admin" className="flex items-center gap-3 border-b border-violet-100 px-6 py-5 dark:border-violet-900/20">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl text-white shadow-lg shadow-violet-500/30"
-          style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #9333EA 100%)' }}>
-          <Package size={22} />
+      <Link href="/admin" className="flex items-center gap-1 border-b border-blue-100 px-4 py-3 dark:border-blue-900/20">
+        <div className="flex items-center overflow-hidden">
+          <img src="/mimo-x-light.png" alt="MIMO X PRESS Logo" className="w-36 h-12 object-cover object-center block dark:hidden mix-blend-multiply" />
+          <img src="/mimo-x-dark.png" alt="MIMO X PRESS Logo" className="w-36 h-12 object-cover object-center hidden dark:block" />
         </div>
-        <span className="text-xl font-black tracking-tight text-zinc-900 dark:text-white">MIMO</span>
-        <span className="ml-auto rounded-full px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-violet-600 dark:text-violet-400"
-          style={{ backgroundColor: 'var(--violet-light)' }}>
+        <span className="ml-auto rounded-full px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-400"
+          style={{ backgroundColor: 'var(--blue-light)' }}>
           Admin
         </span>
       </Link>
@@ -79,13 +78,13 @@ export function AdminSidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: 
               className={cn(
                 'group flex items-center justify-between rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-150',
                 isActive
-                  ? 'text-white shadow-md shadow-violet-500/20'
-                  : 'text-slate-500 hover:text-violet-700 dark:text-zinc-400 dark:hover:text-violet-300'
+                  ? 'text-white shadow-md shadow-blue-500/20'
+                  : 'text-slate-500 hover:text-blue-700 dark:text-zinc-400 dark:hover:text-blue-300'
               )}
-              style={isActive ? { background: 'linear-gradient(135deg, #7C3AED 0%, #9333EA 100%)' } : {}}
+              style={isActive ? { background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)' } : {}}
               onMouseEnter={(e) => {
                 if (!isActive) {
-                  (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--violet-light)';
+                  (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--blue-light)';
                 }
               }}
               onMouseLeave={(e) => {
@@ -100,7 +99,7 @@ export function AdminSidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: 
                   className={cn(
                     isActive
                       ? 'text-white'
-                      : 'text-slate-400 group-hover:text-violet-600 dark:group-hover:text-violet-300'
+                      : 'text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-300'
                   )}
                 />
                 {item.label}
@@ -114,7 +113,7 @@ export function AdminSidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: 
       </nav>
 
       {/* Sign Out */}
-      <div className="border-t border-violet-100 p-3 dark:border-violet-900/20">
+      <div className="border-t border-blue-100 p-3 dark:border-blue-900/20">
         <button
           onClick={handleSignOut}
           className="flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-600 dark:text-zinc-400 dark:hover:bg-rose-900/10 dark:hover:text-rose-400"

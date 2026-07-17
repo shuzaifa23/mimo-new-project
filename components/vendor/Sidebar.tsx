@@ -31,11 +31,11 @@ export function VendorSidebar() {
   return (
     <aside className="fixed left-0 top-0 z-40 flex h-screen w-64 flex-col border-r border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
       {/* Logo */}
-      <Link href="/vendor" className="flex items-center gap-3 border-b border-zinc-100 px-6 py-5 dark:border-zinc-800">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-lg shadow-indigo-500/20">
-          <Package size={22} />
+      <Link href="/vendor" className="flex items-center gap-1 border-b border-zinc-100 px-4 py-3 dark:border-zinc-800">
+        <div className="flex items-center overflow-hidden">
+          <img src="/mimo-x-light.png" alt="MIMO X PRESS Logo" className="w-36 h-12 object-cover object-center block dark:hidden mix-blend-multiply" />
+          <img src="/mimo-x-dark.png" alt="MIMO X PRESS Logo" className="w-36 h-12 object-cover object-center hidden dark:block" />
         </div>
-        <span className="text-xl font-black tracking-tight text-zinc-900 dark:text-white">MIMO</span>
         <span className="ml-auto rounded-full bg-indigo-100 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400">
           Vendor
         </span>

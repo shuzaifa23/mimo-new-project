@@ -25,7 +25,7 @@ import type { Order } from "@/types/supabase";
 const statusConfig: Record<string, { color: string; icon: any }> = {
   Pending:   { color: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400", icon: Clock },
   Accepted:  { color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400", icon: Package },
-  Printing:  { color: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400", icon: Printer },
+  Printing:  { color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400", icon: Printer },
   Completed: { color: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400", icon: CheckCircle2 },
   Delivered: { color: "bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400", icon: ChevronRight },
 };
@@ -338,7 +338,7 @@ export default function VendorPage() {
           {[
             { label: "Total Orders", value: stats.total, color: "bg-zinc-900 text-white dark:bg-zinc-900 dark:border dark:border-zinc-800" },
             { label: "Pending", value: stats.pending, color: "bg-orange-500 text-white" },
-            { label: "In Print", value: stats.printing, color: "bg-purple-500 text-white" },
+            { label: "In Print", value: stats.printing, color: "bg-blue-500 text-white" },
             { label: "Delivered", value: stats.delivered, color: "bg-teal-500 text-white" }
           ].map((stat, i) => (
             <div key={i} className={`rounded-[1.5rem] p-6 shadow-sm ${stat.color}`}>
@@ -442,7 +442,7 @@ export default function VendorPage() {
                                   <span className="inline-flex items-center rounded bg-indigo-50 px-1.5 py-0.5 text-[10px] font-bold text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400">
                                     GSM {order.file_name.split(' | ').find((p: string) => p.startsWith('GSM:'))?.replace('GSM: ', '') || '75'}
                                   </span>
-                                  <span className="inline-flex items-center rounded bg-violet-50 px-1.5 py-0.5 text-[10px] font-bold text-violet-600 dark:bg-violet-900/30 dark:text-violet-400">
+                                  <span className="inline-flex items-center rounded bg-blue-50 px-1.5 py-0.5 text-[10px] font-bold text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
                                     {order.file_name.split(' | ').find((p: string) => p.startsWith('Sides:'))?.replace('Sides: ', '') || 'Single'}
                                   </span>
                                 </>

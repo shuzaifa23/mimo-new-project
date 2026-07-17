@@ -98,22 +98,22 @@ export default function CouponsPage() {
         </div>
         <Button 
           onClick={() => setShowModal(true)}
-          className="text-white gap-2 shadow-md shadow-violet-400/30"
-          style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #9333EA 100%)' }}
+          className="text-white gap-2 shadow-md shadow-blue-400/30"
+          style={{ background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)' }}
         >
           <Plus size={18} />
           Create Coupon
         </Button>
       </div>
 
-      <div className="rounded-2xl border border-violet-100/80 bg-white shadow-sm dark:border-violet-900/20 dark:bg-zinc-950">
-        <div className="p-4 border-b border-violet-100/80 dark:border-violet-900/20">
+      <div className="rounded-2xl border border-blue-100/80 bg-white shadow-sm dark:border-blue-900/20 dark:bg-zinc-950">
+        <div className="p-4 border-b border-blue-100/80 dark:border-blue-900/20">
           <div className="relative w-80">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-violet-400" size={18} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-400" size={18} />
             <input 
               type="text" 
               placeholder="Search coupon code..." 
-              className="w-full rounded-xl border border-violet-100 bg-violet-50/50 py-2 pl-10 pr-4 text-sm outline-none focus:ring-2 focus:ring-violet-500/20 dark:border-violet-900/20 dark:bg-violet-900/10"
+              className="w-full rounded-xl border border-blue-100 bg-blue-50/50 py-2 pl-10 pr-4 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-blue-900/20 dark:bg-blue-900/10"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -123,7 +123,7 @@ export default function CouponsPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="border-b border-violet-100/80 bg-violet-50/40 text-xs font-bold uppercase tracking-wider text-violet-500 dark:border-violet-900/20 dark:bg-violet-900/10">
+              <tr className="border-b border-blue-100/80 bg-blue-50/40 text-xs font-bold uppercase tracking-wider text-blue-500 dark:border-blue-900/20 dark:bg-blue-900/10">
                 <th className="px-6 py-4">Coupon Details</th>
                 <th className="px-6 py-4">Discount</th>
                 <th className="px-6 py-4">Expires On</th>
@@ -132,11 +132,11 @@ export default function CouponsPage() {
                 <th className="px-6 py-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-violet-50 dark:divide-violet-900/10">
+            <tbody className="divide-y divide-blue-50 dark:divide-blue-900/10">
               {loading ? (
                 <tr>
                   <td colSpan={6} className="px-6 py-10 text-center">
-                    <Loader2 className="animate-spin inline-block mr-2 text-violet-600" size={20} />
+                    <Loader2 className="animate-spin inline-block mr-2 text-blue-600" size={20} />
                     Loading coupons...
                   </td>
                 </tr>
@@ -146,11 +146,11 @@ export default function CouponsPage() {
                 </tr>
               ) : (
                 filteredCoupons.map((coupon) => (
-                  <tr key={coupon.id} className="group hover:bg-violet-50/40 dark:hover:bg-violet-900/10 transition-colors">
+                  <tr key={coupon.id} className="group hover:bg-blue-50/40 dark:hover:bg-blue-900/10 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="rounded-lg px-3 py-1 font-mono text-sm font-black text-violet-700 dark:text-violet-300"
-                          style={{ backgroundColor: 'var(--violet-light)' }}>
+                        <div className="rounded-lg px-3 py-1 font-mono text-sm font-black text-blue-700 dark:text-blue-300"
+                          style={{ backgroundColor: 'var(--blue-light)' }}>
                           {coupon.code}
                         </div>
                       </div>
@@ -159,11 +159,11 @@ export default function CouponsPage() {
                       <div className="text-sm font-bold text-zinc-900 dark:text-white">
                         {coupon.discount_type === 'percentage' ? `${coupon.discount_value}%` : `₹${coupon.discount_value}`}
                       </div>
-                      <div className="text-[10px] text-violet-400 uppercase font-bold tracking-wider">{coupon.discount_type}</div>
+                      <div className="text-[10px] text-blue-400 uppercase font-bold tracking-wider">{coupon.discount_type}</div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-zinc-300">
-                        <Calendar size={14} className="text-violet-400" />
+                        <Calendar size={14} className="text-blue-400" />
                         {coupon.expiry_date ? new Date(coupon.expiry_date).toLocaleDateString() : 'No Expiry'}
                       </div>
                     </td>
@@ -185,7 +185,7 @@ export default function CouponsPage() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-1">
-                        <button className="rounded-lg p-2 text-violet-400 hover:bg-violet-50 hover:text-violet-700 dark:hover:bg-violet-900/20 transition-colors">
+                        <button className="rounded-lg p-2 text-blue-400 hover:bg-blue-50 hover:text-blue-700 dark:hover:bg-blue-900/20 transition-colors">
                           <Edit2 size={16} />
                         </button>
                         <button 
@@ -206,21 +206,21 @@ export default function CouponsPage() {
 
       {/* Create Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-violet-950/40 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-2xl shadow-violet-500/20 dark:bg-zinc-950 border border-violet-100 dark:border-violet-900/30">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-blue-950/40 backdrop-blur-sm p-4">
+          <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-2xl shadow-blue-500/20 dark:bg-zinc-950 border border-blue-100 dark:border-blue-900/30">
             <div className="mb-6 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl text-white shadow-md shadow-violet-400/30"
-                  style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)' }}>
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl text-white shadow-md shadow-blue-400/30"
+                  style={{ background: 'linear-gradient(135deg, #2563eb 0%, #06b6d4 100%)' }}>
                   <Tag size={18} />
                 </div>
                 <h2 className="text-xl font-bold text-zinc-900 dark:text-white">Create New Coupon</h2>
               </div>
               <button
                 onClick={() => setShowModal(false)}
-                className="rounded-full p-2 hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-colors"
+                className="rounded-full p-2 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
               >
-                <X size={20} className="text-violet-400" />
+                <X size={20} className="text-blue-400" />
               </button>
             </div>
             
@@ -229,7 +229,7 @@ export default function CouponsPage() {
                 <label className="text-sm font-bold text-slate-700 dark:text-zinc-300">Coupon Code</label>
                 <Input 
                   placeholder="E.g. SUMMER50" 
-                  className="mt-1 uppercase border-violet-200 focus:ring-violet-500/20 dark:border-violet-800/40"
+                  className="mt-1 uppercase border-blue-200 focus:ring-blue-500/20 dark:border-blue-800/40"
                   value={formData.code}
                   onChange={e => setFormData({...formData, code: e.target.value.toUpperCase()})}
                   required
@@ -240,7 +240,7 @@ export default function CouponsPage() {
                 <div>
                   <label className="text-sm font-bold text-slate-700 dark:text-zinc-300">Discount Type</label>
                   <select 
-                    className="mt-1 h-11 w-full rounded-xl border border-violet-200 bg-white px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-violet-500/20 dark:border-violet-800/40 dark:bg-zinc-950"
+                    className="mt-1 h-11 w-full rounded-xl border border-blue-200 bg-white px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-blue-800/40 dark:bg-zinc-950"
                     value={formData.discount_type}
                     onChange={e => setFormData({...formData, discount_type: e.target.value as any})}
                   >
@@ -253,7 +253,7 @@ export default function CouponsPage() {
                   <Input 
                     type="number" 
                     placeholder="Value" 
-                    className="mt-1 border-violet-200 focus:ring-violet-500/20 dark:border-violet-800/40"
+                    className="mt-1 border-blue-200 focus:ring-blue-500/20 dark:border-blue-800/40"
                     value={formData.discount_value}
                     onChange={e => setFormData({...formData, discount_value: Number(e.target.value)})}
                     required
@@ -265,7 +265,7 @@ export default function CouponsPage() {
                 <label className="text-sm font-bold text-slate-700 dark:text-zinc-300">Expiry Date (Optional)</label>
                 <Input 
                   type="date" 
-                  className="mt-1 border-violet-200 focus:ring-violet-500/20 dark:border-violet-800/40"
+                  className="mt-1 border-blue-200 focus:ring-blue-500/20 dark:border-blue-800/40"
                   value={formData.expiry_date}
                   onChange={e => setFormData({...formData, expiry_date: e.target.value})}
                 />
@@ -273,8 +273,8 @@ export default function CouponsPage() {
               
               <Button
                 type="submit"
-                className="w-full h-12 text-white font-bold shadow-md shadow-violet-400/30"
-                style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)' }}
+                className="w-full h-12 text-white font-bold shadow-md shadow-blue-400/30"
+                style={{ background: 'linear-gradient(135deg, #2563eb 0%, #06b6d4 100%)' }}
               >
                 Create Coupon
               </Button>

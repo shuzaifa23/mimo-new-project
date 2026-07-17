@@ -39,9 +39,18 @@ export default function UsersManagementPage() {
   }, []);
 
   const handleToggleBlock = async (userId: string, isBlocked: boolean) => {
+    // Optimistic UI update (and supports mock data which doesn't have valid UUIDs)
+    setUsers(prev => prev.map(u => u.id === userId ? { ...u, is_blocked: !isBlocked } : u));
+    
+    // Skip DB call for mock local data
+    if (userId.length < 36) return;
+
     const { error } = await toggleUserBlock(userId, !isBlocked);
-    if (error) alert('Error updating user');
-    else loadUsers();
+    if (error) {
+      console.error(error);
+      alert('Error updating user: ' + error.message);
+      loadUsers(); // revert
+    }
   };
 
   const filteredUsers = users.filter(user => {
@@ -67,19 +76,19 @@ export default function UsersManagementPage() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 rounded-2xl border border-violet-100/80 bg-white p-4 shadow-sm dark:border-violet-900/20 dark:bg-zinc-950 md:flex-row md:items-center">
+      <div className="flex flex-col gap-4 rounded-2xl border border-blue-100/80 bg-white p-4 shadow-sm dark:border-blue-900/20 dark:bg-zinc-950 md:flex-row md:items-center">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-violet-400" size={18} />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-400" size={18} />
           <input 
             type="text" 
             placeholder="Search by name, email or phone..." 
-            className="w-full rounded-xl border border-violet-100 bg-violet-50/50 py-2 pl-10 pr-4 text-sm outline-none focus:ring-2 focus:ring-violet-500/20 dark:border-violet-900/20 dark:bg-violet-900/10"
+            className="w-full rounded-xl border border-blue-100 bg-blue-50/50 py-2 pl-10 pr-4 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-blue-900/20 dark:bg-blue-900/10"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         <select 
-          className="rounded-xl border border-violet-100 bg-violet-50/50 px-4 py-2 text-sm outline-none dark:border-violet-900/20 dark:bg-violet-900/10"
+          className="rounded-xl border border-blue-100 bg-blue-50/50 px-4 py-2 text-sm outline-none dark:border-blue-900/20 dark:bg-blue-900/10"
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
         >
@@ -91,19 +100,19 @@ export default function UsersManagementPage() {
 
       {loading ? (
         <div className="flex h-64 items-center justify-center">
-          <Loader2 className="animate-spin text-violet-600" size={40} />
+          <Loader2 className="animate-spin text-blue-600" size={40} />
         </div>
       ) : filteredUsers.length === 0 ? (
-        <div className="flex h-64 items-center justify-center rounded-2xl border border-dashed border-violet-200 dark:border-violet-800/30">
+        <div className="flex h-64 items-center justify-center rounded-2xl border border-dashed border-blue-200 dark:border-blue-800/30">
           <p className="text-slate-400">No users found matching your criteria.</p>
         </div>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredUsers.map((user) => (
-            <div key={user.id} className="group relative flex flex-col items-center rounded-3xl border border-violet-100/80 bg-white p-6 text-center shadow-sm hover:shadow-lg hover:shadow-violet-200/40 dark:border-violet-900/20 dark:bg-zinc-950 transition-all">
+            <div key={user.id} className="group relative flex flex-col items-center rounded-3xl border border-blue-100/80 bg-white p-6 text-center shadow-sm hover:shadow-lg hover:shadow-blue-200/40 dark:border-blue-900/20 dark:bg-zinc-950 transition-all">
               <div className="relative mb-4">
-                <div className="flex h-20 w-20 items-center justify-center rounded-full text-2xl font-black text-white shadow-md shadow-violet-400/30"
-                  style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)' }}>
+                <div className="flex h-20 w-20 items-center justify-center rounded-full text-2xl font-black text-white shadow-md shadow-blue-400/30"
+                  style={{ background: 'linear-gradient(135deg, #2563eb 0%, #06b6d4 100%)' }}>
                   {user.name.split(' ').map(n => n[0]).join('')}
                 </div>
                 <div className={cn(
@@ -130,7 +139,7 @@ export default function UsersManagementPage() {
                 )}
               </div>
 
-              <div className="mt-6 flex w-full gap-2 pt-4 border-t border-violet-100 dark:border-violet-900/20">
+              <div className="mt-6 flex w-full gap-2 pt-4 border-t border-blue-100 dark:border-blue-900/20">
                 <Button 
                   variant="outline" 
                   className={cn(
