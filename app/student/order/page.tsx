@@ -43,14 +43,37 @@ export default function OrderPage() {
     setFile(null);
   };
 
-  const amount = useMemo(() => {
+  const pricing = useMemo(() => {
     const basePaperPrice = 1;
-    const printCost = formData.printType === "bw" ? 1 : 5;
+    const printCostPerPage = formData.printType === "bw" ? 1 : 5;
     const gsmExtra = { "75": 0, "90": 0.5, "95": 0.5, "100": 1 }[formData.gsm] || 0;
-    const pageRate = basePaperPrice + gsmExtra + printCost;
-    const bindingPrice = ({ none: 0, spiral: 20, hard: 130, soft: 40 }[formData.binding] || 0) * formData.copies;
-    return ((pageRate * formData.pages * formData.copies) + bindingPrice);
+    const paperCostPerSheet = basePaperPrice + gsmExtra;
+    
+    const sheetsPerCopy = formData.sides === "double" ? Math.ceil(formData.pages / 2) : formData.pages;
+    const totalSheets = sheetsPerCopy * formData.copies;
+    const totalPrintedSides = formData.pages * formData.copies;
+    
+    const paperCost = paperCostPerSheet * totalSheets;
+    const printCost = printCostPerPage * totalPrintedSides;
+    
+    const bindingRate = { none: 0, spiral: 20, hard: 130, soft: 40 }[formData.binding] || 0;
+    const bindingCost = bindingRate * formData.copies;
+    
+    const totalAmount = Number((paperCost + printCost + bindingCost).toFixed(2));
+    
+    return {
+      sheetsPerCopy,
+      totalSheets,
+      paperCostPerSheet,
+      paperCost,
+      printCostPerPage,
+      printCost,
+      bindingCost,
+      amount: totalAmount
+    };
   }, [formData]);
+
+  const amount = pricing.amount;
 
   // Load vendors on mount
   useState(() => {
@@ -385,13 +408,27 @@ export default function OrderPage() {
               <h3 className="text-lg font-bold opacity-90">Order Summary</h3>
               <div className="mt-4 space-y-3 border-b border-white/20 pb-5 text-base font-semibold tracking-wide">
                 <div className="flex justify-between items-center">
-                  <span>Print Cost</span>
-                  <span className="text-lg font-bold">{1 + ({ "75": 0, "90": 0.5, "95": 0.5, "100": 1 }[formData.gsm] || 0)}+{formData.printType === "bw" ? 1 : 5}×{formData.pages}{formData.copies > 1 ? `×${formData.copies}` : ''}</span>
+                  <span className="flex flex-col">
+                    <span>Paper Cost ({pricing.totalSheets} {pricing.totalSheets === 1 ? 'sheet' : 'sheets'})</span>
+                    <span className="text-xs text-white/80 font-normal">
+                      ₹{pricing.paperCostPerSheet} per sheet{formData.sides === 'double' && ' (Front & Back)'}{formData.copies > 1 ? ` × ${formData.copies} copies` : ''}
+                    </span>
+                  </span>
+                  <span className="text-lg font-bold">₹{pricing.paperCost}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="flex flex-col">
+                    <span>Print Cost ({formData.pages * formData.copies} {formData.pages * formData.copies === 1 ? 'side' : 'sides'})</span>
+                    <span className="text-xs text-white/80 font-normal">
+                      ₹{pricing.printCostPerPage} per side{formData.copies > 1 ? ` × ${formData.copies} copies` : ''}
+                    </span>
+                  </span>
+                  <span className="text-lg font-bold">₹{pricing.printCost}</span>
                 </div>
                 {formData.binding !== "none" && (
                   <div className="flex justify-between items-center">
                     <span>Binding</span>
-                    <span className="text-lg font-bold">₹{{ none: 0, spiral: 20, hard: 130, soft: 40 }[formData.binding] || 0}{formData.copies > 1 ? `×${formData.copies}` : ''}</span>
+                    <span className="text-lg font-bold">₹{pricing.bindingCost}</span>
                   </div>
                 )}
               </div>
