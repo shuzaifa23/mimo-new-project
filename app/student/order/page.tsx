@@ -44,30 +44,34 @@ export default function OrderPage() {
   };
 
   const pricing = useMemo(() => {
-    const basePaperPrice = 1;
-    const printCostPerPage = formData.printType === "bw" ? 1 : 5;
-    const gsmExtra = { "75": 0, "90": 0.5, "95": 0.5, "100": 1 }[formData.gsm] || 0;
-    const paperCostPerSheet = basePaperPrice + gsmExtra;
+    const rateTable: Record<string, Record<string, Record<string, number>>> = {
+      "75": {
+        bw: { single: 2, double: 3 },
+        color: { single: 8, double: 13 },
+      },
+      "100": {
+        bw: { single: 3, double: 3 },
+        color: { single: 10, double: 15 },
+      },
+    };
+
+    const ratePerSheet = rateTable[formData.gsm]?.[formData.printType]?.[formData.sides] ?? 2;
     
     const sheetsPerCopy = formData.sides === "double" ? Math.ceil(formData.pages / 2) : formData.pages;
     const totalSheets = sheetsPerCopy * formData.copies;
-    const totalPrintedSides = formData.pages * formData.copies;
     
-    const paperCost = paperCostPerSheet * totalSheets;
-    const printCost = printCostPerPage * totalPrintedSides;
+    const printAndPaperCost = Number((ratePerSheet * totalSheets).toFixed(2));
     
     const bindingRate = { none: 0, spiral: 20, hard: 130, soft: 40 }[formData.binding] || 0;
     const bindingCost = bindingRate * formData.copies;
     
-    const totalAmount = Number((paperCost + printCost + bindingCost).toFixed(2));
+    const totalAmount = Number((printAndPaperCost + bindingCost).toFixed(2));
     
     return {
+      ratePerSheet,
       sheetsPerCopy,
       totalSheets,
-      paperCostPerSheet,
-      paperCost,
-      printCostPerPage,
-      printCost,
+      printAndPaperCost,
       bindingCost,
       amount: totalAmount
     };
@@ -315,8 +319,8 @@ export default function OrderPage() {
                     value={formData.printType}
                     onChange={(e) => setFormData({ ...formData, printType: e.target.value })}
                   >
-                    <option value="bw">Black & White (₹1/pg)</option>
-                    <option value="color">Color Print (₹5/pg)</option>
+                    <option value="bw">Black & White</option>
+                    <option value="color">Color Print</option>
                   </select>
                 </div>
                 <div>
@@ -327,8 +331,7 @@ export default function OrderPage() {
                     onChange={(e) => setFormData({ ...formData, gsm: e.target.value })}
                   >
                     <option value="75">75 GSM</option>
-                    <option value="90">90 GSM (+₹0.5/pg)</option>
-                    <option value="100">100 GSM (+₹1/pg)</option>
+                    <option value="100">100 GSM</option>
                   </select>
                 </div>
                 <div>
@@ -409,21 +412,12 @@ export default function OrderPage() {
               <div className="mt-4 space-y-3 border-b border-white/20 pb-5 text-base font-semibold tracking-wide">
                 <div className="flex justify-between items-center">
                   <span className="flex flex-col">
-                    <span>Paper Cost ({pricing.totalSheets} {pricing.totalSheets === 1 ? 'sheet' : 'sheets'})</span>
+                    <span>Print & Paper ({pricing.totalSheets} {pricing.totalSheets === 1 ? 'sheet' : 'sheets'})</span>
                     <span className="text-xs text-white/80 font-normal">
-                      ₹{pricing.paperCostPerSheet} per sheet{formData.sides === 'double' && ' (Front & Back)'}{formData.copies > 1 ? ` × ${formData.copies} copies` : ''}
+                      ₹{pricing.ratePerSheet} per sheet ({formData.gsm} GSM • {formData.printType === 'bw' ? 'B&W' : 'Color'} • {formData.sides === 'double' ? 'Double Sided' : 'Single Side'}){formData.copies > 1 ? ` × ${formData.copies} copies` : ''}
                     </span>
                   </span>
-                  <span className="text-lg font-bold">₹{pricing.paperCost}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="flex flex-col">
-                    <span>Print Cost ({formData.pages * formData.copies} {formData.pages * formData.copies === 1 ? 'side' : 'sides'})</span>
-                    <span className="text-xs text-white/80 font-normal">
-                      ₹{pricing.printCostPerPage} per side{formData.copies > 1 ? ` × ${formData.copies} copies` : ''}
-                    </span>
-                  </span>
-                  <span className="text-lg font-bold">₹{pricing.printCost}</span>
+                  <span className="text-lg font-bold">₹{pricing.printAndPaperCost}</span>
                 </div>
                 {formData.binding !== "none" && (
                   <div className="flex justify-between items-center">
